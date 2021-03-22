@@ -22,7 +22,7 @@ import {RefreshControl} from 'react-native';
 const UIDiagnosticsRequestList = () => {
   const dispatch = useDispatch();
   const diagnostics_reducers = useSelector(
-    (state) => state.Diagnostic_Reducers.data,
+    (state) => state.Diagnostic_Reducers.data_diagnostic,
   );
   const diagnostics_finished_reducers = useSelector(
     (state) => state.Diagnostic_Reducers.data_finished,
@@ -68,7 +68,7 @@ const UIDiagnosticsRequestList = () => {
 
   const {height} = Dimensions.get('window');
   const FirstRoute = () => (
-    <View style={{flex: 1, height: height}}>
+    <View style={{flex: 1}}>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

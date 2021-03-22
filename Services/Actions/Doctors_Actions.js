@@ -128,7 +128,8 @@ export const action_GET_doctors_byname = (offset, specialty, name) => async (
   const value = await AsyncStorage.getItem('tokenizer');
   const bearer_token = value;
   const bearer = 'Bearer ' + bearer_token;
-  var url = `${BASE_URL}/api​/doctors​/getdoctorsbyspecialtyandname`;
+
+  var url = `${BASE_URL}/api/doctors/getdoctorsbyspecialtyandname`;
   await fetch(url, {
     method: 'POST',
     withCredentials: true,
@@ -145,14 +146,9 @@ export const action_GET_doctors_byname = (offset, specialty, name) => async (
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-        console.log(response.json());
-      } catch (e) {
-        dispatch({
-          type: SET_DOCTOR_BY_SPECIALTY,
-          payload: res.data,
-        });
-      }
+      await dispatch({
+        type: SET_DOCTOR_BY_SPECIALTY,
+        payload: res.data,
+      });
     });
 };

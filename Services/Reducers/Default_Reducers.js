@@ -20,8 +20,8 @@ const defult_values = {
   civil_status: [],
   religion: [],
   procedures: [],
-  base_url: '192.168.254.108',
-  remote_url: '192.168.254.108',
+  base_url: BASE_URL,
+  remote_url: BASE_URL,
   loading: false,
 };
 const Default_Reducer = (data_state = defult_values, actions) => {

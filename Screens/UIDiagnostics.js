@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-community/picker';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
@@ -276,7 +276,7 @@ const Diagnostics = () => {
     }
   };
 
-  const handleSubmitCredentials = () => {
+  const handleSubmitCredentials = useCallback(() => {
     if (stepError == false) {
       dispatch(
         action_POST_appointment_others(
@@ -304,10 +304,39 @@ const Diagnostics = () => {
           selectedprocedurecode,
         ),
       );
+
+      alert('The Diagnostic Appointment Added sucessfully.');
+      setTimeout(() => {
+        Actions.diagnostics();
+      }, 1000);
     } else {
       alert('Please Provide Valid Data');
     }
-  };
+  }, [
+    dispatch,
+    premid,
+    prefix,
+    firstname,
+    middlename,
+    lastname,
+    suffix,
+    gender,
+    civilstatus,
+    nationality,
+    religion,
+    birthdate,
+    email,
+    mobile,
+    fulladdress,
+    fulladdress2,
+    barangay,
+    province,
+    city,
+    region,
+    zipcode,
+    reasons,
+    selectedprocedurecode,
+  ]);
   useEffect(() => {
     dispatch(action_GET_region());
     dispatch(action_GET_nationality());
@@ -365,34 +394,348 @@ const Diagnostics = () => {
   };
 
   return (
-    <ScrollView style={{backgroundScrollViewColor: 'white'}}>
-      <View style={styles.container}>
-        <View style={{flex: 1}}>
-          <View style={styles.Inputcontainer}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'stretch',
-              }}>
-              <Text>Use My Personal Information</Text>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={styles.Inputcontainer}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'stretch',
+            height: 30 + '%',
+          }}>
+          <View style={{width: 80 + '%', height: 40}}>
+            <Text>Use My Personal Information</Text>
+          </View>
+          <View style={{width: 5 + '%', height: 40}}>
+            <Switch
+              trackColor={{false: '#767577', true: '#add8e6'}}
+              thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+              accessibilityLabel={'Use My Information'}
+            />
+          </View>
+        </View>
+      </View>
 
-              <Switch
-                trackColor={{false: '#767577', true: '#add8e6'}}
-                thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-                accessibilityLabel={'Use My Information'}
+      {isEnabled ? (
+        <View style={styles.Inputcontainer}>
+          <Picker
+            selectedValue={city}
+            style={styles.PickerContainer}
+            onValueChange={(itemValue, itemIndex) =>
+              handleProcedureChange(itemValue)
+            }>
+            <Picker.Item label="Select Procedure" value="null" />
+            {procedure_reducers.map((card) => (
+              <Picker.Item
+                key={card.proccode}
+                label={card.procdesc}
+                value={{
+                  code: card.proccode,
+                  desc: card.procdesc,
+                  price: card.regprice,
+                }}
+              />
+            ))}
+          </Picker>
+          <Flatlists />
+        </View>
+      ) : (
+        <ProgressSteps>
+          <ProgressStep
+            label="Information"
+            onNext={handleNextInfo}
+            errors={InfoError}>
+            <View style={styles.Inputcontainer}>
+              <Input
+                style={styles.textInput}
+                placeholder="First name"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setfirstname(text)}
+                defaultValue={firstname}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Middle name"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setmiddlename(text)}
+                defaultValue={middlename}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Last name"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setlastname(text)}
+                defaultValue={lastname}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Suffix"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setSuffix(text)}
+                defaultValue={suffix}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Prefix"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setPrefix(text)}
+                defaultValue={prefix}
+              />
+
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <View
+                  style={{
+                    width: '85%',
+                    height: '100%',
+                  }}>
+                  <Input
+                    style={styles.textInput}
+                    placeholder="Birthdate"
+                    inputContainerStyle={styles.inputContainer}
+                    inputStyle={styles.inputText}
+                    defaultValue={birthdate}
+                  />
+                </View>
+                <View
+                  style={{
+                    width: '15%',
+                    height: '100%',
+                  }}>
+                  <TouchableHighlight
+                    underlayColor="white"
+                    style={{
+                      borderWidth: 1,
+                      borderColor: 'rgba(0,0,0,0)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 55,
+                      height: 55,
+                      backgroundColor: '#fff',
+                      borderRadius: 50,
+                    }}
+                    onPress={showDatepicker}>
+                    <Image
+                      style={{
+                        height: 40,
+                        width: '100%',
+                        resizeMode: 'center',
+                        alignContent: 'flex-start',
+                      }}
+                      source={require('../assets/icons/ic_calendar_prem-playstore.png')}
+                    />
+                  </TouchableHighlight>
+                </View>
+              </View>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
+              <View>
+                <Picker
+                  selectedValue={civilstatus}
+                  style={styles.PickerContainer}
+                  onValueChange={(itemValue, itemIndex) =>
+                    handleCivilStatus(itemValue)
+                  }>
+                  <Picker.Item label="Civil Status" value="Civil Status" />
+                  {civil_status_reducers.map((cs) => (
+                    <Picker.Item
+                      key={cs?.cskey}
+                      label={cs?.csdesc}
+                      value={cs?.cskey}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              <View>
+                <Picker
+                  selectedValue={nationality}
+                  style={styles.PickerContainer}
+                  onValueChange={(itemValue, itemIndex) =>
+                    handleNationality(itemValue)
+                  }>
+                  <Picker.Item label="Select Nationality" />
+                  {nationality_reducers.map((card) => (
+                    <Picker.Item
+                      key={card.nationality}
+                      label={card.nationality}
+                      value={card.nationality}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              <View>
+                <Picker
+                  selectedValue={religion}
+                  style={styles.PickerContainer}
+                  onValueChange={(itemValue, itemIndex) =>
+                    handleReligion(itemValue)
+                  }>
+                  <Picker.Item label="Religion" value="Religion" />
+                  {religion_reducers.map((cs) => (
+                    <Picker.Item
+                      key={cs?.religion}
+                      label={cs?.description}
+                      value={cs?.religion}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              <View>
+                <Picker
+                  selectedValue={gender}
+                  style={styles.PickerContainer}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setgender(itemValue)
+                  }>
+                  <Picker.Item label="Gender" />
+                  <Picker.Item label="Male" value="M" />
+                  <Picker.Item label="Female" value="F" />
+                </Picker>
+              </View>
+              <Input
+                style={styles.textInput}
+                multiline
+                numberOfLines={5}
+                maxLength={100}
+                placeholder="Reason for Requisition"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setreasons(text)}
+                defaultValue={reasons}
               />
             </View>
-          </View>
+          </ProgressStep>
 
-          {isEnabled ? (
+          <ProgressStep
+            label="Contact Details"
+            onNext={handleNextAddress}
+            errors={AddressError}>
             <View style={styles.Inputcontainer}>
+              <Input
+                style={styles.textInput}
+                placeholder="Email"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                errorMessage={emailErrorMessage}
+                onChangeText={(text) => validate(text)}
+                defaultValue={email}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Mobile No."
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                //errorMessage={mobileErrorMessage}
+                onChangeText={(text) => setmobile(text)}
+                defaultValue={mobile}
+              />
+              <Picker
+                selectedValue={region}
+                style={styles.PickerContainer}
+                onValueChange={(itemValue, itemIndex) =>
+                  handleRegionChange(itemValue)
+                }>
+                <Picker.Item label="Select Region" value="region" />
+                {region_reducers.map((card) => (
+                  <Picker.Item
+                    key={card.regioncode}
+                    label={card.regiondesc}
+                    value={card.regioncode}
+                  />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={province}
+                style={styles.PickerContainer}
+                onValueChange={(itemValue, itemIndex) =>
+                  handleProvinceChange(itemValue)
+                }>
+                <Picker.Item label="Select Province" value="province" />
+                {province_reducers?.map((card) => (
+                  <Picker.Item
+                    key={card.provincecode}
+                    label={card.provincedesc}
+                    value={card.provincecode}
+                  />
+                ))}
+              </Picker>
               <Picker
                 selectedValue={city}
+                style={styles.PickerContainer}
+                onValueChange={(itemValue, itemIndex) =>
+                  handleCityChange(itemValue)
+                }>
+                <Picker.Item label="Select City" value="city" />
+                {city_reducers.map((card) => (
+                  <Picker.Item
+                    key={card.citymuncode}
+                    label={card.citymundesc}
+                    value={card.citymuncode}
+                  />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={barangay}
+                style={styles.PickerContainer}
+                onValueChange={(itemValue, itemIndex) =>
+                  handleBarangayChange(itemValue)
+                }>
+                <Picker.Item label="Select Barangay" value="barangay" />
+                {barangay_reducers.map((card) => (
+                  <Picker.Item
+                    key={card.barangaycode}
+                    label={card.barangaydesc}
+                    value={card.barangaycode}
+                  />
+                ))}
+              </Picker>
+              <Input
+                style={styles.textInput}
+                placeholder="Address 1"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setfulladdress(text)}
+                defaultValue={fulladdress}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Address 2"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setfulladdress2(text)}
+                defaultValue={fulladdress2}
+              />
+              <Input
+                style={styles.textInput}
+                placeholder="Zipcode"
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
+                onChangeText={(text) => setzipcode(text)}
+                defaultValue={zipcode}
+              />
+            </View>
+          </ProgressStep>
+          <ProgressStep
+            label="Laboratory Request"
+            onSubmit={handleSubmitCredentials}>
+            <View style={styles.Inputcontainer}>
+              <Picker
                 style={styles.PickerContainer}
                 onValueChange={(itemValue, itemIndex) =>
                   handleProcedureChange(itemValue)
@@ -412,325 +755,10 @@ const Diagnostics = () => {
               </Picker>
               <Flatlists />
             </View>
-          ) : (
-            <ProgressSteps>
-              <ProgressStep
-                label="Information"
-                onNext={handleNextInfo}
-                errors={InfoError}>
-                <View style={styles.Inputcontainer}>
-                  <Input
-                    style={styles.textInput}
-                    placeholder="First name"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setfirstname(text)}
-                    defaultValue={firstname}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Middle name"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setmiddlename(text)}
-                    defaultValue={middlename}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Last name"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setlastname(text)}
-                    defaultValue={lastname}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Suffix"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setSuffix(text)}
-                    defaultValue={suffix}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Prefix"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setPrefix(text)}
-                    defaultValue={prefix}
-                  />
-
-                  <View style={{flex: 1, flexDirection: 'row'}}>
-                    <View
-                      style={{
-                        width: '85%',
-                        height: '100%',
-                      }}>
-                      <Input
-                        style={styles.textInput}
-                        placeholder="Birthdate"
-                        inputContainerStyle={styles.inputContainer}
-                        inputStyle={styles.inputText}
-                        defaultValue={birthdate}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        width: '15%',
-                        height: '100%',
-                      }}>
-                      <TouchableHighlight
-                        underlayColor="white"
-                        style={{
-                          borderWidth: 1,
-                          borderColor: 'rgba(0,0,0,0)',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: 55,
-                          height: 55,
-                          backgroundColor: '#fff',
-                          borderRadius: 50,
-                        }}
-                        onPress={showDatepicker}>
-                        <Image
-                          style={{
-                            height: 40,
-                            width: '100%',
-                            resizeMode: 'center',
-                            alignContent: 'flex-start',
-                          }}
-                          source={require('../assets/icons/ic_calendar_prem-playstore.png')}
-                        />
-                      </TouchableHighlight>
-                    </View>
-                  </View>
-                  {show && (
-                    <DateTimePicker
-                      testID="dateTimePicker"
-                      value={date}
-                      mode={mode}
-                      is24Hour={true}
-                      display="default"
-                      onChange={onChange}
-                    />
-                  )}
-                  <View>
-                    <Picker
-                      selectedValue={civilstatus}
-                      style={styles.PickerContainer}
-                      onValueChange={(itemValue, itemIndex) =>
-                        handleCivilStatus(itemValue)
-                      }>
-                      <Picker.Item label="Civil Status" value="Civil Status" />
-                      {civil_status_reducers.map((cs) => (
-                        <Picker.Item
-                          key={cs?.cskey}
-                          label={cs?.csdesc}
-                          value={cs?.cskey}
-                        />
-                      ))}
-                    </Picker>
-                  </View>
-                  <View>
-                    <Picker
-                      selectedValue={nationality}
-                      style={styles.PickerContainer}
-                      onValueChange={(itemValue, itemIndex) =>
-                        handleNationality(itemValue)
-                      }>
-                      <Picker.Item label="Select Nationality" />
-                      {nationality_reducers.map((card) => (
-                        <Picker.Item
-                          key={card.nationality}
-                          label={card.nationality}
-                          value={card.nationality}
-                        />
-                      ))}
-                    </Picker>
-                  </View>
-                  <View>
-                    <Picker
-                      selectedValue={religion}
-                      style={styles.PickerContainer}
-                      onValueChange={(itemValue, itemIndex) =>
-                        handleReligion(itemValue)
-                      }>
-                      <Picker.Item label="Religion" value="Religion" />
-                      {religion_reducers.map((cs) => (
-                        <Picker.Item
-                          key={cs?.religion}
-                          label={cs?.description}
-                          value={cs?.religion}
-                        />
-                      ))}
-                    </Picker>
-                  </View>
-                  <View>
-                    <Picker
-                      selectedValue={gender}
-                      style={styles.PickerContainer}
-                      onValueChange={(itemValue, itemIndex) =>
-                        setgender(itemValue)
-                      }>
-                      <Picker.Item label="Gender" />
-                      <Picker.Item label="Male" value="M" />
-                      <Picker.Item label="Female" value="F" />
-                    </Picker>
-                  </View>
-                  <Input
-                    style={styles.textInput}
-                    multiline
-                    numberOfLines={5}
-                    maxLength={100}
-                    placeholder="Reason for Requisition"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setreasons(text)}
-                    defaultValue={reasons}
-                  />
-                </View>
-              </ProgressStep>
-
-              <ProgressStep
-                label="Contact Details"
-                onNext={handleNextAddress}
-                errors={AddressError}>
-                <View style={styles.Inputcontainer}>
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Email"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    errorMessage={emailErrorMessage}
-                    onChangeText={(text) => validate(text)}
-                    defaultValue={email}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Mobile No."
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    //errorMessage={mobileErrorMessage}
-                    onChangeText={(text) => setmobile(text)}
-                    defaultValue={mobile}
-                  />
-                  <Picker
-                    selectedValue={region}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleRegionChange(itemValue)
-                    }>
-                    <Picker.Item label="Select Region" value="region" />
-                    {region_reducers.map((card) => (
-                      <Picker.Item
-                        key={card.regioncode}
-                        label={card.regiondesc}
-                        value={card.regioncode}
-                      />
-                    ))}
-                  </Picker>
-                  <Picker
-                    selectedValue={province}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleProvinceChange(itemValue)
-                    }>
-                    <Picker.Item label="Select Province" value="province" />
-                    {province_reducers?.map((card) => (
-                      <Picker.Item
-                        key={card.provincecode}
-                        label={card.provincedesc}
-                        value={card.provincecode}
-                      />
-                    ))}
-                  </Picker>
-                  <Picker
-                    selectedValue={city}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleCityChange(itemValue)
-                    }>
-                    <Picker.Item label="Select City" value="city" />
-                    {city_reducers.map((card) => (
-                      <Picker.Item
-                        key={card.citymuncode}
-                        label={card.citymundesc}
-                        value={card.citymuncode}
-                      />
-                    ))}
-                  </Picker>
-                  <Picker
-                    selectedValue={barangay}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleBarangayChange(itemValue)
-                    }>
-                    <Picker.Item label="Select Barangay" value="barangay" />
-                    {barangay_reducers.map((card) => (
-                      <Picker.Item
-                        key={card.barangaycode}
-                        label={card.barangaydesc}
-                        value={card.barangaycode}
-                      />
-                    ))}
-                  </Picker>
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Address 1"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setfulladdress(text)}
-                    defaultValue={fulladdress}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Address 2"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setfulladdress2(text)}
-                    defaultValue={fulladdress2}
-                  />
-                  <Input
-                    style={styles.textInput}
-                    placeholder="Zipcode"
-                    inputContainerStyle={styles.inputContainer}
-                    inputStyle={styles.inputText}
-                    onChangeText={(text) => setzipcode(text)}
-                    defaultValue={zipcode}
-                  />
-                </View>
-              </ProgressStep>
-              <ProgressStep
-                label="Laboratory Request"
-                onSubmit={handleSubmitCredentials}>
-                <View style={styles.Inputcontainer}>
-                  <Picker
-                    selectedValue={city}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleProcedureChange(itemValue)
-                    }>
-                    <Picker.Item label="Select Procedure" value="null" />
-                    {procedure_reducers.map((card) => (
-                      <Picker.Item
-                        key={card.proccode}
-                        label={card.procdesc}
-                        value={{
-                          code: card.proccode,
-                          desc: card.procdesc,
-                          price: card.regprice,
-                        }}
-                      />
-                    ))}
-                  </Picker>
-                  <Flatlists />
-                </View>
-              </ProgressStep>
-            </ProgressSteps>
-          )}
-        </View>
-      </View>
-    </ScrollView>
+          </ProgressStep>
+        </ProgressSteps>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -738,6 +766,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    height: 30 + '%',
   },
   text: {
     color: 'black',
@@ -772,7 +801,7 @@ const styles = StyleSheet.create({
     height: 70,
   },
   Inputcontainer: {
-    flex: 1,
+    flex: 0.1,
     padding: 30,
     width: '100%',
   },
@@ -785,7 +814,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   flatlistcontainer: {
-    flex: 1,
+    flex: 0.5,
     paddingTop: 22,
   },
   flatlistitem: {

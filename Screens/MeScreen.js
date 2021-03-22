@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {
   Image,
   RefreshControl,
@@ -66,9 +66,13 @@ const MeScreen = () => {
     await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
     Actions.qrscreen();
   };
-  const gotoapps = async () => {
+  const gotoapps = useCallback(async () => {
     await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
     Actions.uiapps();
+  });
+  const gotolink = async () => {
+    await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
+    Actions.link();
   };
   const gotosafedavaoqr = async () => {
     await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
@@ -159,39 +163,51 @@ const MeScreen = () => {
                 </View>
               </CardView>
             </TouchableHighlight>
-            <CardView radius={1} backgroundColor={'#ffffff'}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  height: 70,
-                  alignItems: 'center',
-                }}>
+            <TouchableHighlight
+              onPress={() => gotolink()}
+              underlayColor="white">
+              <CardView radius={1} backgroundColor={'#ffffff'}>
                 <View
-                  style={{width: '80%', height: 50, justifyContent: 'center'}}>
-                  <Text
+                  style={{
+                    flexDirection: 'row',
+                    height: 70,
+                    alignItems: 'center',
+                  }}>
+                  <View
                     style={{
-                      textAlign: 'left',
-                      marginStart: 10,
-                      fontSize: 14,
-                      alignContent: 'center',
-                    }}>
-                    Medical Records
-                  </Text>
-                </View>
-                <View
-                  style={{width: '10%', height: 50, justifyContent: 'center'}}>
-                  <Image
-                    style={{
+                      width: '80%',
                       height: 50,
-                      width: '100%',
-                      resizeMode: 'center',
-                      alignContent: 'flex-start',
-                    }}
-                    source={require('../assets/icons/ic_admission_prem-playstore.png')}
-                  />
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'left',
+                        marginStart: 10,
+                        fontSize: 14,
+                        alignContent: 'center',
+                      }}>
+                      Medical Records
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: '10%',
+                      height: 50,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      style={{
+                        height: 50,
+                        width: '100%',
+                        resizeMode: 'center',
+                        alignContent: 'flex-start',
+                      }}
+                      source={require('../assets/icons/ic_admission_prem-playstore.png')}
+                    />
+                  </View>
                 </View>
-              </View>
-            </CardView>
+              </CardView>
+            </TouchableHighlight>
             <TouchableHighlight
               onPress={() => gotoapps()}
               underlayColor="white">

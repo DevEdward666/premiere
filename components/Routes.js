@@ -17,6 +17,8 @@ import DiagnosticsResults from '../Screens/UIDiagnoticsResults';
 import DiagnosticsResultsList from '../Screens/UIDiagnosticsResultsList';
 import NewsInfo from '../Screens/UINewsInfo';
 import CalendarEvents from '../Screens/UICalendar';
+
+import LinkMedicalRecords from '../Screens/LinkMedicalRecords';
 import Prompt from '../Plugins/PrompScreen';
 const Routes = () => (
   <Router>
@@ -37,6 +39,11 @@ const Routes = () => (
       <Scene key="uiapps" component={UIApps} title="Apps" />
       <Scene key="diagnostics" component={Diagnostic} title="Diagnostics" />
       <Scene key="prompt" component={Prompt} title="Alert" />
+      <Scene
+        key="link"
+        component={LinkMedicalRecords}
+        title="Link Medical Records"
+      />
       <Scene
         key="diagnosticsresults"
         component={DiagnosticsResults}

@@ -5,7 +5,7 @@ import {Input} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch} from 'react-redux';
 import {action_Login_user} from '../Services/Actions/Login_Actions';
-
+import {SafeAreaView} from 'react-native-safe-area-context';
 const LoginScreen = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,15 +29,15 @@ const LoginScreen = (props) => {
     }
   });
   return (
-    <ScrollView style={{backgroundColor: 'white', height: '100%'}}>
+    <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <View style={styles.container}>
         <Image
           source={require('../assets/icons/ic_care_prem-playstore.png')}
-          resizeMode="center"
+          resizeMode="contain"
           style={styles.image}
         />
         <Text style={styles.textTitle}>Premiere</Text>
-        <View style={{marginVertical: 40}} />
+        <View style={{marginVertical: 5}} />
 
         <View style={styles.InputContainer}>
           <Input
@@ -95,7 +95,7 @@ const LoginScreen = (props) => {
           </Text>
         </View>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 400,
+    width: 100 + '%',
   },
   textInput: {
     flex: 1,
@@ -137,8 +137,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   image: {
+    margin: 20,
     width: '100%',
-    height: 250,
+    height: 40 + '%',
   },
   textTitle: {
     fontFamily: 'Open-Sans',

@@ -42,12 +42,11 @@ const PrompScreen = () => {
       <Animated.View>
         <Text style={styles.title}>
           Your laboratory requisition has been sent successfully. Please wait
-          for email and sms notification once your request is approved.{' '}
+          for email and sms notification once your request is approved.
         </Text>
         <Button
           style={{padding: 50, justifyContent: 'center', borderRadius: 150}}
           title="OK"
-          accessibilityLabel="Learn more about this purple button"
         />
       </Animated.View>
     </View>

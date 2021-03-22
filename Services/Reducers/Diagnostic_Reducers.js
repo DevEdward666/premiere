@@ -1,5 +1,5 @@
 import {
-  SET_DATA,
+  SET_DATA_DIAGNOSTIC,
   SET_DONE,
   SET_DATA_FINISHED,
   SET_DATA_RESULT,
@@ -7,7 +7,7 @@ import {
 } from '../Types/Diagnostic_Types';
 import {REMOTE_URL} from '../Types/Default_Types';
 const diagnostic = {
-  data: [],
+  data_diagnostic: [],
   data_finished: [],
   data_result: [],
   loading: false,
@@ -15,8 +15,8 @@ const diagnostic = {
 };
 const Diagnostic_Reducer = (data_state = diagnostic, actions) => {
   switch (actions.type) {
-    case SET_DATA:
-      return {...data_state, data: actions.payload};
+    case SET_DATA_DIAGNOSTIC:
+      return {...data_state, data_diagnostic: actions.payload};
     case SET_DATA_FINISHED:
       return {...data_state, data_finished: actions.payload};
     case SET_DONE:

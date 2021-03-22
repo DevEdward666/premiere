@@ -3,6 +3,7 @@ import {
   SET_DONE,
   SET_DATA_FINISHED,
   SET_DATA_RESULT,
+  SET_DATA_DIAGNOSTIC,
 } from '../Types/Diagnostic_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../Types/Default_Types';
@@ -174,7 +175,7 @@ export const action_GET_diagnostics_request = (premid, offset) => async (
     .then((response) => response.json())
     .then((res) => {
       dispatch({
-        type: SET_DATA,
+        type: SET_DATA_DIAGNOSTIC,
         payload: res.data,
       });
     });

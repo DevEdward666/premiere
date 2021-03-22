@@ -6,5 +6,5 @@ export const SET_NATIONALITY = 'SET_NATIONALITY';
 export const SET_CIVIL_STATUS = 'SET_CIVIL_STATUS';
 export const SET_RELIGION = 'SET_RELIGION';
 export const SET_PROCEDURE = 'SET_PROCEDURE';
-export const BASE_URL = 'https://192.168.254.108:45456';
-export const REMOTE_URL = 'https://192.168.254.108:45457';
+export const BASE_URL = 'https://192.168.1.40:45455';
+export const REMOTE_URL = 'https://192.168.1.40:45457';

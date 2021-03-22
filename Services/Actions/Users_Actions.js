@@ -2,6 +2,7 @@ import {
   SET_DATA_USERS,
   SET_IMAGE_USERS,
   SET_DOCIMAGE_USERS,
+  GET_LINK_MESSAGE,
 } from '../Types/User_Types';
 import {BASE_URL} from '../Types/Default_Types';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -26,6 +27,37 @@ export const action_GET_userdetails = (username) => async (dispatch) => {
           type: SET_DATA_USERS,
           payload: res.data,
         });
+      }
+
+      // console.log('users' + res.username);
+    });
+};
+export const action_SET_LinkRequest = (patno, prem_id, status) => async (
+  dispatch,
+) => {
+  var url = `${BASE_URL}/api/users/InsertLinkRequest`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      patno: patno,
+      prem_id: prem_id,
+      status: status,
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (res) => {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        dispatch({
+          type: GET_LINK_MESSAGE,
+          payload: res.message,
+        });
+        console.log(res);
       }
 
       // console.log('users' + res.username);

@@ -1,5 +1,5 @@
 // import {LinearGradient} from 'expo-linear-gradient';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   Animated,
   Dimensions,
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
   TouchableHighlight,
 } from 'react-native';
 import {Input} from 'react-native-elements';
@@ -91,7 +92,7 @@ const DoctorScreen = () => {
   const [spinner, setSpinner] = useState(false);
   const doctors_reducer = useSelector((state) => state.Doctors_Reducers.data);
   const [reducers, setreducer] = useState();
-  const [name, setname] = useState();
+  const [doctorsname, setdoctorsname] = useState();
   const doctors_sepcialty_reducer = useSelector(
     (state) => state.Doctors_Reducers.specialty,
   );
@@ -113,15 +114,28 @@ const DoctorScreen = () => {
   });
   const dispatch = useDispatch();
 
-  const handleSpecialtyChange = (spclcode) => {
-    setoffset(10);
-    setspecialty(spclcode);
-    dispatch(action_GET_doctorsbySpecialty(offset, spclcode));
-    setreducer(doctors_reducer_by_specialty);
-  };
-  const handleNamechange = (name) => {
-    dispatch(action_GET_doctors_byname(offset, specialty, name));
-  };
+  const handleSpecialtyChange = useCallback(
+    (spclcode) => {
+      setoffset(10);
+      setspecialty(spclcode);
+      dispatch(action_GET_doctorsbySpecialty(offset, spclcode));
+      setreducer(doctors_reducer_by_specialty);
+    },
+    [dispatch],
+  );
+  const handleNamechange = useCallback(
+    async (name) => {
+      await setdoctorsname(name);
+      await dispatch(
+        action_GET_doctors_byname(
+          parseInt(offset),
+          specialty.toString(),
+          name.toString(),
+        ),
+      );
+    },
+    [dispatch, offset, specialty, doctorsname],
+  );
   useEffect(() => {
     setSpinner(true);
     setInterval(() => {
@@ -215,9 +229,12 @@ const DoctorScreen = () => {
       width: '90%',
     },
     textInput: {
+      backgroundColor: '#ffffff',
       flex: 1,
-      borderRadius: 30,
-      width: '100%',
+      borderRadius: 20,
+      margin: 10,
+      padding: 10,
+      width: '80%',
     },
     inputContainer: {
       borderBottomWidth: 0,
@@ -294,9 +311,9 @@ const DoctorScreen = () => {
         style={styles.textInput}
         inputContainerStyle={styles.inputContainer}
         inputStyle={styles.inputText}
-        placeholder="Name"
+        placeholder="Search Doctor"
         onChangeText={(text) => handleNamechange(text)}
-        defaultValue={name}
+        value={doctorsname}
       />
       <Animated.FlatList
         showsHorizontalScrollIndicator={false}
