@@ -56,8 +56,10 @@ const Diagnostics = () => {
   const [fulladdress, setfulladdress] = useState('');
   const [fulladdress2, setfulladdress2] = useState('');
   const [selectedprocedure, setselectedprocedure] = useState(['']);
-  const [selectedprocedurecode, setselectedprocedurecode] = useState(['']);
+  const [selectedprocedurecode, setselectedprocedurecode] = useState([]);
   const [selectedprocedurecost, setselectedprocedurecost] = useState(['']);
+  const [appointment, setappointment] = useState();
+  const [appointmentprocedure, setappointmentprocedure] = useState([]);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -134,6 +136,7 @@ const Diagnostics = () => {
   const diagnostics_loader = useSelector(
     (state) => state.Diagnostic_Reducers.loading,
   );
+  const diagnostics_message = useSelector((state) => state.Diagnostic_Reducers);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorUsernameMessage, setErrorMessageUsername] = useState('');
   const [emailErrorMessage, setemailErrorMessage] = useState('');
@@ -166,44 +169,38 @@ const Diagnostics = () => {
   };
   const handleProcedureChange = (pickprocedure) => {
     if (found === false) {
-      if (selectedprocedure == '') {
-        setselectedprocedure([
-          {desc: pickprocedure.desc, price: pickprocedure.price},
-        ]);
-        setitemState([{desc: pickprocedure.desc, price: pickprocedure.price}]);
-        setselectedprocedurecode([
-          {code: pickprocedure.code, price: pickprocedure.price},
-        ]);
-        setselectedprocedurecost([{price: pickprocedure.price}]);
-      } else {
-        setselectedprocedure((prev) => [
-          ...prev,
-          {desc: pickprocedure.desc, price: pickprocedure.price},
-        ]);
-        setitemState((prev) => [
-          ...prev,
-          {desc: pickprocedure.desc, price: pickprocedure.price},
-        ]);
-        setselectedprocedurecode((prev) => [
-          ...prev,
-          {code: pickprocedure.code, price: pickprocedure.price},
-        ]);
-        setselectedprocedurecost([{price: pickprocedure.price}]);
-      }
+      setselectedprocedure((prev) => [
+        ...prev,
+        {desc: pickprocedure.desc, price: pickprocedure.price},
+      ]);
+      setitemState((prev) => [
+        ...prev,
+        {desc: pickprocedure.desc, price: pickprocedure.price},
+      ]);
+      setselectedprocedurecode((prev) => [
+        ...prev,
+        {
+          premid: premid.toString(),
+          reason: reasons.toString(),
+          proccode: pickprocedure?.code.toString(),
+          proccost: pickprocedure?.price.toString(),
+        },
+      ]);
+      setselectedprocedurecost([{price: pickprocedure.price}]);
     } else {
       alert('Item Already in List');
     }
   };
-  const handleSubmitAppointment = async () => {
+  const handleSubmitAppointment = useCallback(() => {
     setSpinner(true);
-    await dispatch(
-      action_POST_appointment(premid, 'test', selectedprocedurecode),
-    );
+    dispatch(action_POST_appointment(premid, 'test', selectedprocedurecode));
+
     setSpinner(false);
     {
       diagnostics_loader ? Actions.prompt() : alert('Something Went Wrong');
     }
-  };
+  }, [dispatch, , premid, selectedprocedurecode]);
+
   const handleProvinceChange = (pickprovince) => {
     setprovince(pickprovince);
     dispatch(action_GET_city(region, pickprovince));
@@ -277,6 +274,7 @@ const Diagnostics = () => {
   };
 
   const handleSubmitCredentials = useCallback(() => {
+    console.log(diagnostics_message);
     if (stepError == false) {
       dispatch(
         action_POST_appointment_others(
@@ -304,16 +302,15 @@ const Diagnostics = () => {
           selectedprocedurecode,
         ),
       );
-
       alert('The Diagnostic Appointment Added sucessfully.');
-      setTimeout(() => {
-        Actions.diagnostics();
-      }, 1000);
+
+      // setTimeout(() => {
+      //   Actions.diagnostics();
+      // }, 1000);
     } else {
       alert('Please Provide Valid Data');
     }
   }, [
-    dispatch,
     premid,
     prefix,
     firstname,
@@ -354,18 +351,18 @@ const Diagnostics = () => {
 
   const Flatlists = () => {
     return (
-      <SafeAreaView style={styles.flatlistcontainer}>
+      <SafeAreaView>
         <Spinner
           visible={spinner}
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
         <FlatList
+          style={{height: 200, maxHeight: 400}}
           data={itemState}
           keyExtractor={(item, index) => index}
           renderItem={({item, index}) => (
             <TouchableOpacity
-              style={styles.flatlistcontainer}
               onLongPress={() => {
                 // Note that here you can use any function to remove the element at index from the itemState list
                 const _itemState = itemState.filter(
@@ -381,10 +378,10 @@ const Diagnostics = () => {
           )}
         />
         {isEnabled ? (
-          <View style={{flex: 1, width: '90%', padding: 10}}>
+          <View style={{width: '100%', padding: 20}}>
             <Button
               style={{borderRadius: 30}}
-              onPress={handleSubmitAppointment}
+              onPress={() => handleSubmitAppointment()}
               title="Submit Appointment"
             />
           </View>
@@ -419,7 +416,6 @@ const Diagnostics = () => {
           </View>
         </View>
       </View>
-
       {isEnabled ? (
         <View style={styles.Inputcontainer}>
           <Picker
@@ -733,7 +729,7 @@ const Diagnostics = () => {
           </ProgressStep>
           <ProgressStep
             label="Laboratory Request"
-            onSubmit={handleSubmitCredentials}>
+            onSubmit={() => handleSubmitCredentials()}>
             <View style={styles.Inputcontainer}>
               <Picker
                 style={styles.PickerContainer}
@@ -814,7 +810,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   flatlistcontainer: {
-    flex: 0.5,
     paddingTop: 22,
   },
   flatlistitem: {

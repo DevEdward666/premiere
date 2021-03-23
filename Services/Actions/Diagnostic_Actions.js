@@ -4,6 +4,7 @@ import {
   SET_DATA_FINISHED,
   SET_DATA_RESULT,
   SET_DATA_DIAGNOSTIC,
+  SET_APPOINTMENT_MESSAGE,
 } from '../Types/Diagnostic_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../Types/Default_Types';
@@ -77,8 +78,8 @@ export const action_POST_appointment_others = (
   region,
   zipcode,
   reasons,
-  proccode,
-) => async () => {
+  appointmentprocedure,
+) => async (dispatch) => {
   await fetch(`${BASE_URL}/api/users/addDiagnosticAppointmentOthers`, {
     method: 'POST',
     headers: {
@@ -106,26 +107,18 @@ export const action_POST_appointment_others = (
       city_code: city,
       region_code: region,
       zipcode: zipcode,
-      reason: reasons,
+      reasons: reasons,
+      listofprocedures: appointmentprocedure,
     }),
   })
     .then((response) => response.json())
     .then((res) => {
       if (res.success) {
-        {
-          proccode.map((proc) =>
-            fetch(`${BASE_URL}/api/users/addDiagnosticProcedure`, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                proccode: proc.code,
-              }),
-            }),
-          );
-        }
+        console.log(res);
+        dispatch({
+          type: SET_APPOINTMENT_MESSAGE,
+          payload: {message: res.message, success: res.success},
+        });
       } else {
         alert('Something Went Wrong');
       }
