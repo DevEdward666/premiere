@@ -26,12 +26,18 @@ const UICalendar = () => {
     });
   }, [dispatch]);
   useEffect(() => {
-    setSpinner(true);
-    setInterval(() => {
-      setSpinner(false);
-    }, 1000);
-    dispatch(action_GET_events());
-    getCurrentDate();
+    let mounted = true;
+    const getevents = () => {
+      setSpinner(true);
+      setInterval(() => {
+        setSpinner(false);
+      }, 1000);
+      dispatch(action_GET_events());
+      getCurrentDate();
+    };
+
+    mounted && getevents();
+    return () => (mounted = false);
   }, [dispatch]);
   const events_data = events_reducers.map((e) => ({
     start: `${e.datestart} ${e.evstarttime}:00`,

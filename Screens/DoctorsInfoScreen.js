@@ -16,8 +16,14 @@ const Profile = () => {
   const [docname, setdocname] = useState('');
 
   useEffect(() => {
-    //console.log('doccode', doccode);
-    dispatch(action_GET_doctors_info(doccode));
+    let mounted = true;
+    const getdoctorsinfo = () => {
+      //console.log('doccode', doccode);
+      dispatch(action_GET_doctors_info(doccode));
+    };
+
+    mounted && getdoctorsinfo();
+    return () => (mounted = false);
   }, [dispatch, doccode]);
   console.log('test');
   return (

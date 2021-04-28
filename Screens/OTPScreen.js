@@ -10,10 +10,16 @@ const OTPScreen = () => {
   const [timer, setTimer] = useState(300);
   const [mobileno, setmobileno] = useState(300);
   useEffect(() => {
-    setTimeout(() => setTimer(timer - 1), 1000);
-    if (timer <= 0) {
-      setTimer('');
-    }
+    let mounted = true;
+    const settimers = () => {
+      setTimeout(() => setTimer(timer - 1), 1000);
+      if (timer <= 0) {
+        setTimer('');
+      }
+    };
+
+    mounted && settimers();
+    return () => (mounted = false);
   }, [timer]);
   const handleSubmit = () => {
     AsyncStorage.getItem('username').then((item) => {

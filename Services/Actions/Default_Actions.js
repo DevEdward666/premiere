@@ -8,10 +8,17 @@ import {
   SET_CIVIL_STATUS,
   SET_RELIGION,
   SET_PROCEDURE,
+  SIGNALR_CONNECT,
+  SIGNALR_CONNECT_NOTIFY,
+  SET_REFRESHING,
+  SET_OFFSET,
+  GET_NOTIF,
+  GET_DEVICE,
+  GET_NOTIFICATION_LIST,
 } from '../Types/Default_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
-
+import * as signalR from '@microsoft/signalr';
 export const action_GET_region = () => async (dispatch) => {
   var url = `${BASE_URL}/api/default/getregion`;
   await fetch(url, {
@@ -201,4 +208,89 @@ export const action_GET_procedure = () => async (dispatch) => {
         });
       }
     });
+};
+export const action_GET_notications = (name) => async (dispatch) => {
+  var url = `${BASE_URL}/api/default/getnotications`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name,
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (res) => {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        dispatch({
+          type: GET_NOTIFICATION_LIST,
+          payload: {data: res.data, loading: res.success},
+        });
+      }
+    });
+};
+export const action_SET_notications = (
+  title,
+  body,
+  priority,
+  audience,
+  created_by,
+) => async (dispatch) => {
+  var url = `${BASE_URL}/api/default/insertNotifications`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: title,
+      body: body,
+      priority: priority,
+      audience: audience,
+      created_by: created_by,
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (res) => {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        console.log(res);
+      }
+    });
+};
+export const signalr_connection = () => async (dispatch) => {
+  const hubConnect = new signalR.HubConnectionBuilder()
+    .withUrl(`${BASE_URL}/message`)
+    .build();
+  hubConnect.start();
+  dispatch({type: SIGNALR_CONNECT, payload: hubConnect});
+};
+export const signalr_notify_connection = () => async (dispatch) => {
+  const hubConnect = new signalR.HubConnectionBuilder()
+    .withUrl(`${BASE_URL}/notify`)
+    .build();
+  hubConnect.start();
+  dispatch({type: SIGNALR_CONNECT_NOTIFY, payload: hubConnect});
+};
+
+export const ACTION_REFRESH = (isRefresh) => async (dispatch) => {
+  dispatch({type: SET_REFRESHING, payload: isRefresh});
+};
+export const ACTION_OFFSET = (offset) => async (dispatch) => {
+  dispatch({type: SET_OFFSET, payload: offset});
+};
+export const ACTION_NOTIF = (title, body, to, type) => async (dispatch) => {
+  dispatch({
+    type: GET_NOTIF,
+    payload: {title: title, body: body, to: to, type: type},
+  });
+};
+export const ACTION_GET_DEVICE = (device) => async (dispatch) => {
+  dispatch({type: GET_DEVICE, payload: device});
 };

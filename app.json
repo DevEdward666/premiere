@@ -1,4 +1,9 @@
 {
+  "android": {
+    "googleServicesFile": "./google-services.json"
+   
+  },
   "name": "Premiere",
   "displayName": "Premiere"
+  
 }

@@ -17,6 +17,19 @@ const SafeDavaoQR = () => {
   const [imageresponse, setimageresponse] = useState(null);
   const [resourcePath, setresourcePath] = useState(null);
   const dispatch = useDispatch();
+  useEffect(() => {
+    let mounted = true;
+    const imagefetch = () => {
+      setimageresponse(
+        'file:///storage/emulated/0/Pictures/SafeDavaoQr/SafeDavaoQr.jpg',
+      );
+      setresourcePath(
+        'file:///storage/emulated/0/Pictures/SafeDavaoQr/SafeDavaoQr.jpg',
+      );
+    };
+    mounted && imagefetch();
+    return () => (mounted = false);
+  }, []);
   const requestStoragePermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -49,7 +62,8 @@ const SafeDavaoQR = () => {
         includeBase64: true,
       },
       (response) => {
-        let source = 'data:image/jpeg;base64,' + response.base64;
+        // let source = 'data:image/jpeg;base64,' + response.base64;
+        let source = response.uri;
         setresourcePath(response.uri); // update the local state, this will rerender your TomarFoto component with the photo uri path.
         if (response.didCancel) {
           alert('Action Cancelled');
@@ -107,8 +121,8 @@ const SafeDavaoQR = () => {
 };
 const styles = StyleSheet.create({
   avatar: {
-    width: 80 + '%',
-    height: 300,
+    width: '90%',
+    height: 500,
     borderRadius: 1,
     borderWidth: 4,
     margin: 50,

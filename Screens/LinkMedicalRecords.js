@@ -58,13 +58,19 @@ const LinkMedicalRecords = () => {
     );
   }, [dispatch, patient_no, prem_id]);
   useEffect(() => {
-    if (patient_no !== '') {
-      setcheckboxdisabled(false);
-    } else {
-      setcheckboxdisabled(true);
-      setagreechecked(false);
-      setbuttondisabled(true);
-    }
+    let mounted = true;
+    const setstates = () => {
+      if (patient_no !== '') {
+        setcheckboxdisabled(false);
+      } else {
+        setcheckboxdisabled(true);
+        setagreechecked(false);
+        setbuttondisabled(true);
+      }
+    };
+
+    mounted && setstates();
+    return () => (mounted = false);
   }, [patient_no]);
   return (
     <SafeAreaView style={styles.container}>

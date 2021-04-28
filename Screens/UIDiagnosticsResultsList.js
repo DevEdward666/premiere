@@ -34,8 +34,14 @@ const UIDiagnosticsRequestList = () => {
     }
   };
   useEffect(() => {
-    getprem_id();
-    setoffset(10);
+    let mounted = true;
+    const getpremidandoffset = () => {
+      getprem_id();
+      setoffset(10);
+    };
+
+    mounted && getpremidandoffset();
+    return () => (mounted = false);
   }, [dispatch, premid]);
   const loadmore = async () => {
     setoffset((prev) => prev + 10);

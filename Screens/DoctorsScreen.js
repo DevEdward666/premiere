@@ -137,30 +137,42 @@ const DoctorScreen = () => {
     [dispatch, offset, specialty, doctorsname],
   );
   useEffect(() => {
-    setSpinner(true);
-    setInterval(() => {
-      setSpinner(false);
-    }, 1000);
-    dispatch(action_GET_doctors(offset));
-    dispatch(action_GET_doctorsSpecialty());
+    let mounted = true;
+    const getdoctorsspecialty = () => {
+      setSpinner(true);
+      setInterval(() => {
+        setSpinner(false);
+      }, 1000);
+      dispatch(action_GET_doctors(offset));
+      dispatch(action_GET_doctorsSpecialty());
+    };
+
+    mounted && getdoctorsspecialty();
+    return () => (mounted = false);
   }, [dispatch, reducers]);
   useEffect(() => {
-    if ((prev) => prev != offset) {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
+    let mounted = true;
+    const getdoctors = () => {
+      if ((prev) => prev != offset) {
+        setSpinner(true);
+        setInterval(() => {
+          setSpinner(false);
+        }, 1000);
 
-      dispatch(action_GET_doctors(offset));
-    } else {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
+        dispatch(action_GET_doctors(offset));
+      } else {
+        setSpinner(true);
+        setInterval(() => {
+          setSpinner(false);
+        }, 1000);
 
-      dispatch(action_GET_doctors(offset));
-    }
-  }, [dispatch, offset, loadmore]);
+        dispatch(action_GET_doctors(offset));
+      }
+    };
+
+    mounted && getdoctors();
+    return () => (mounted = false);
+  }, [dispatch, offset]);
   const loadmore = () => {
     setoffset((prev) => prev + 10);
     dispatch(action_GET_doctorsSpecialty());

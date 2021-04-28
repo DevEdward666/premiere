@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  Dimensions,
   TouchableHighlight,
   Image,
   View,
@@ -34,12 +35,16 @@ import {
   action_set_news_reaction,
   action_set_news_comment,
 } from '../Services/Actions/News_Actions';
+import {action_SET_notications} from '../Services/Actions/Default_Actions';
+import {ACTION_NOTIF} from '../Services/Actions/Default_Actions';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
+import {Card} from 'react-native-elements/dist/card/Card';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
+
 const UINews = () => {
+  const {width, height} = Dimensions.get('window');
   const [offset, setoffset] = useState(10);
   const [refreshing, setRefreshing] = useState(false);
-
   const [spinner, setSpinner] = useState(false);
   const [posts_id, setposts_id] = useState('');
   const [comment, setcomment] = useState('');
@@ -60,7 +65,13 @@ const UINews = () => {
     });
   }, [dispatch]);
   useEffect(() => {
-    dispatch(action_GET_news(offset));
+    let mounted = true;
+    const getnews = () => {
+      dispatch(action_GET_news(offset));
+    };
+
+    mounted && getnews();
+    return () => (mounted = false);
   }, [dispatch]);
   const loadmore = useCallback(async () => {
     setoffset((prev) => prev + 10);
@@ -106,9 +117,29 @@ const UINews = () => {
         ),
       );
       await dispatch(action_GET_news_comment(posts_id.toString()));
+      await dispatch(
+        action_SET_notications(
+          users_reducers.firstname +
+            ' ' +
+            users_reducers.lastname +
+            ' Commented',
+          comment,
+          'high',
+          'all',
+          users_reducers?.prem_id,
+        ),
+      );
+      await dispatch(
+        ACTION_NOTIF(
+          users_reducers.prem_id + ' Commented',
+          comment,
+          'pgh',
+          'Comment',
+        ),
+      );
       await setcomment('');
     }
-  }, [dispatch]);
+  }, [dispatch, comment]);
   const component1 = () => {
     return (
       <>
@@ -126,7 +157,7 @@ const UINews = () => {
     );
   };
   const buttons = [{element: component1}, {element: component2}];
-  console.log('test2');
+
   const [gestureName, setgestureName] = useState('');
   const onSwipe = useCallback((gestureName, gestureState) => {
     const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
@@ -250,41 +281,53 @@ const UINews = () => {
                 {news_comments.map((Notification) => {
                   return (
                     <CardView key={Notification.news_comment_pk}>
-                      <View style={styles.containercomment}>
-                        <View style={styles.contentNOTIFICATION}>
+                      <View style={styles.contentNOTIFICATION}>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                            marginBottom: 50,
+                            width: width,
+                            maxHeight: height,
+                          }}>
                           <View
                             style={{
-                              flex: 1,
-                              flexDirection: 'row',
-                              justifyContent: 'space-around',
-                              marginBottom: 50,
-                              height: 100,
+                              width: '20%',
+                              height: 50,
+                              maxHeight: height,
                             }}>
-                            <View style={{width: 100, height: 100}}>
-                              <Image
-                                source={{
-                                  uri: `${news_reducers_url}/${Notification?.img}`,
-                                }}
-                                style={{
-                                  marginTop: 10,
-                                  marginStart: 10,
-                                  width: 40,
-                                  height: 40,
-                                  borderRadius: 120 / 2,
-                                  overflow: 'hidden',
-                                  borderWidth: 3,
-                                }}
-                              />
-                            </View>
-                            <View style={{width: 350, height: 100}}>
-                              <CardView key={Notification.news_comment_pk}>
-                                <Text style={styles.containerNOTIFICATION}>
-                                  {Notification?.fullname}
-                                  {'\n'}
-                                  {Notification?.comment}
-                                </Text>
-                              </CardView>
-                            </View>
+                            <Image
+                              source={{
+                                uri: `${news_reducers_url}/${Notification?.img}`,
+                              }}
+                              style={{
+                                marginTop: 10,
+                                marginStart: 10,
+                                width: 40,
+                                height: 40,
+                                borderRadius: 120 / 2,
+                                overflow: 'hidden',
+                                borderWidth: 3,
+                              }}
+                            />
+                          </View>
+                          <View
+                            style={{
+                              padding: 5,
+                              width: '90%',
+                              maxHeight: height,
+                            }}
+                            key={Notification.news_comment_pk}>
+                            <Text
+                              style={{
+                                maxHeight: height,
+                                paddingStart: 5,
+                              }}>
+                              {Notification?.fullname}
+                              {'\n'}
+                              {Notification?.comment}
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -294,32 +337,30 @@ const UINews = () => {
               </ScrollView>
               <CardView>
                 <View style={styles.containerNOTIFICATION}>
-                  <View style={styles.contentNOTIFICATION}>
-                    <Text style={styles.nameNOTIFICATION}>Comment</Text>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        marginBottom: 50,
-                      }}>
-                      <View style={{width: 320, height: 40}}>
-                        <TextInput
-                          style={{borderWidth: 2, borderColor: '#f7f5f5'}}
-                          multiline
-                          numberOfLines={4}
-                          onChangeText={(text) => onChangeText(text)}
-                          value={comment}
-                        />
-                      </View>
-                      <View style={{width: 50, height: 50}}>
-                        <Button
-                          icon={
-                            <Icons name="arrow-right" size={20} color="white" />
-                          }
-                          onPress={() => handleCommentSend()}
-                        />
-                      </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginBottom: 50,
+                    }}>
+                    <View style={{width: 320, height: 40}}>
+                      <TextInput
+                        style={{borderWidth: 2, borderColor: '#f7f5f5'}}
+                        multiline
+                        placeholder="Comment"
+                        numberOfLines={4}
+                        onChangeText={(text) => onChangeText(text)}
+                        value={comment}
+                      />
+                    </View>
+                    <View style={{width: 50, height: 50}}>
+                      <Button
+                        icon={
+                          <Icons name="arrow-right" size={20} color="white" />
+                        }
+                        onPress={() => handleCommentSend()}
+                      />
                     </View>
                   </View>
                 </View>
@@ -331,6 +372,7 @@ const UINews = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF',
@@ -365,21 +407,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Open-Sans',
     height: 20,
   },
+
   containerNOTIFICATION: {
-    paddingLeft: 19,
-    paddingRight: 16,
-    paddingVertical: 12,
+    width: '100%',
+    height: 50,
+    paddingRight: 20,
+    paddingLeft: 35,
     flexDirection: 'row',
-    maxHeight: 1000,
     alignItems: 'flex-start',
   },
   containercomment: {
-    paddingLeft: 19,
-    paddingRight: 16,
     paddingVertical: 12,
     flexDirection: 'row',
     height: 100,
-    maxHeight: 1000,
     alignItems: 'flex-start',
   },
 });

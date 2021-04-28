@@ -28,6 +28,8 @@ target 'Premiere' do
 
   pod 'RNPDF', :path => '../node_modules/react-native-view-pdf'
 
+  pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
+
   target 'PremiereTests' do
     inherit! :complete
     # Pods for testing

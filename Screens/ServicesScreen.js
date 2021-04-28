@@ -122,35 +122,47 @@ const ServicesScreen = () => {
   const services_image = useSelector((state) => state.Services_Reducers.images);
   const [img, setimg] = useState('');
   useEffect(() => {
-    setSpinner(true);
-    setInterval(() => {
-      setSpinner(false);
-    }, 1000);
-    dispatch(action_GET_Services(offset));
-    if (services_reducer.services_img != undefined) {
-      for (var i = 0; i < services_reducer.length; i++) {
-        setimg(services_reducer[i].services_img);
-        dispatch(action_GET_Servicesimage(img));
-        console.log(services_reducer[i].services_img);
+    let mounted = true;
+    const getservices = () => {
+      setSpinner(true);
+      setInterval(() => {
+        setSpinner(false);
+      }, 1000);
+      dispatch(action_GET_Services(offset));
+      if (services_reducer.services_img != undefined) {
+        for (var i = 0; i < services_reducer.length; i++) {
+          setimg(services_reducer[i]?.services_img);
+          dispatch(action_GET_Servicesimage(img));
+          console.log(services_reducer[i]?.services_img);
+        }
       }
-    }
+    };
+
+    mounted && getservices();
+    return () => (mounted = false);
   }, [dispatch, offset]);
   useEffect(() => {
-    if ((prev) => prev != offset) {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
+    let mounted = true;
+    const getservices = () => {
+      if ((prev) => prev != offset) {
+        setSpinner(true);
+        setInterval(() => {
+          setSpinner(false);
+        }, 1000);
 
-      dispatch(action_GET_Services(offset));
-    } else {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
+        dispatch(action_GET_Services(offset));
+      } else {
+        setSpinner(true);
+        setInterval(() => {
+          setSpinner(false);
+        }, 1000);
 
-      dispatch(action_GET_Services(offset));
-    }
+        dispatch(action_GET_Services(offset));
+      }
+    };
+
+    mounted && getservices();
+    return () => (mounted = false);
   }, [dispatch, offset, loadmore]);
   const loadmore = () => {
     setoffset((prev) => prev + 10);
@@ -162,13 +174,12 @@ const ServicesScreen = () => {
     wait(1000).then(() => {
       setRefreshing(false);
       for (var i = 0; i < services_reducer.length; i++) {
-        setimg(services_reducer[i].services_img);
-        dispatch(action_GET_Servicesimage(services_reducer[i].services_img));
+        setimg(services_reducer[i]?.services_img);
+        dispatch(action_GET_Servicesimage(services_reducer[i]?.services_img));
       }
       dispatch(action_GET_Services(offset));
     });
   }, [dispatch, img, offset]);
-
   let imageUri = 'data:image/png;base64,' + services_image;
   return (
     <View style={styles.container}>
@@ -183,7 +194,7 @@ const ServicesScreen = () => {
       />
       <Animated.FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.hosp_serv_name}
+        keyExtractor={(item) => item?.hosp_serv_name}
         data={services_reducer}
         horizontal
         contentContainerStyle={{
@@ -211,7 +222,7 @@ const ServicesScreen = () => {
           return (
             <View style={{width: ITEM_SIZE}}>
               <Animated.View
-                key={item.id}
+                key={item?.id}
                 style={{
                   marginHorizontal: SPACING,
                   padding: SPACING * 2,
@@ -221,10 +232,10 @@ const ServicesScreen = () => {
                   transform: [{translateY}],
                 }}>
                 <Image
-                  source={{uri: `${base_url}/${item.services_img}`}}
+                  source={{uri: `${base_url}/${item?.services_img}`}}
                   style={styles.posterImage}></Image>
                 <Text style={{fontSize: 18}} numberOfLines={1}>
-                  {item.hosp_serv_name}
+                  {item?.hosp_serv_name}
                 </Text>
                 <Text
                   style={{
@@ -233,7 +244,7 @@ const ServicesScreen = () => {
                     fontFamily: 'Poppins',
                   }}
                   numberOfLines={8}>
-                  {item.hosp_serv_description}
+                  {item?.hosp_serv_description}
                 </Text>
               </Animated.View>
             </View>

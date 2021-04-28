@@ -21,6 +21,8 @@ import wait from '../Plugins/waitinterval';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
 
 const MeScreen = () => {
+  const currentyear = new Date();
+  const thisyear = currentyear.getFullYear();
   const [username, setUsername] = useState('');
   const [premid, setpremid] = useState('');
   const [fullname, setFullname] = useState('');
@@ -71,8 +73,16 @@ const MeScreen = () => {
     Actions.uiapps();
   });
   const gotolink = async () => {
+    if (users_reducers?.patno === null) {
+      await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
+      Actions.link();
+    } else {
+      Actions.medicalrecords();
+    }
+  };
+  const gotomessage = async () => {
     await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
-    Actions.link();
+    Actions.message();
   };
   const gotosafedavaoqr = async () => {
     await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
@@ -84,44 +94,56 @@ const MeScreen = () => {
   };
   const [img, setimg] = useState('');
   const [doc, setdoc] = useState('');
-  useEffect(() => {
-    dispatch(action_GET_userdetails(username));
-    if (users_reducers?.img != undefined) {
-      setimg(users_reducers?.img);
-      setdoc(users_reducers?.doc);
-    }
-  }, [dispatch, username]);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
+  // useEffect(() => {
+  //   let mounted = true;
+  //   const getuserdetails = () => {
+  //     dispatch(action_GET_userdetails(username));
+  //     if (users_reducers?.img != undefined) {
+  //       setimg(users_reducers?.img);
+  //       setdoc(users_reducers?.doc);
+  //     }
+  //   };
 
+  //   mounted && getuserdetails();
+  //   return () => (mounted = false);
+  // }, [dispatch, username]);
+  const onRefresh = React.useCallback(async () => {
+    await setRefreshing(true);
+    await setimg(users_reducers?.img);
+    await setdoc(users_reducers?.doc);
+    await dispatch(action_GET_Profileimage(img));
+    await dispatch(action_GET_Docs(doc));
     wait(200).then(() => {
       setRefreshing(false);
-      setimg(users_reducers?.img);
-      setdoc(users_reducers?.doc);
-      dispatch(action_GET_Profileimage(img));
-      dispatch(action_GET_Docs(doc));
     });
   }, [dispatch, img, doc]);
   useEffect(() => {
-    if (users_reducers?.img != undefined) {
-      dispatch(action_GET_Profileimage(users_reducers?.img));
-      dispatch(action_GET_Docs(users_reducers?.doc));
-    }
-    wait(200).then(() => {
-      setRefreshing(false);
-      setimg(users_reducers?.img);
-      setdoc(users_reducers?.doc);
-      dispatch(action_GET_Profileimage(img));
-      dispatch(action_GET_Docs(doc));
-    });
+    let mounted = true;
+    const getprofileimageanddocs = () => {
+      if (users_reducers?.img != undefined) {
+        dispatch(action_GET_Profileimage(users_reducers?.img));
+        dispatch(action_GET_Docs(users_reducers?.doc));
+      }
+      wait(200).then(() => {
+        setRefreshing(false);
+        setimg(users_reducers?.img);
+        setdoc(users_reducers?.doc);
+        dispatch(action_GET_Profileimage(img));
+        dispatch(action_GET_Docs(doc));
+      });
+    };
+
+    mounted && getprofileimageanddocs();
+    return () => (mounted = false);
   }, [dispatch, img, doc]);
+
   let imageUri = 'data:image/png;base64,' + users_image;
   const getMeInfo = async () => {
     await Actions.profile();
   };
   return (
     <ScrollView
-      style={{backgroundScrollViewColor: 'white'}}
+      style={{backgroundScrollViewColor: '#f7f7f7'}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
@@ -130,19 +152,20 @@ const MeScreen = () => {
         <Appbar.Content title="Premiere" />
       </Appbar.Header> */}
         <View>
-          <View style={{flexDirection: 'column'}}>
-            <TouchableHighlight
-              underlayColor="#1C00ff00"
-              onPress={() => getMeInfo()}>
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <TouchableHighlight onPress={() => getMeInfo()}>
               <CardView radius={1} backgroundColor={'#ffffff'}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: '100%'}}>
                   <View style={{width: '30%', height: 100, margin: 5}}>
                     <Image
                       style={{
-                        height: 100,
-                        width: '100%',
-                        resizeMode: 'center',
-                        alignContent: 'flex-start',
+                        marginTop: 10,
+                        marginStart: 10,
+                        width: 80,
+                        height: 80,
+                        borderRadius: 200 / 2,
+                        overflow: 'hidden',
+                        borderWidth: 3,
                       }}
                       source={{uri: imageUri, scale: 1}}
                     />
@@ -153,20 +176,20 @@ const MeScreen = () => {
                       height: 100,
                       justifyContent: 'center',
                     }}>
-                    <Text style={{textAlign: 'justify', fontSize: 18}}>
+                    <Text style={{textAlign: 'left', fontSize: 12}}>
                       {users_reducers?.lastname},{users_reducers?.firstname}
                     </Text>
-                    <Text style={{textAlign: 'justify', fontSize: 14}}>
+                    <Text style={{textAlign: 'left', fontSize: 12}}>
                       Premiere ID: {users_reducers?.prem_id}
                     </Text>
                   </View>
                 </View>
               </CardView>
             </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => gotolink()}
-              underlayColor="white">
-              <CardView radius={1} backgroundColor={'#ffffff'}>
+            <CardView radius={1} backgroundColor={'#ffffff'}>
+              <TouchableHighlight
+                onPress={() => gotolink()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -206,15 +229,53 @@ const MeScreen = () => {
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => gotoapps()}
-              underlayColor="white">
-              <CardView
-                style={{marginTop: -5}}
-                radius={1}
-                backgroundColor={'#ffffff'}>
+              </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => gotomessage()}
+                underlayColor="#f7f7f7">
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    height: 70,
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      width: '80%',
+                      height: 50,
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'left',
+                        marginStart: 10,
+                        fontSize: 14,
+                        alignContent: 'center',
+                      }}>
+                      Messages
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: '10%',
+                      height: 50,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      style={{
+                        height: 50,
+                        width: '100%',
+                        resizeMode: 'center',
+                        alignContent: 'flex-start',
+                      }}
+                      source={require('../assets/icons/messages.png')}
+                    />
+                  </View>
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => gotoapps()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -254,14 +315,11 @@ const MeScreen = () => {
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
+              </TouchableHighlight>
 
-            <TouchableHighlight onPress={() => gotoqr()} underlayColor="white">
-              <CardView
-                style={{marginTop: -5}}
-                radius={1}
-                backgroundColor={'#ffffff'}>
+              <TouchableHighlight
+                onPress={() => gotoqr()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -301,16 +359,11 @@ const MeScreen = () => {
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
+              </TouchableHighlight>
 
-            <TouchableHighlight
-              onPress={() => gotosafedavaoqr()}
-              underlayColor="white">
-              <CardView
-                style={{marginTop: -5}}
-                radius={1}
-                backgroundColor={'#ffffff'}>
+              <TouchableHighlight
+                onPress={() => gotosafedavaoqr()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -350,12 +403,8 @@ const MeScreen = () => {
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
-            <CardView
-              style={{marginTop: -5}}
-              radius={1}
-              backgroundColor={'#ffffff'}>
+              </TouchableHighlight>
+
               <View
                 style={{
                   flexDirection: 'row',
@@ -387,14 +436,9 @@ const MeScreen = () => {
                   />
                 </View>
               </View>
-            </CardView>
-            <TouchableHighlight
-              onPress={() => gotocalendar()}
-              underlayColor="white">
-              <CardView
-                style={{marginTop: -5}}
-                radius={1}
-                backgroundColor={'#ffffff'}>
+              <TouchableHighlight
+                onPress={() => gotocalendar()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -434,13 +478,10 @@ const MeScreen = () => {
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
-            <TouchableHighlight
-              style={{marginTop: 50}}
-              onPress={() => removeValue()}
-              underlayColor="white">
-              <CardView radius={10} backgroundColor={'#ffffff'}>
+              </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => removeValue()}
+                underlayColor="#f7f7f7">
                 <View
                   style={{
                     flexDirection: 'row',
@@ -476,12 +517,12 @@ const MeScreen = () => {
                         resizeMode: 'center',
                         alignContent: 'flex-start',
                       }}
-                      source={require('../assets/icons/ic_calendar_prem-playstore.png')}
+                      source={require('../assets/icons/ic_logout_prem-playstore.png')}
                     />
                   </View>
                 </View>
-              </CardView>
-            </TouchableHighlight>
+              </TouchableHighlight>
+            </CardView>
             <View style={{flexDirection: 'row', height: 50}}>
               <View
                 style={{width: '100%', height: 50, justifyContent: 'center'}}>
@@ -493,7 +534,7 @@ const MeScreen = () => {
                     justifyContent: 'center',
                     fontWeight: 'bold',
                   }}>
-                  Powered by TUO @ 2020
+                  Powered by TUO @ {thisyear}
                 </Text>
               </View>
             </View>

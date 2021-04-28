@@ -35,14 +35,19 @@ const UINews = () => {
     }
   });
   useEffect(() => {
-    setSpinner(true);
-    setInterval(() => {
-      setSpinner(false);
-    }, 1000);
-    dispatch(action_GET_news_info(news_id.toString()));
+    let mounted = true;
+    const getnewsinfo = () => {
+      setSpinner(true);
+      setInterval(() => {
+        setSpinner(false);
+      }, 1000);
+      dispatch(action_GET_news_info(news_id.toString()));
+    };
+
+    mounted && getnewsinfo();
+    return () => (mounted = false);
   }, [dispatch, news_id]);
 
-  console.log(news_reducers_info);
   return (
     <ScrollView>
       <SafeAreaView style={styles.flatlistcontainer}>

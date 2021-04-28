@@ -26,11 +26,17 @@ const MeInfo = () => {
   let imageUri = 'data:image/jpg;base64,' + users_image;
   let DocimageUri = 'data:image/jpg;base64,' + docs_image;
   useEffect(() => {
-    AsyncStorage.getItem('username').then((item) => {
-      setusername(item);
-      dispatch(action_GET_userdetails(item));
-      dispatch(action_GET_Docs(item));
-    });
+    let mounted = true;
+    const getuserdocs = () => {
+      AsyncStorage.getItem('username').then((item) => {
+        setusername(item);
+        dispatch(action_GET_userdetails(item));
+        dispatch(action_GET_Docs(item));
+      });
+    };
+
+    mounted && getuserdocs();
+    return () => (mounted = false);
   }, [dispatch, username]);
 
   const FirstRoute = () => (

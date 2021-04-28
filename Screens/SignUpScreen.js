@@ -13,6 +13,7 @@ import {
   Image,
   Text,
 } from 'react-native';
+import {TextInput, HelperText} from 'react-native-paper';
 import CardView from 'react-native-rn-cardview';
 import {Icon} from 'react-native-elements';
 import * as ImagePicker from 'react-native-image-picker';
@@ -50,7 +51,6 @@ const SignUp = () => {
   const [province, setprovince] = useState('');
   const [barangay, setbarangay] = useState('');
   const [fulladdress, setfulladdress] = useState('');
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setconfirmpassword] = useState('');
@@ -107,22 +107,26 @@ const SignUp = () => {
     (state) => state.Default_Reducers.nationality,
   );
   const SignUp_Reducers = useSelector((state) => state.SignUp_Reducers);
-
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
   const [errorUsernameMessage, setErrorMessageUsername] = useState('');
-  const [emailErrorMessage, setemailErrorMessage] = useState('');
+  const [emailErrorMessage, setemailErrorMessage] = useState(false);
   const [mobileErrorMessage, setmobileErrorMessage] = useState('');
+  const [PINErrorMessage, setPINErrorMessage] = useState(false);
   const [InfoError, setInfoError] = useState(false);
   const [AddressError, setAddressError] = useState(false);
   const [resourcePath, setresourcePath] = useState(null);
   const [resourcePathProfile, setresourcePathProfile] = useState(null);
   const [imageresponse, setimageresponse] = useState(null);
   const [profileimageresponse, setprofileimageresponse] = useState(null);
-  const [showpass, setshowpass] = useState(false);
+  const [showpass, setshowpass] = useState(true);
   const [iconpass, seticonpass] = useState(false);
-  const [showconfirmpass, setshowconfirmpass] = useState(false);
+  const [showconfirmpass, setshowconfirmpass] = useState(true);
   const [iconconfirmpass, seticonconfirmpass] = useState(false);
+  const [passworderrormessage, setpassworderrormessage] = useState('');
   const [stepError, setstepError] = useState(false);
+  const [pin, setpin] = useState('');
+  const [confirmationpin, setconfirmationpin] = useState('');
+
   const handleRegionChange = (pickregion) => {
     setregion(pickregion);
     setprovince('');
@@ -183,68 +187,106 @@ const SignUp = () => {
     });
   }, [setresourcePathProfile]);
   useEffect(() => {
-    if (SignUp_Reducers.username?.username == username) {
-      setErrorMessageUsername('Username Already Exists');
-      setstepError(true);
-    } else {
-      setErrorMessageUsername('');
-      setstepError(false);
-    }
+    let mounted = true;
+    const geterrors = () => {
+      if (SignUp_Reducers.username?.username == username) {
+        setErrorMessageUsername(true);
+        setstepError(true);
+      } else {
+        setErrorMessageUsername(false);
+        setstepError(false);
+      }
+    };
+    mounted && geterrors();
+    return () => (mounted = false);
   }, [username, SignUp_Reducers]);
   const handlePassword = (password) => {
     setPassword(password);
     if (password != confirmpassword) {
-      setErrorMessage('Password mismatch');
+      setErrorMessage(true);
+      setpassworderrormessage('Password Mismatch');
       setstepError(true);
     } else {
       let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
       if (reg.test(password) === false) {
-        setErrorMessage(
-          'Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:',
+        setErrorMessage(true);
+        setpassworderrormessage(
+          'Must be 8 characters long 1 UPPERCASE 1 Numeric',
         );
       } else {
         setmobileErrorMessage();
         setstepError(false);
-        setErrorMessage('');
+        setErrorMessage(false);
       }
     }
   };
-  const showpassword = () => {
+  const showpassword = useCallback(() => {
     if (showpass == true) {
       setshowpass(false);
       seticonpass(true);
     } else {
-      setshowpass(false);
-      seticonpass(true);
+      setshowpass(true);
+      seticonpass(false);
     }
-  };
-  const showconfirmpassword = () => {
+  }, [showpass, iconpass]);
+  const showconfirmpassword = useCallback(() => {
     if (showconfirmpass == true) {
       setshowconfirmpass(false);
       seticonconfirmpass(true);
     } else {
-      setshowconfirmpass(false);
-      seticonconfirmpass(true);
+      setshowconfirmpass(true);
+      seticonconfirmpass(false);
     }
-  };
+  }, [showconfirmpass, iconconfirmpass]);
   const handleConfirmPassword = (confirmpassword) => {
-    setPassword(password);
+    setconfirmpassword(confirmpassword);
     if (password != confirmpassword) {
-      setErrorMessage('Password mismatch');
+      setErrorMessage(true);
+      setpassworderrormessage('Password Mismatch');
       setstepError(true);
     } else {
       let reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
       if (reg.test(password) === false) {
-        setErrorMessage(
-          'Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:',
+        setErrorMessage(true);
+        setpassworderrormessage(
+          'Must be 8 characters long 1 UPPERCASE 1 Numeric',
         );
       } else {
         setmobileErrorMessage();
         setstepError(false);
-        setErrorMessage('');
+        setErrorMessage(false);
       }
     }
   };
+
+  const handleConfirmPIN = useCallback(
+    (confirmPin) => {
+      setconfirmationpin(confirmPin);
+      const numericRegex = /^([0-9]{0,9})+$/;
+      if (pin !== confirmPin) {
+        setPINErrorMessage('PIN Mismatch');
+        setstepError(true);
+        console.log(pin, confirmPin);
+      } else {
+        if (numericRegex.test(confirmPin)) {
+          setconfirmationpin(confirmPin);
+        }
+
+        setPINErrorMessage('');
+        setstepError(false);
+      }
+    },
+    [confirmationpin, pin],
+  );
+  const handlePIN = useCallback(
+    (Pin) => {
+      const numericRegex = /^([0-9]{0,9})+$/;
+      if (numericRegex.test(Pin)) {
+        setpin(Pin);
+      }
+    },
+    [pin, confirmationpin],
+  );
   const handleNextInfo = () => {
     if (
       firstname == '' ||
@@ -285,11 +327,12 @@ const SignUp = () => {
   };
 
   const validate = (email) => {
+    setemail(email);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(email) === false) {
-      setemailErrorMessage('Email is Not valid');
+      setemailErrorMessage(true);
     } else {
-      setemailErrorMessage();
+      setemailErrorMessage(false);
       setemail(email);
     }
   };
@@ -307,6 +350,7 @@ const SignUp = () => {
           email,
           username,
           password,
+          pin,
           region,
           city,
           province,
@@ -327,8 +371,13 @@ const SignUp = () => {
     }
   };
   useEffect(() => {
-    dispatch(action_GET_region());
-    dispatch(action_GET_nationality());
+    let mounted = true;
+    const getnationalityandregion = () => {
+      dispatch(action_GET_region());
+      dispatch(action_GET_nationality());
+    };
+    mounted && getnationalityandregion();
+    return () => (mounted = false);
   }, [dispatch]);
 
   return (
@@ -379,38 +428,90 @@ const SignUp = () => {
               )}
 
               <View style={styles.Inputcontainer}>
-                <Input
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="First name"
+                  onChangeText={(text) => setfirstname(text)}
+                  value={firstname}
+                />
+                {/* <Input
                   style={styles.textInput}
                   placeholder="First name"
                   inputContainerStyle={styles.inputContainer}
                   inputStyle={styles.inputText}
                   onChangeText={(text) => setfirstname(text)}
                   defaultValue={firstname}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Middle name"
+                  onChangeText={(text) => setmiddlename(text)}
+                  value={middlename}
                 />
-                <Input
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Middle name"
                   inputContainerStyle={styles.inputContainer}
                   inputStyle={styles.inputText}
                   onChangeText={(text) => setmiddlename(text)}
                   defaultValue={middlename}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Last name"
+                  onChangeText={(text) => setlastname(text)}
+                  value={lastname}
                 />
-                <Input
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Last name"
                   inputContainerStyle={styles.inputContainer}
                   inputStyle={styles.inputText}
                   onChangeText={(text) => setlastname(text)}
                   defaultValue={lastname}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Suffix"
+                  onChangeText={(text) => setSuffix(text)}
+                  value={suffix}
                 />
-                <Input
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Suffix"
                   inputContainerStyle={styles.inputContainer}
                   inputStyle={styles.inputText}
                   onChangeText={(text) => setSuffix(text)}
                   defaultValue={suffix}
-                />
+                /> */}
 
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <View
@@ -418,13 +519,26 @@ const SignUp = () => {
                       width: '85%',
                       height: '100%',
                     }}>
-                    <Input
+                    <TextInput
+                      disabled={true}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="outlined"
+                      label="Birthdate"
+                      value={birthdate}
+                    />
+                    {/* <Input
                       style={styles.textInput}
                       placeholder="Birthdate"
                       inputContainerStyle={styles.inputContainer}
                       inputStyle={styles.inputText}
                       defaultValue={birthdate}
-                    />
+                    /> */}
                   </View>
                   <View
                     style={{
@@ -616,21 +730,51 @@ const SignUp = () => {
                     />
                   ))}
                 </Picker>
-                <Input
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Street/Lot No./Blk/"
+                  onChangeText={(text) => setfulladdress(text)}
+                  value={fulladdress}
+                />
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Street/Lot No./Blk/"
                   inputContainerStyle={styles.inputContainer}
                   inputStyle={styles.inputText}
                   onChangeText={(text) => setfulladdress(text)}
                   defaultValue={fulladdress}
-                />
+                /> */}
               </View>
             </ProgressStep>
             <ProgressStep
               label="Credentials"
               onSubmit={handleSubmitCredentials}>
               <View style={styles.Inputcontainer}>
-                <Input
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Email"
+                  error={emailErrorMessage}
+                  onChangeText={(text) => validate(text)}
+                  value={email}
+                />
+                <HelperText type="error" visible={emailErrorMessage}>
+                  Email not valid
+                </HelperText>
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Email"
                   inputContainerStyle={styles.inputContainer}
@@ -638,8 +782,21 @@ const SignUp = () => {
                   errorMessage={emailErrorMessage}
                   onChangeText={(text) => validate(text)}
                   defaultValue={email}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Mobile No."
+                  onChangeText={(text) => setmobile(text)}
+                  value={mobile}
                 />
-                <Input
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Mobile No."
                   inputContainerStyle={styles.inputContainer}
@@ -647,8 +804,25 @@ const SignUp = () => {
                   //errorMessage={mobileErrorMessage}
                   onChangeText={(text) => setmobile(text)}
                   defaultValue={mobile}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Username"
+                  error={errorUsernameMessage}
+                  onChangeText={(text) => handleUsernameExist(text)}
+                  value={username}
                 />
-                <Input
+                <HelperText type="error" visible={errorUsernameMessage}>
+                  Username already exist
+                </HelperText>
+                {/* <Input
                   style={styles.textInput}
                   placeholder="Username"
                   inputContainerStyle={styles.inputContainer}
@@ -656,13 +830,31 @@ const SignUp = () => {
                   errorMessage={errorUsernameMessage}
                   onChangeText={(text) => handleUsernameExist(text)}
                   defaultValue={username}
-                />
+                /> */}
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <View
                     style={{
                       width: '85%',
                     }}>
-                    <Input
+                    <TextInput
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="outlined"
+                      label="Password"
+                      secureTextEntry={showpass}
+                      error={errorMessage}
+                      onChangeText={(text) => handlePassword(text)}
+                      value={password}
+                    />
+                    <HelperText type="error" visible={errorMessage}>
+                      {passworderrormessage}
+                    </HelperText>
+                    {/* <Input
                       style={styles.textInput}
                       placeholder="Password"
                       inputContainerStyle={styles.inputContainer}
@@ -671,7 +863,7 @@ const SignUp = () => {
                       errorMessage={errorMessage}
                       onChangeText={(text) => handlePassword(text)}
                       defaultValue={password}
-                    />
+                    /> */}
                   </View>
                   <View
                     style={{
@@ -703,7 +895,26 @@ const SignUp = () => {
                     style={{
                       width: '85%',
                     }}>
-                    <Input
+                    <TextInput
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="outlined"
+                      label="Confirm Password"
+                      secureTextEntry={showpass}
+                      error={errorMessage}
+                      secureTextEntry={showconfirmpass}
+                      onChangeText={(text) => handleConfirmPassword(text)}
+                      value={confirmpassword}
+                    />
+                    <HelperText type="error" visible={errorMessage}>
+                      {passworderrormessage}
+                    </HelperText>
+                    {/* <Input
                       style={styles.textInput}
                       placeholder="Confirm Password"
                       inputContainerStyle={styles.inputContainer}
@@ -712,7 +923,7 @@ const SignUp = () => {
                       secureTextEntry={showconfirmpass}
                       onChangeText={(text) => handleConfirmPassword(text)}
                       defaultValue={confirmpassword}
-                    />
+                    /> */}
                   </View>
                   <View
                     style={{
@@ -739,6 +950,54 @@ const SignUp = () => {
                     </TouchableHighlight>
                   </View>
                 </View>
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="PIN"
+                  keyboardType="number-pad"
+                  error={PINErrorMessage}
+                  onChangeText={(text) => handlePIN(text)}
+                  value={pin}
+                />
+                {/* <Input
+                  style={styles.textInput}
+                  placeholder="PIN"
+                  inputContainerStyle={styles.inputContainer}
+                  inputStyle={styles.inputText}
+                  errorMessage={PINErrorMessage}
+                  onChangeText={(text) => handlePIN(text)}
+                  defaultValue={pin}
+                /> */}
+                <TextInput
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="outlined"
+                  label="Confirm PIN"
+                  keyboardType="number-pad"
+                  error={PINErrorMessage}
+                  onChangeText={(text) => handleConfirmPIN(text)}
+                  value={confirmationpin}
+                />
+                {/* <Input
+                  style={styles.textInput}
+                  placeholder="Confirm PIN"
+                  inputContainerStyle={styles.inputContainer}
+                  inputStyle={styles.inputText}
+                  errorMessage={PINErrorMessage}
+                  onChangeText={(text) => handleConfirmPIN(text)}
+                  defaultValue={confirmationpin}
+                /> */}
               </View>
             </ProgressStep>
           </ProgressSteps>

@@ -27,7 +27,7 @@ const CustomBottomSheet = ({isVisible, color, UI, Footer}) => {
       isVisible={isVisible}
       modalProps={{animationType: 'slide'}}
       containerStyle={{backgroundColor: color}}>
-      <CardView>{UI}</CardView>
+      {UI}
 
       <CardView>{Footer}</CardView>
     </BottomSheet>

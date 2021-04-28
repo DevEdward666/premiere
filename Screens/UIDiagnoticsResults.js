@@ -28,14 +28,16 @@ const UIDiagnoticsResults = () => {
   }, [resurls]);
   const resources = {
     file:
-      Platform.OS === 'ios' ? 'test-pdf.pdf' : '/sdcard/Download/test-pdf.pdf',
+      Platform.OS === 'ios'
+        ? 'test-pdf.pdf'
+        : '/sdcard/DCIM/Premiere/SOA_00745411.pdf',
     url:
       //'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
       `${diagnostic_url}${resurls}`,
     //'https://pdftron.s3.amazonaws.com/downloads/pdfref.pdf',
     base64: 'asdsadasd',
   };
-  const resourceType = 'url';
+  const resourceType = 'file';
 
   return (
     <View style={{flex: 1}}>

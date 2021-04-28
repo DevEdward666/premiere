@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router, Scene} from 'react-native-router-flux';
+import {Actions, Router, Scene} from 'react-native-router-flux';
 import Login from '../Screens/LoginScreen';
 import SignUp from '../Screens/SignUpScreen';
 import Otp from '../Screens/OTPScreen';
@@ -17,9 +17,20 @@ import DiagnosticsResults from '../Screens/UIDiagnoticsResults';
 import DiagnosticsResultsList from '../Screens/UIDiagnosticsResultsList';
 import NewsInfo from '../Screens/UINewsInfo';
 import CalendarEvents from '../Screens/UICalendar';
-
+import UIPin from '../Screens/PIN/UIPin';
+import UIMedicalRecords from '../Screens/MedicalRecord/UIMedicalRecords';
+import UIPatientFiles from '../Screens/MedicalRecord/UIPatientFiles';
 import LinkMedicalRecords from '../Screens/LinkMedicalRecords';
 import Prompt from '../Plugins/PrompScreen';
+import UIFilePDFView from '../Screens/UIFilePDFView';
+import UIListOfFile from '../Screens/MedicalRecord/UIListOfFile';
+
+import Message from '../Screens/Message/Message';
+import VideoCall from '../Screens/Message/VideoCall/VideoCall';
+import VideoCallJisti from '../Screens/Message/VideoCall/VideoCallJisti';
+import {View} from 'react-native';
+import {useDispatch} from 'react-redux';
+
 const Routes = () => (
   <Router>
     <Scene key="root">
@@ -39,10 +50,33 @@ const Routes = () => (
       <Scene key="uiapps" component={UIApps} title="Apps" />
       <Scene key="diagnostics" component={Diagnostic} title="Diagnostics" />
       <Scene key="prompt" component={Prompt} title="Alert" />
+      <Scene key="files" component={UIPatientFiles} title="Files" />
+      <Scene key="pdfviewer" component={UIFilePDFView} title="File" />
+      <Scene key="listoffile" component={UIListOfFile} title="List of File" />
+      <Scene key="videocall" component={VideoCall} title="VideoCall" />
+      <Scene key="videocall2" component={VideoCallJisti} title="VideoCall" />
+      <Scene
+        key="message"
+        component={Message}
+        title="Message"
+        onRight={() => Actions.videocall2()}
+        rightButtonImage={require('../assets/icons/messages.png')}
+      />
+      <Scene
+        key="pin"
+        component={UIPin}
+        title="PIN"
+        renderBackButton={() => <View />}
+      />
       <Scene
         key="link"
         component={LinkMedicalRecords}
         title="Link Medical Records"
+      />
+      <Scene
+        key="medicalrecords"
+        component={UIMedicalRecords}
+        title="Medical Records"
       />
       <Scene
         key="diagnosticsresults"

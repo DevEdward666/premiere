@@ -96,6 +96,7 @@ export const action_SignUp_user = (
   email,
   username,
   password,
+  pin,
   region_code,
   city_code,
   province_code,
@@ -112,7 +113,7 @@ export const action_SignUp_user = (
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
     },
     body: JSON.stringify({
       url: `Resources\\Images\\${username}\\${username}.jpg`,
@@ -126,6 +127,7 @@ export const action_SignUp_user = (
       email: email,
       username: username,
       password: password,
+      pin: pin,
       region_code: region_code,
       city_code: city_code,
       province_code: province_code,

@@ -1,11 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
-import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Button,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+} from 'react-native';
 import {Input} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch} from 'react-redux';
 import {action_Login_user} from '../Services/Actions/Login_Actions';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {TextInput, HelperText} from 'react-native-paper';
 const LoginScreen = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,17 +49,44 @@ const LoginScreen = (props) => {
         <View style={{marginVertical: 5}} />
 
         <View style={styles.InputContainer}>
-          <Input
+          <TextInput
+            theme={{
+              colors: {
+                primary: '#3eb2fa',
+                background: 'white',
+                underlineColor: 'transparent',
+              },
+            }}
+            mode="outlined"
+            label="Username"
+            onChangeText={(text) => setUsername(text)}
+            value={username}
+          />
+          {/* <Input
             style={styles.textInput}
             inputContainerStyle={styles.inputContainer}
             inputStyle={styles.inputText}
             placeholder="Username"
             onChangeText={(text) => setUsername(text)}
             defaultValue={username}
-          />
+          /> */}
         </View>
         <View style={styles.InputContainer}>
-          <Input
+          <TextInput
+            theme={{
+              colors: {
+                primary: '#3eb2fa',
+                background: 'white',
+                underlineColor: 'transparent',
+              },
+            }}
+            mode="outlined"
+            label="Password"
+            secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+          />
+          {/* <Input
             style={styles.textInput}
             //onFocus={onFocusChange}
             placeholder="Password"
@@ -59,10 +95,35 @@ const LoginScreen = (props) => {
             secureTextEntry={true}
             onChangeText={(text) => setPassword(text)}
             defaultValue={password}
-          />
+          /> */}
         </View>
         <View style={{marginVertical: 5}} />
-        <View style={{flex: 1, flexDirection: 'row', padding: 10}}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            padding: 10,
+            marginBottom: 20,
+          }}>
+          <View style={{width: '100%', padding: 10}}>
+            <TouchableHighlight
+              style={styles.login}
+              underlayColor="rgba(62, 178, 250, 0.5)"
+              onPress={() => handleSubmit()}>
+              <Text style={styles.submitText}>Login</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+
+        <View style={{flex: 1, width: '100%', padding: 10, marginTop: 60}}>
+          <Text style={{textAlign: 'center'}}>
+            Not Yet Registered?{' '}
+            <Text onPress={() => goToSignup()} style={{color: 'blue'}}>
+              Sign Up
+            </Text>
+          </Text>
+        </View>
+        {/* <View style={{flex: 1, flexDirection: 'row', padding: 10}}>
           <View style={{flex: 1, width: '90%', padding: 10}}>
             <Button
               onPress={handleSubmit}
@@ -77,11 +138,16 @@ const LoginScreen = (props) => {
               title="Sign Up"
             />
           </View>
-        </View>
+        </View> */}
       </View>
-      <View style={{marginVertical: 55}} />
       <View style={{flexDirection: 'row', height: 50}}>
-        <View style={{width: '100%', height: 50, justifyContent: 'center'}}>
+        <View
+          style={{
+            flex: 1,
+            width: '100%',
+            height: 50,
+            justifyContent: 'center',
+          }}>
           <Text
             style={{
               textAlign: 'center',
@@ -102,12 +168,26 @@ const LoginScreen = (props) => {
 // Login.propTypes = {};
 
 const styles = StyleSheet.create({
+  login: {
+    marginTop: 10,
+    paddingTop: 10,
+    width: '70%',
+    alignSelf: 'center',
+    paddingBottom: 20,
+    height: 50,
+    backgroundColor: 'rgba(62, 178, 250, 0.2)',
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: 'rgba(62, 178, 250, 0.5)',
+  },
+  submitText: {
+    color: 'black',
+    textAlign: 'center',
+  },
   InputContainer: {
     width: '90%',
     height: 50,
-    borderRadius: 2,
-    marginVertical: 5,
-    borderWidth: 0.3,
+    marginBottom: 15,
   },
   container: {
     flex: 1,
@@ -137,9 +217,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   image: {
-    margin: 20,
+    margin: 10,
     width: '100%',
-    height: 40 + '%',
+    maxHeight: 150,
   },
   textTitle: {
     fontFamily: 'Open-Sans',

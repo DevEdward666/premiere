@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {TextInput} from 'react-native-paper';
 import {Input} from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ProgressStep, ProgressSteps} from 'react-native-progress-steps';
@@ -55,9 +56,9 @@ const Diagnostics = () => {
   const [barangay, setbarangay] = useState('');
   const [fulladdress, setfulladdress] = useState('');
   const [fulladdress2, setfulladdress2] = useState('');
-  const [selectedprocedure, setselectedprocedure] = useState(['']);
+  const [selectedprocedure, setselectedprocedure] = useState([]);
   const [selectedprocedurecode, setselectedprocedurecode] = useState([]);
-  const [selectedprocedurecost, setselectedprocedurecost] = useState(['']);
+  const [selectedprocedurecost, setselectedprocedurecost] = useState([]);
   const [appointment, setappointment] = useState();
   const [appointmentprocedure, setappointmentprocedure] = useState([]);
 
@@ -139,7 +140,7 @@ const Diagnostics = () => {
   const diagnostics_message = useSelector((state) => state.Diagnostic_Reducers);
   const [errorMessage, setErrorMessage] = useState('');
   const [errorUsernameMessage, setErrorMessageUsername] = useState('');
-  const [emailErrorMessage, setemailErrorMessage] = useState('');
+  const [emailErrorMessage, setemailErrorMessage] = useState(false);
   const [mobileErrorMessage, setmobileErrorMessage] = useState('');
   const [InfoError, setInfoError] = useState(false);
   const [AddressError, setAddressError] = useState(false);
@@ -153,8 +154,8 @@ const Diagnostics = () => {
   const [iconconfirmpass, seticonconfirmpass] = useState(false);
   const [stepError, setstepError] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const [itemState, setitemState] = useState(selectedprocedure);
-  const [found, setFound] = useState(false);
+  const [itemState, setitemState] = useState([]);
+  // const [found, setFound] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
   const toggleSwitch = () => {
@@ -168,7 +169,16 @@ const Diagnostics = () => {
     dispatch(action_GET_province(pickregion));
   };
   const handleProcedureChange = (pickprocedure) => {
-    if (found === false) {
+    let found = false;
+
+    {
+      selectedprocedurecode.map((item) => {
+        if (item.proccode === pickprocedure?.code.toString()) {
+          found = true;
+        }
+      });
+    }
+    if (!found) {
       setselectedprocedure((prev) => [
         ...prev,
         {desc: pickprocedure.desc, price: pickprocedure.price},
@@ -197,9 +207,9 @@ const Diagnostics = () => {
 
     setSpinner(false);
     {
-      diagnostics_loader ? Actions.prompt() : alert('Something Went Wrong');
+      alert('The Diagnostic Appointment Added sucessfully.');
     }
-  }, [dispatch, , premid, selectedprocedurecode]);
+  }, [dispatch, premid, selectedprocedurecode]);
 
   const handleProvinceChange = (pickprovince) => {
     setprovince(pickprovince);
@@ -223,14 +233,21 @@ const Diagnostics = () => {
   };
 
   useEffect(() => {
-    getprem_id();
-    if (SignUp_Reducers.username?.username == username) {
-      setErrorMessageUsername('Username Already Exists');
-      setstepError(true);
-    } else {
-      setErrorMessageUsername('');
-      setstepError(false);
-    }
+    let mounted = true;
+    const geterrors = () => {
+      getprem_id();
+
+      if (SignUp_Reducers.username?.username == username) {
+        setErrorMessageUsername('Username Already Exists');
+        setstepError(true);
+      } else {
+        setErrorMessageUsername('');
+        setstepError(false);
+      }
+    };
+
+    mounted && geterrors();
+    return () => (mounted = false);
   }, [username, SignUp_Reducers]);
   const handleNextInfo = () => {
     if (
@@ -264,11 +281,12 @@ const Diagnostics = () => {
   };
 
   const validate = (email) => {
+    setemail(email);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(email) === false) {
-      setemailErrorMessage('Email is Not valid');
+      setemailErrorMessage(true);
     } else {
-      setemailErrorMessage();
+      setemailErrorMessage(false);
       setemail(email);
     }
   };
@@ -335,11 +353,17 @@ const Diagnostics = () => {
     selectedprocedurecode,
   ]);
   useEffect(() => {
-    dispatch(action_GET_region());
-    dispatch(action_GET_nationality());
-    dispatch(action_GET_civilstatus());
-    dispatch(action_GET_religion());
-    dispatch(action_GET_procedure());
+    let mounted = true;
+    const getdefaults = () => {
+      dispatch(action_GET_region());
+      dispatch(action_GET_nationality());
+      dispatch(action_GET_civilstatus());
+      dispatch(action_GET_religion());
+      dispatch(action_GET_procedure());
+    };
+
+    mounted && getdefaults();
+    return () => (mounted = false);
   }, [dispatch]);
   const Item = ({title}) => (
     <View style={styles.item}>
@@ -446,46 +470,111 @@ const Diagnostics = () => {
             onNext={handleNextInfo}
             errors={InfoError}>
             <View style={styles.Inputcontainer}>
-              <Input
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="First name"
+                onChangeText={(text) => setfirstname(text)}
+                value={firstname}
+              />
+              {/* <Input
                 style={styles.textInput}
                 placeholder="First name"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setfirstname(text)}
                 defaultValue={firstname}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="Middle name"
+                onChangeText={(text) => setmiddlename(text)}
+                value={middlename}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Middle name"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setmiddlename(text)}
                 defaultValue={middlename}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="Last name"
+                onChangeText={(text) => setlastname(text)}
+                value={lastname}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Last name"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setlastname(text)}
                 defaultValue={lastname}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="Suffix"
+                onChangeText={(text) => setSuffix(text)}
+                value={suffix}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Suffix"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setSuffix(text)}
                 defaultValue={suffix}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="Prefix"
+                onChangeText={(text) => setPrefix(text)}
+                value={prefix}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Prefix"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setPrefix(text)}
                 defaultValue={prefix}
-              />
+              /> */}
 
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <View
@@ -493,13 +582,26 @@ const Diagnostics = () => {
                     width: '85%',
                     height: '100%',
                   }}>
-                  <Input
+                  <TextInput
+                    disabled={true}
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="outlined"
+                    label="Birthdate"
+                    value={birthdate}
+                  />
+                  {/* <Input
                     style={styles.textInput}
                     placeholder="Birthdate"
                     inputContainerStyle={styles.inputContainer}
                     inputStyle={styles.inputText}
                     defaultValue={birthdate}
-                  />
+                  /> */}
                 </View>
                 <View
                   style={{
@@ -514,14 +616,14 @@ const Diagnostics = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       width: 55,
-                      height: 55,
+                      height: 65,
                       backgroundColor: '#fff',
                       borderRadius: 50,
                     }}
                     onPress={showDatepicker}>
                     <Image
                       style={{
-                        height: 40,
+                        height: 60,
                         width: '100%',
                         resizeMode: 'center',
                         alignContent: 'flex-start',
@@ -604,16 +706,21 @@ const Diagnostics = () => {
                   <Picker.Item label="Female" value="F" />
                 </Picker>
               </View>
-              <Input
-                style={styles.textInput}
+              <TextInput
                 multiline
                 numberOfLines={5}
                 maxLength={100}
-                placeholder="Reason for Requisition"
-                inputContainerStyle={styles.inputContainer}
-                inputStyle={styles.inputText}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                label="Reason for Requisition"
                 onChangeText={(text) => setreasons(text)}
-                defaultValue={reasons}
+                value={reasons}
               />
             </View>
           </ProgressStep>
@@ -623,7 +730,21 @@ const Diagnostics = () => {
             onNext={handleNextAddress}
             errors={AddressError}>
             <View style={styles.Inputcontainer}>
-              <Input
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                error={emailErrorMessage}
+                onChangeText={(text) => validate(text)}
+                label="Email"
+                value={email}
+              />
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Email"
                 inputContainerStyle={styles.inputContainer}
@@ -631,8 +752,21 @@ const Diagnostics = () => {
                 errorMessage={emailErrorMessage}
                 onChangeText={(text) => validate(text)}
                 defaultValue={email}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                onChangeText={(text) => setmobile(text)}
+                label="Mobile No."
+                value={mobile}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Mobile No."
                 inputContainerStyle={styles.inputContainer}
@@ -640,7 +774,7 @@ const Diagnostics = () => {
                 //errorMessage={mobileErrorMessage}
                 onChangeText={(text) => setmobile(text)}
                 defaultValue={mobile}
-              />
+              /> */}
               <Picker
                 selectedValue={region}
                 style={styles.PickerContainer}
@@ -701,30 +835,69 @@ const Diagnostics = () => {
                   />
                 ))}
               </Picker>
-              <Input
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                onChangeText={(text) => setfulladdress(text)}
+                label="Address 1"
+                value={fulladdress}
+              />
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Address 1"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setfulladdress(text)}
                 defaultValue={fulladdress}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                onChangeText={(text) => setfulladdress2(text)}
+                label="Address 2"
+                value={fulladdress2}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Address 2"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setfulladdress2(text)}
                 defaultValue={fulladdress2}
+              /> */}
+              <TextInput
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="outlined"
+                onChangeText={(text) => setzipcode(text)}
+                label="Zipcode"
+                value={zipcode}
               />
-              <Input
+              {/* <Input
                 style={styles.textInput}
                 placeholder="Zipcode"
                 inputContainerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 onChangeText={(text) => setzipcode(text)}
                 defaultValue={zipcode}
-              />
+              /> */}
             </View>
           </ProgressStep>
           <ProgressStep

@@ -7,6 +7,10 @@ import Services_Reducers from './Services_Reducers';
 import Diagnostic_Reducers from './Diagnostic_Reducers';
 import News_Reducers from './News_Reducers';
 import Events_Reducers from './Events_Reducers';
+import MedicalRecords_Reducers from './MedicalRecords_Reducers';
+import FTP_Reducers from './FTP_Reducers';
+import SignalRReducers from './SignalRReducers';
+import AgoraReducers from './AgoraReducers';
 import {combineReducers} from 'redux';
 
 const Root_Reducer = combineReducers({
@@ -19,5 +23,9 @@ const Root_Reducer = combineReducers({
   Diagnostic_Reducers: Diagnostic_Reducers,
   News_Reducers: News_Reducers,
   Events_Reducers: Events_Reducers,
+  MedicalRecords_Reducers: MedicalRecords_Reducers,
+  FTP_Reducers: FTP_Reducers,
+  SignalRReducers: SignalRReducers,
+  AgoraReducers: AgoraReducers,
 });
 export default Root_Reducer;

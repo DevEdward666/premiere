@@ -3,12 +3,16 @@ import {
   SET_IMAGE_USERS,
   SET_DOCIMAGE_USERS,
   GET_LINK_MESSAGE,
+  SET_PIN,
+  SET_LOCKED,
 } from '../Types/User_Types';
 
 const users_infos = {
   image: '',
   docimage: '',
   link_message: '',
+  user_pin: '',
+  user_locked: '',
   userinfo: [],
 };
 const User_Reducers = (data_state = users_infos, actions) => {
@@ -21,6 +25,10 @@ const User_Reducers = (data_state = users_infos, actions) => {
       return {...data_state, userinfo: actions.payload};
     case GET_LINK_MESSAGE:
       return {...data_state, link_message: actions.payload};
+    case SET_PIN:
+      return {...data_state, user_pin: actions.payload};
+    case SET_LOCKED:
+      return {...data_state, user_locked: actions.payload};
     default:
       return data_state;
   }

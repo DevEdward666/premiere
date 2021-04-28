@@ -1,17 +1,28 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.premiere">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+  package="com.premiere" >
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <permission android:name="${applicationId}.permission.JITSI_BROADCAST"
+    android:label="Jitsi Meet Event Broadcast"
+    android:protectionLevel="normal"></permission>
+    
 
     <application
      android:networkSecurityConfig="@xml/network_security_config"
      android:usesCleartextTraffic="true"
       android:name=".MainApplication"
       android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
+      android:icon="@mipmap/premiere_icon"
+      android:roundIcon="@mipmap/premiere_icon"
+      android:allowBackup="true"
       android:requestLegacyExternalStorage="true" 
       android:largeHeap="true"
       android:theme="@style/AppTheme">
@@ -27,5 +38,6 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+      <activity android:name="com.reactnativejitsimeet.JitsiMeetNavigatorActivity" />
     </application>
 </manifest>

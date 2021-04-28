@@ -7,6 +7,7 @@ export const action_GET_Services = (offset) => async (dispatch) => {
   const value = await AsyncStorage.getItem('tokenizer');
   const bearer_token = value;
   const bearer = 'Bearer ' + bearer_token;
+
   var url = `${BASE_URL}/api/services/getServices`;
   await fetch(url, {
     method: 'POST',

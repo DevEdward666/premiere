@@ -20,36 +20,16 @@ export const action_POST_appointment = (premid, reason, proccode) => async (
     body: JSON.stringify({
       premid: premid,
       reason: reason,
+      listofprocedures: proccode,
     }),
   })
     .then((response) => response.json())
     .then((res) => {
       if (res.success) {
-        {
-          proccode.map((proc) =>
-            fetch(`${BASE_URL}/api/users/addDiagnosticProcedure`, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                proccode: proc.code,
-              }),
-            })
-              .then((response) => response.json())
-              .then((res) => {
-                if (res.success) {
-                  dispatch({
-                    type: SET_DONE,
-                    payload: true,
-                  });
-                } else {
-                  alert('Please Make Sure You Entered Valid Details');
-                }
-              }),
-          );
-        }
+        dispatch({
+          type: SET_APPOINTMENT_MESSAGE,
+          payload: {message: res.message, success: res.success},
+        });
       } else {
         alert('Something Went Wrong');
       }

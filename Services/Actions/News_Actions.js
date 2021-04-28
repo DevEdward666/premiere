@@ -7,6 +7,24 @@ import {
   GET_NEWS_COMMENT,
   GET_NEWS_REACTION,
 } from '../Types/News_Types';
+// import {fetchwithdispatch} from '../middleware/api';
+
+// export const action_GET_news = (offset) => {
+//   return (dispatch) => {
+//     return fetchwithdispatch('/api/news/getallnews', offset)
+//       .then((response) => response.json())
+//       .then(async (res) => {
+//         try {
+//           responseData = await response.json();
+//         } catch (e) {
+//           return dispatch({
+//             type: reducer,
+//             payload: res.data,
+//           });
+//         }
+//       });
+//   };
+// };
 
 export const action_GET_news = (offset) => async (dispatch) => {
   var url = `${BASE_URL}/api/news/getallnews`;

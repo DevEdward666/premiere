@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
 import wait from '../Plugins/waitinterval';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Card} from 'react-native-paper';
@@ -54,7 +55,13 @@ const UIDiagnosticsRequestList = () => {
     dispatch(action_GET_diagnostics_request(premid, offset));
   }, [dispatch, premid, offset]);
   useEffect(() => {
-    getprem_id();
+    let mounted = true;
+    const getpremids = () => {
+      getprem_id();
+    };
+
+    mounted && getpremids();
+    return () => (mounted = false);
   }, [dispatch, premid, offset]);
 
   const loadmore = useCallback(() => {
