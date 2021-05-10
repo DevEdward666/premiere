@@ -67,7 +67,9 @@ export const action_GET_doctorsbySpecialty = (offset, specialty) => async (
   }
 };
 export const action_GET_doctorsSpecialty = () => async (dispatch) => {
+
   const value = await AsyncStorage.getItem('tokenizer');
+
   const bearer_token = value;
   const bearer = 'Bearer ' + bearer_token;
   var url = `${BASE_URL}/api/doctors/getdoctorsspecialty`;
@@ -81,15 +83,12 @@ export const action_GET_doctorsSpecialty = () => async (dispatch) => {
     },
   })
     .then((response) => response.json())
-    .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: SET_SPECIALTY,
-          payload: res.data,
-        });
-      }
+    .then((res) => {
+      dispatch({
+        type: SET_SPECIALTY,
+        payload: res.data,
+      });
+ 
     });
 };
 export const action_GET_doctors_info = (doccode) => async (dispatch) => {

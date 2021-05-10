@@ -5,6 +5,7 @@ import {
   GET_LINK_MESSAGE,
   SET_PIN,
   SET_LOCKED,
+  SET_USERNAME
 } from '../Types/User_Types';
 
 const users_infos = {
@@ -14,6 +15,7 @@ const users_infos = {
   user_pin: '',
   user_locked: '',
   userinfo: [],
+  username:""
 };
 const User_Reducers = (data_state = users_infos, actions) => {
   switch (actions.type) {
@@ -29,6 +31,8 @@ const User_Reducers = (data_state = users_infos, actions) => {
       return {...data_state, user_pin: actions.payload};
     case SET_LOCKED:
       return {...data_state, user_locked: actions.payload};
+    case SET_USERNAME:
+      return {...data_state, username: actions.payload};
     default:
       return data_state;
   }

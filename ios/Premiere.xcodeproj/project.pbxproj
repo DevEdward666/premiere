@@ -32,6 +32,15 @@
 		0547C946345D4F9D8EC5E11D /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 017A01488EF94AE799CDB292 /* Octicons.ttf */; };
 		894FAF7436ED43A1B8CBEA12 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17E2CFDC0FCE4269ABD31066 /* SimpleLineIcons.ttf */; };
 		4EE23C7E2E694F76A7E7A057 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E516F3C0E1BD410A83CB9FE9 /* Zocial.ttf */; };
+		B54ECFFADC3F409F9970CC52 /* SFUIDisplay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A62E13A1882D43339CFA9513 /* SFUIDisplay-Bold.ttf */; };
+		3F3333429D554F32A9B95FFB /* SFUIDisplay-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 14569EE5E69E40B5B9D475BE /* SFUIDisplay-Light.ttf */; };
+		EFC111FF807643B686766B75 /* SFUIDisplay-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2660EEE6E9B4416A93335E99 /* SFUIDisplay-Black.otf */; };
+		1F24DBF866504CFCAF1B282D /* SFUIDisplay-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 35E23D73489F40348A83DB32 /* SFUIDisplay-Heavy.otf */; };
+		3F33EAC489D3453D959EED9D /* SFUIDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F64A6BD86DDE4A2AAED488FF /* SFUIDisplay-Medium.otf */; };
+		CFDA2235315A42978F1C9978 /* SFUIDisplay-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = E97F2459BBA745DF92300534 /* SFUIDisplay-Regular.otf */; };
+		1AEF000C1B6F4926B952B7F6 /* SFUIDisplay-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 10F1016968224DAD9159E018 /* SFUIDisplay-Semibold.otf */; };
+		864BED70D27C42CA80EE7913 /* SFUIDisplay-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F820743385B4F81A6019BDD /* SFUIDisplay-Thin.otf */; };
+		9FFA9B5917CA46D386A263A7 /* SFUIDisplay-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8C54413B346346E1B004DB7F /* SFUIDisplay-Ultralight.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +92,15 @@
 		017A01488EF94AE799CDB292 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		17E2CFDC0FCE4269ABD31066 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		E516F3C0E1BD410A83CB9FE9 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A62E13A1882D43339CFA9513 /* SFUIDisplay-Bold.ttf */ = {isa = PBXFileReference; name = "SFUIDisplay-Bold.ttf"; path = "../assets/fonts/SFUIDisplay-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		14569EE5E69E40B5B9D475BE /* SFUIDisplay-Light.ttf */ = {isa = PBXFileReference; name = "SFUIDisplay-Light.ttf"; path = "../assets/fonts/SFUIDisplay-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2660EEE6E9B4416A93335E99 /* SFUIDisplay-Black.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Black.otf"; path = "../assets/fonts/SFUIDisplay-Black.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		35E23D73489F40348A83DB32 /* SFUIDisplay-Heavy.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Heavy.otf"; path = "../assets/fonts/SFUIDisplay-Heavy.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F64A6BD86DDE4A2AAED488FF /* SFUIDisplay-Medium.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Medium.otf"; path = "../assets/fonts/SFUIDisplay-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E97F2459BBA745DF92300534 /* SFUIDisplay-Regular.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Regular.otf"; path = "../assets/fonts/SFUIDisplay-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		10F1016968224DAD9159E018 /* SFUIDisplay-Semibold.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Semibold.otf"; path = "../assets/fonts/SFUIDisplay-Semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1F820743385B4F81A6019BDD /* SFUIDisplay-Thin.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Thin.otf"; path = "../assets/fonts/SFUIDisplay-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8C54413B346346E1B004DB7F /* SFUIDisplay-Ultralight.otf */ = {isa = PBXFileReference; name = "SFUIDisplay-Ultralight.otf"; path = "../assets/fonts/SFUIDisplay-Ultralight.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +227,15 @@
 				017A01488EF94AE799CDB292 /* Octicons.ttf */,
 				17E2CFDC0FCE4269ABD31066 /* SimpleLineIcons.ttf */,
 				E516F3C0E1BD410A83CB9FE9 /* Zocial.ttf */,
+				A62E13A1882D43339CFA9513 /* SFUIDisplay-Bold.ttf */,
+				14569EE5E69E40B5B9D475BE /* SFUIDisplay-Light.ttf */,
+				2660EEE6E9B4416A93335E99 /* SFUIDisplay-Black.otf */,
+				35E23D73489F40348A83DB32 /* SFUIDisplay-Heavy.otf */,
+				F64A6BD86DDE4A2AAED488FF /* SFUIDisplay-Medium.otf */,
+				E97F2459BBA745DF92300534 /* SFUIDisplay-Regular.otf */,
+				10F1016968224DAD9159E018 /* SFUIDisplay-Semibold.otf */,
+				1F820743385B4F81A6019BDD /* SFUIDisplay-Thin.otf */,
+				8C54413B346346E1B004DB7F /* SFUIDisplay-Ultralight.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -368,6 +395,15 @@
 				0547C946345D4F9D8EC5E11D /* Octicons.ttf in Resources */,
 				894FAF7436ED43A1B8CBEA12 /* SimpleLineIcons.ttf in Resources */,
 				4EE23C7E2E694F76A7E7A057 /* Zocial.ttf in Resources */,
+				B54ECFFADC3F409F9970CC52 /* SFUIDisplay-Bold.ttf in Resources */,
+				3F3333429D554F32A9B95FFB /* SFUIDisplay-Light.ttf in Resources */,
+				EFC111FF807643B686766B75 /* SFUIDisplay-Black.otf in Resources */,
+				1F24DBF866504CFCAF1B282D /* SFUIDisplay-Heavy.otf in Resources */,
+				3F33EAC489D3453D959EED9D /* SFUIDisplay-Medium.otf in Resources */,
+				CFDA2235315A42978F1C9978 /* SFUIDisplay-Regular.otf in Resources */,
+				1AEF000C1B6F4926B952B7F6 /* SFUIDisplay-Semibold.otf in Resources */,
+				864BED70D27C42CA80EE7913 /* SFUIDisplay-Thin.otf in Resources */,
+				9FFA9B5917CA46D386A263A7 /* SFUIDisplay-Ultralight.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,9 +1,10 @@
 import {SETMOBILENO, SET_DATA} from '../Types/Login_Types';
+import { SET_USERNAME} from '../Types/User_Types';
 import {BASE_URL} from '../Types/Default_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
-export const action_Login_user = (username, password) => async () => {
-  const value = await AsyncStorage.getItem('tokenizer');
+export const action_Login_user = (username, password) => async (dispatch) => {
+
   var url = `${BASE_URL}/api/user/login`;
   const fetchdata = await fetch(url, {
     method: 'POST',
@@ -19,7 +20,6 @@ export const action_Login_user = (username, password) => async () => {
   const parseData = await fetchdata.json();
   if (parseData.status != 400) {
     if (parseData.success != false) {
-      console.log(parseData.success);
       await AsyncStorage.setItem('tokenizer', parseData.data.access_token);
       await AsyncStorage.setItem('username', username);
       Actions.index();
@@ -66,7 +66,13 @@ export const action_Login_user = (username, password) => async () => {
     alert('Wrong Username/Password');
   }
 };
-
+export const action_set_username=(username)=>async (dispatch)=>{
+   
+  dispatch({
+    type:SET_USERNAME,
+    payload:username
+  })
+}
 export const action_GET_mobileno = (username) => async () => {
   const value = await AsyncStorage.getItem('tokenizer');
   // const API_HOST = config.REACT_APP_BASE_URL;

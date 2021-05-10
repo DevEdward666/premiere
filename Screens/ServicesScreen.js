@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Text,
   View,
+  ImageBackground
 } from 'react-native';
 import {Appbar} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -123,65 +124,81 @@ const ServicesScreen = () => {
   const [img, setimg] = useState('');
   useEffect(() => {
     let mounted = true;
-    const getservices = () => {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
+    const getservices = async() => {
+
+      if(mounted){
+     await setSpinner(true);
+     await  setSpinner(false);
       dispatch(action_GET_Services(offset));
       if (services_reducer.services_img != undefined) {
         for (var i = 0; i < services_reducer.length; i++) {
-          setimg(services_reducer[i]?.services_img);
+          await      setimg(services_reducer[i]?.services_img);
           dispatch(action_GET_Servicesimage(img));
-          console.log(services_reducer[i]?.services_img);
         }
       }
+    }
     };
 
     mounted && getservices();
-    return () => (mounted = false);
+    return () => {mounted = false};
   }, [dispatch, offset]);
   useEffect(() => {
     let mounted = true;
-    const getservices = () => {
+    const getservices = async() => {
+
+      if(mounted){
       if ((prev) => prev != offset) {
-        setSpinner(true);
-        setInterval(() => {
-          setSpinner(false);
-        }, 1000);
+        await setSpinner(true);
+      
+        await setSpinner(false);
+     
 
         dispatch(action_GET_Services(offset));
       } else {
-        setSpinner(true);
-        setInterval(() => {
-          setSpinner(false);
-        }, 1000);
+        await  setSpinner(true);
+      
+        await setSpinner(false);
+     
 
         dispatch(action_GET_Services(offset));
       }
+    }
     };
 
     mounted && getservices();
-    return () => (mounted = false);
+    return () => {mounted = false};
   }, [dispatch, offset, loadmore]);
-  const loadmore = () => {
-    setoffset((prev) => prev + 10);
+  const loadmore = async() => {
+    let mounted=true
+    if(mounted){
+      await setoffset((prev) => prev + 10);
 
     dispatch(action_GET_Services(offset));
+    }
+    return()=>{mounted=false}
   };
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(1000).then(() => {
-      setRefreshing(false);
-      for (var i = 0; i < services_reducer.length; i++) {
-        setimg(services_reducer[i]?.services_img);
-        dispatch(action_GET_Servicesimage(services_reducer[i]?.services_img));
-      }
-      dispatch(action_GET_Services(offset));
-    });
+  const onRefresh = React.useCallback(async() => {
+    let mounted=true
+    if(mounted){
+      await setRefreshing(true);
+   
+      await   setRefreshing(false);
+        for (var i = 0; i < services_reducer.length; i++) {
+          await setimg(services_reducer[i]?.services_img);
+          dispatch(action_GET_Servicesimage(services_reducer[i]?.services_img));
+        }
+        dispatch(action_GET_Services(offset));
+ 
+    }
+return()=>{mounted=false}
   }, [dispatch, img, offset]);
   let imageUri = 'data:image/png;base64,' + services_image;
   return (
+    <ImageBackground
+    style={{flex: 1}}
+    source={require('../../assets/background/white.jpg')}
+    resizeMode="cover"
+    blurRadius={20}>
     <View style={styles.container}>
       <Backdrop
         images={require('../assets/doctors/john.jpg')}
@@ -227,21 +244,21 @@ const ServicesScreen = () => {
                   marginHorizontal: SPACING,
                   padding: SPACING * 2,
                   alignItems: 'center',
-                  backgroundColor: 'white',
-                  borderRadius: 12,
+                  backgroundColor: 'rgba(255,255,355,0.4)',
+                  borderRadius: 20,
                   transform: [{translateY}],
                 }}>
                 <Image
                   source={{uri: `${base_url}/${item?.services_img}`}}
                   style={styles.posterImage}></Image>
-                <Text style={{fontSize: 18}} numberOfLines={1}>
+                <Text style={{fontSize: 18, fontFamily: "SFUIDisplay-Bold",}} numberOfLines={1}>
                   {item?.hosp_serv_name}
                 </Text>
                 <Text
                   style={{
-                    fontSize: 10,
+                    fontSize: 12,
                     textAlign: 'justify',
-                    fontFamily: 'Poppins',
+                    fontFamily: "SFUIDisplay-Light"
                   }}
                   numberOfLines={8}>
                   {item?.hosp_serv_description}
@@ -253,6 +270,7 @@ const ServicesScreen = () => {
         }}
       />
     </View>
+    </ImageBackground>
   );
 };
 

@@ -107,13 +107,16 @@ export const action_SignUp_user = (
   responseProfile,
   responseVerfication,
 ) => async () => {
+const mobile=mobileno.split("+").join('')
+console.log(mobile)
   const value = await AsyncStorage.getItem('tokenizer');
   var url = `${BASE_URL}/api/user/addnewuser`;
   await fetch(url, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'multipart/form-data',
+      // 'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       url: `Resources\\Images\\${username}\\${username}.jpg`,
@@ -123,7 +126,7 @@ export const action_SignUp_user = (
       lastname: lastname,
       gender: gender,
       birthdate: birthdate,
-      mobileno: mobileno,
+      mobileno: mobile,
       email: email,
       username: username,
       password: password,
@@ -149,10 +152,6 @@ export const action_SignUp_user = (
             Platform.OS === 'android'
               ? responseProfile.uri
               : responseProfile.uri.replace('file://', ''),
-          // uri:
-          //   Platform.OS === 'android'
-          //     ? response.uri
-          //     : response.uri.replace('file://', ''),
           name: name,
           type: responseProfile.type,
         });
@@ -174,10 +173,6 @@ export const action_SignUp_user = (
                 Platform.OS === 'android'
                   ? responseVerfication.uri
                   : responseVerfication.uri.replace('file://', ''),
-              // uri:
-              //   Platform.OS === 'android'
-              //     ? response.uri
-              //     : response.uri.replace('file://', ''),
               name: name,
               type: responseVerfication.type,
             });
@@ -204,6 +199,8 @@ export const action_SignUp_user = (
           });
       } else {
         alert('Something Went Wrong');
+        console.log(res)
       }
     });
+
 };

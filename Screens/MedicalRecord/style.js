@@ -16,7 +16,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
-
+  userplate:{
+    flex:1,
+    backgroundColor:"rgba(255,255,355,0.8)",
+    borderColor:"rgba(255,255,355,0.4)",
+    borderWidth:0.1,
+    borderRadius:30
+  },
   text: {
     color: 'black',
     fontSize: 12,

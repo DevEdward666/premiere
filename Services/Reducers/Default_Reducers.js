@@ -16,9 +16,13 @@ import {
   GET_NOTIF,
   GET_DEVICE,
   GET_NOTIFICATION_LIST,
+  SET_OPEN_BOTTOMSHEET,
+  APP_NAME,
+  SET_NOTIFICATION_OFFSET
 } from '../Types/Default_Types';
 
 const defult_values = {
+  app_name:"Premiere",
   region: [],
   barangay: [],
   city: [],
@@ -37,9 +41,15 @@ const defult_values = {
   notification: {title: '', body: '', to: '', type: ''},
   notificationlist: {data: [], loading: false},
   device: '',
+  bottomSheet:false,
+  notifoffset:0,
 };
 const Default_Reducer = (data_state = defult_values, actions) => {
   switch (actions.type) {
+    case SET_NOTIFICATION_OFFSET:
+      return {...data_state, notifoffset: actions.payload};
+    case APP_NAME:
+      return {...data_state, app_name: actions.payload};
     case SET_REGION:
       return {...data_state, region: actions.payload};
     case SET_BARANGAY:
@@ -74,6 +84,8 @@ const Default_Reducer = (data_state = defult_values, actions) => {
       return {...data_state, device: actions.payload};
     case GET_NOTIFICATION_LIST:
       return {...data_state, notificationlist: actions.payload};
+    case SET_OPEN_BOTTOMSHEET:
+      return {...data_state, bottomSheet: actions.payload};
     default:
       return data_state;
   }

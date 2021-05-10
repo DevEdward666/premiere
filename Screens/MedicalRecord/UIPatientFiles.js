@@ -7,13 +7,14 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
+  ImageBackground
 } from 'react-native';
 import {Card} from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch, useSelector} from 'react-redux';
 import wait from '../../Plugins/waitinterval';
-
+import styles from './style'
 const UIPatientFiles = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const ftp_reducers = useSelector((state) => state.FTP_Reducers.filename);
@@ -60,55 +61,58 @@ const UIPatientFiles = () => {
   );
 
   return (
-    <SafeAreaView>
+    <ImageBackground
+    style={{flex: 1}}
+    source={require('../../assets/background/white.jpg')}
+    resizeMode="cover"
+    blurRadius={20}>
+    <SafeAreaView style={{marginTop:50}}>
+
       <Spinner
         visible={spinner}
         textContent={'Syncing Files...'}
-        textStyle={styles.spinnerTextStyle}
+        textStyle={{  color: '#FFF',}}
       />
+ 
       <ScrollView>
+    
         <TouchableHighlight
           onPress={() => getpdffile('SOA')}
           underlayColor="white">
-          <Card styles={styles.container}>
+          <Card containerStyle={styles.userplate}>
             <Text>Statement of Account Files</Text>
           </Card>
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => getpdffile('DTR')}
           underlayColor="white">
-          <Card styles={styles.container}>
+          <Card containerStyle={styles.userplate}>
             <Text>Diagnostic Test Result</Text>
           </Card>
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => getpdffile('CA')}
           underlayColor="white">
-          <Card styles={styles.container}>
+          <Card containerStyle={styles.userplate}>
             <Text>Clinical Abstract</Text>
           </Card>
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => getpdffile('CF')}
           underlayColor="white">
-          <Card styles={styles.container}>
+          <Card containerStyle={styles.userplate}>
             <Text>Claim Forms</Text>
           </Card>
         </TouchableHighlight>
+        
+     
       </ScrollView>
+   
     </SafeAreaView>
+    </ImageBackground>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    height: 30,
-  },
-  spinnerTextStyle: {
-    color: '#FFF',
-  },
-});
+
 UIPatientFiles.propTypes = {};
 
 export default UIPatientFiles;

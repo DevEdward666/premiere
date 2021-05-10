@@ -14,6 +14,7 @@ import {
   ACTION_NOTIF,
 } from '../../../Services/Actions/Default_Actions';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Actions } from 'react-native-router-flux';
 const Compose = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const {width, height} = Dimensions.get('window');
@@ -45,13 +46,19 @@ const Compose = () => {
         flexDirection: 'row',
         justifyContent: 'space-around',
       }}>
+        <View style={{maxWidth: width, maxHeight: height, marginTop: 5}}>
+        <Button
+          type="clear"
+          icon={<Icons name="video" size={40} color="#0099ff" />}
+          onPress={() => Actions.videocall2()}
+        />
+        </View>
       <View style={{maxWidth: width, maxHeight: height}}>
         <TextInput
           style={{
             width: width - 90,
             height: 45,
             marginTop: 10,
-            marginStart: 20,
             overflow: 'hidden',
             padding: 5,
             borderRadius: 20,

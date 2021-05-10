@@ -13,18 +13,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
 import QRCode from 'react-native-qrcode-svg';
 const MyQRCodeScreen = () => {
+  
+  const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const [inputText, setInputText] = useState('');
   const [username, setUsername] = useState('');
-  const [qrvalue, setQrvalue] = useState('');
+  const [qrvalue, setQrvalue] = useState(users_reducers?.prem_id);
   const dispatch = useDispatch();
-  const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
 
-  AsyncStorage.getItem('prem_id').then((item) => {
-    if (item == null) {
-      Actions.home();
-    }
-    setQrvalue(item);
-  });
+  let logo = require('../assets//icons/premiereicon.jpeg');
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -32,7 +28,7 @@ const MyQRCodeScreen = () => {
         <Text style={styles.titleStyle}>This is your personal QR</Text>
         <QRCode
           //QR code value
-          value={qrvalue ? qrvalue : 'NA'}
+          value={"LPH-8D20RN"}
           //size of QR Code
           size={250}
           //Color of the QR Code (Optional)
@@ -40,7 +36,7 @@ const MyQRCodeScreen = () => {
           //Background Color of the QR Code (Optional)
           backgroundColor="white"
           //Logo of in the center of QR Code (Optional)
-          logo={require('../assets//icons/premiereicon.jpeg')}
+          logo={logo}
           //Center Logo size  (Optional)
           logoSize={50}
           //Center Logo margin (Optional)
@@ -59,7 +55,7 @@ export default MyQRCodeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 150,
+    marginTop: 50,
     margin: 30,
     backgroundColor: 'white',
     justifyContent: 'center',

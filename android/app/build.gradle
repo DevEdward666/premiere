@@ -104,6 +104,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':@react-native-async-storage')
     implementation project(':react-native-image-picker')
+      implementation project(':react-native-text-input-mask')
     implementation 'com.google.firebase:firebase-core:16.0.0'
     addUnimodulesDependencies()
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

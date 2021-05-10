@@ -4,11 +4,12 @@ import CustomBottomSheet from '../../Plugins/CustomeBottomSheet';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {TextInput, Surface, Text} from 'react-native-paper';
 import CardView from 'react-native-rn-cardview';
-import {FlatList, View, Dimensions, ScrollView} from 'react-native';
+import {FlatList, View, Dimensions, ScrollView,ImageBackground} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from './style';
 import {action_get_info} from '../../Services/Actions/MedicalRecords_Actions';
 import Dateconverter from '../../Plugins/Dateconverter';
+import { Card } from 'react-native-elements';
 const Information = () => {
   const info = useSelector(
     (state) => state.MedicalRecords_Reducers.patientinfo,
@@ -62,7 +63,6 @@ const Information = () => {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 1000,
   };
-  console.log(info);
   return (
     <GestureRecognizer
       onSwipe={(direction, state) => onSwipe(direction, state)}
@@ -71,9 +71,14 @@ const Information = () => {
         isVisible={info?.visible}
         color="white"
         UI={
+ 
           <ScrollView style={{height: height}}>
-            <CardView>
-              <View style={styles.containerNOTIFICATION}>
+                   <ImageBackground
+    style={{flex: 1}}
+    source={require('../../assets/background/white.jpg')}
+    resizeMode="cover"
+    blurRadius={20}>
+            <Card containerStyle={styles.userplate}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -82,7 +87,7 @@ const Information = () => {
                   }}>
                   <View
                     style={{
-                      width: width - 40,
+                      width: width - 60,
                       height: height + 50,
                     }}>
                     <View style={{padding: 10}}>
@@ -171,8 +176,8 @@ const Information = () => {
                     </View>
                   </View>
                 </View>
-              </View>
-            </CardView>
+            </Card>
+            </ImageBackground>
           </ScrollView>
         }
       />

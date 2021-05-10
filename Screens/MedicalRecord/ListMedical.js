@@ -6,15 +6,17 @@ import {
   SafeAreaView,
   View,
   Text,
+  ImageBackground
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import CardView from 'react-native-rn-cardview';
-import {ButtonGroup} from 'react-native-elements';
+import {ButtonGroup,Card} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {action_get_info} from '../../Services/Actions/MedicalRecords_Actions';
 import wait from '../../Plugins/waitinterval';
 import styles from './style';
 import {Actions} from 'react-native-router-flux';
+import { _ScrollView } from 'react-native';
 const ListMedical = () => {
   const list_medical_records = useSelector(
     (state) => state.MedicalRecords_Reducers.list_medical_records,
@@ -70,16 +72,17 @@ const ListMedical = () => {
     [dispatch],
   );
   return (
+ 
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
+
+      <View style={{marginTop:50}}>
+  
       {list_medical_records?.data?.map((item, index) => (
         <SafeAreaView key={index}>
-          <CardView
-            style={{marginTop: -5}}
-            radius={1}
-            backgroundColor={'#ffffff'}>
+          <Card containerStyle={styles.userplate}>
             <View
               style={{
                 flexDirection: 'row',
@@ -98,14 +101,18 @@ const ListMedical = () => {
                 </Text>
               </View>
             </View>
-          </CardView>
-          <ButtonGroup
+            <ButtonGroup
             onPress={(index) => updateIndex(item, index)}
             buttons={buttons}
             containerStyle={{height: 35, marginBottom: 15}}
           />
+          </Card>
+        
         </SafeAreaView>
       ))}
+      
+      </View>
+      
     </ScrollView>
   );
 };

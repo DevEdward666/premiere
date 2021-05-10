@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, StyleSheet,ImageBackground} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {action_get_single_medical_records} from '../../Services/Actions/MedicalRecords_Actions';
@@ -33,7 +33,12 @@ const UIMedicalRecords = () => {
   const gotorecord = useCallback(async (item) => {}, []);
 
   return (
-    <SafeAreaView>
+    <ImageBackground
+    style={{flex: 1}}
+    source={require('../../assets/background/white.jpg')}
+    resizeMode="cover"
+    blurRadius={20}>
+    <SafeAreaView >
       <Spinner
         visible={spinner}
         textContent={'Loading...'}
@@ -42,6 +47,7 @@ const UIMedicalRecords = () => {
       <ListMedical />
       <Information />
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 

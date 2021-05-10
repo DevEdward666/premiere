@@ -6,16 +6,19 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import LoginScreen from './Screens/LoginScreen';
+import React,{useEffect,useState} from 'react';
 import store from './Services/Store';
 import Routes from './components/Routes';
 import {Provider} from 'react-redux';
+
 const App = () => {
+  
   return (
+
     <Provider store={store}>
       <Routes />
     </Provider>
+
   );
 };
 

@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-community/picker';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback,useRef} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   Button,
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  
 } from 'react-native';
 import {TextInput, HelperText} from 'react-native-paper';
 import CardView from 'react-native-rn-cardview';
@@ -20,6 +21,8 @@ import * as ImagePicker from 'react-native-image-picker';
 import {Input} from 'react-native-elements';
 import {ProgressStep, ProgressSteps} from 'react-native-progress-steps';
 import {useDispatch, useSelector} from 'react-redux';
+// import TextInputMask from 'react-native-text-input-mask';
+import { TextInputMask } from 'react-native-masked-text'
 import {
   action_GET_barangay,
   action_GET_city,
@@ -34,6 +37,7 @@ import {
   action_POST_FileImageProfile,
 } from '../Services/Actions/SignUp_Actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Card } from 'react-native-elements';
 const SignUp = () => {
   // const DropDown = require('react-native-material-dropdown-v2');
   // const {Select, Option, OptionList, updatePosition} = DropDown;
@@ -126,6 +130,7 @@ const SignUp = () => {
   const [stepError, setstepError] = useState(false);
   const [pin, setpin] = useState('');
   const [confirmationpin, setconfirmationpin] = useState('');
+  const unmaskedmobile = useRef(null);
 
   const handleRegionChange = (pickregion) => {
     setregion(pickregion);
@@ -290,7 +295,6 @@ const SignUp = () => {
   const handleNextInfo = () => {
     if (
       firstname == '' ||
-      middlename == '' ||
       lastname == '' ||
       gender == '' ||
       birthdate == ''
@@ -346,7 +350,7 @@ const SignUp = () => {
           lastname,
           gender,
           birthdate,
-          mobile,
+          mobile.split(' ').join(''),
           email,
           username,
           password,
@@ -379,9 +383,14 @@ const SignUp = () => {
     mounted && getnationalityandregion();
     return () => (mounted = false);
   }, [dispatch]);
-
   return (
+    <ImageBackground
+    style={{flex: 1}}
+    source={require('../../assets/background/background.jpeg')}
+    resizeMode="cover"
+    blurRadius={2}>
     <ScrollView style={{backgroundScrollViewColor: 'white'}}>
+    
       <View style={styles.container}>
         <View style={{flex: 1}}>
           <ProgressSteps>
@@ -389,6 +398,7 @@ const SignUp = () => {
               label="Information"
               onNext={handleNextInfo}
               errors={InfoError}>
+                <Card  containerStyle={styles.cardContainer}>
               {resourcePathProfile ? (
                 <TouchableHighlight
                   onPress={profileImage}
@@ -429,27 +439,24 @@ const SignUp = () => {
 
               <View style={styles.Inputcontainer}>
                 <TextInput
+                style={{marginTop:10}}
                   theme={{
+                    
                     colors: {
                       primary: '#3eb2fa',
                       background: 'white',
                       underlineColor: 'transparent',
+                    
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="First name"
                   onChangeText={(text) => setfirstname(text)}
                   value={firstname}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="First name"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  onChangeText={(text) => setfirstname(text)}
-                  defaultValue={firstname}
-                /> */}
+         
                 <TextInput
+                  style={{marginTop:10}}
                   theme={{
                     colors: {
                       primary: '#3eb2fa',
@@ -457,20 +464,14 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Middle name"
                   onChangeText={(text) => setmiddlename(text)}
                   value={middlename}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Middle name"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  onChangeText={(text) => setmiddlename(text)}
-                  defaultValue={middlename}
-                /> */}
+           
                 <TextInput
+                  style={{marginTop:10}}
                   theme={{
                     colors: {
                       primary: '#3eb2fa',
@@ -478,20 +479,14 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Last name"
                   onChangeText={(text) => setlastname(text)}
                   value={lastname}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Last name"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  onChangeText={(text) => setlastname(text)}
-                  defaultValue={lastname}
-                /> */}
+            
                 <TextInput
+                  style={{marginTop:10}}
                   theme={{
                     colors: {
                       primary: '#3eb2fa',
@@ -499,27 +494,24 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Suffix"
                   onChangeText={(text) => setSuffix(text)}
                   value={suffix}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Suffix"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  onChangeText={(text) => setSuffix(text)}
-                  defaultValue={suffix}
-                /> */}
+        
 
                 <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      width: '85%',
+                <TouchableHighlight
+                      style={{
+                        width: '100%',
                       height: '100%',
-                    }}>
+                     
+                      }}
+                      onPress={showDatepicker}>
+                 
                     <TextInput
+                      style={{marginTop:10}}
                       disabled={true}
                       theme={{
                         colors: {
@@ -528,52 +520,14 @@ const SignUp = () => {
                           underlineColor: 'transparent',
                         },
                       }}
-                      mode="outlined"
+                      mode="flat"
                       label="Birthdate"
                       value={birthdate}
                     />
-                    {/* <Input
-                      style={styles.textInput}
-                      placeholder="Birthdate"
-                      inputContainerStyle={styles.inputContainer}
-                      inputStyle={styles.inputText}
-                      defaultValue={birthdate}
-                    /> */}
-                  </View>
-                  <View
-                    style={{
-                      width: '15%',
-                      height: '100%',
-                    }}>
-                    <TouchableHighlight
-                      underlayColor="white"
-                      style={{
-                        borderWidth: 1,
-                        borderColor: 'rgba(0,0,0,0)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 55,
-                        height: 55,
-                        backgroundColor: '#fff',
-                        borderRadius: 50,
-                      }}
-                      onPress={showDatepicker}>
-                      <Image
-                        style={{
-                          height: 40,
-                          width: '100%',
-                          resizeMode: 'center',
-                          alignContent: 'flex-start',
-                        }}
-                        source={require('../assets/icons/ic_calendar_prem-playstore.png')}
-                      />
-                    </TouchableHighlight>
-                    {/* <Button
-                      onPress={showDatepicker}
-                      title="Birthdate"
-                      style={{borderRadius: 30}}
-                    /> */}
-                  </View>
+             
+               
+                  </TouchableHighlight>
+                 
                 </View>
                 {show && (
                   <DateTimePicker
@@ -609,12 +563,13 @@ const SignUp = () => {
                         resizeMode: 'contain',
                         alignContent: 'flex-start',
                       }}
-                      underlayColor="white">
+                      underlayColor="rgba(255,255,355,0.1)">
                       <ImageBackground
                         style={{
                           width: '100%',
                           height: 220,
                           resizeMode: 'contain',
+                          backgroundColor:"rgba(255,255,355,0.1)",
                           alignContent: 'flex-start',
                         }}
                         source={{uri: resourcePath}}>
@@ -630,11 +585,12 @@ const SignUp = () => {
                         resizeMode: 'contain',
                         alignContent: 'flex-start',
                       }}
-                      underlayColor="white">
+                      underlayColor="rgba(255,255,355,0.1)">
                       <ImageBackground
                         style={{
                           width: '100%',
                           height: 220,
+                          backgroundColor:"rgba(255,255,355,0.1)",
                           resizeMode: 'contain',
                           alignContent: 'flex-start',
                         }}
@@ -643,18 +599,16 @@ const SignUp = () => {
                       </ImageBackground>
                     </TouchableHighlight>
                   )}
-                  {/* <Button
-                  title="Capture Identification Card"
-                 
-                /> */}
+      
                 </View>
               </CardView>
+              </Card>
             </ProgressStep>
             <ProgressStep
               label="Address"
               onNext={handleNextAddress}
               errors={AddressError}>
-              <View style={styles.Inputcontainer}>
+                  <Card  containerStyle={styles.cardContainer}>
                 <Picker
                   selectedValue={nationality}
                   style={styles.PickerContainer}
@@ -738,25 +692,17 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Street/Lot No./Blk/"
                   onChangeText={(text) => setfulladdress(text)}
                   value={fulladdress}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Street/Lot No./Blk/"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  onChangeText={(text) => setfulladdress(text)}
-                  defaultValue={fulladdress}
-                /> */}
-              </View>
+            </Card>
             </ProgressStep>
             <ProgressStep
               label="Credentials"
               onSubmit={handleSubmitCredentials}>
-              <View style={styles.Inputcontainer}>
+            <Card  containerStyle={styles.cardContainer}>
                 <TextInput
                   theme={{
                     colors: {
@@ -765,7 +711,7 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Email"
                   error={emailErrorMessage}
                   onChangeText={(text) => validate(text)}
@@ -774,37 +720,28 @@ const SignUp = () => {
                 <HelperText type="error" visible={emailErrorMessage}>
                   Email not valid
                 </HelperText>
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Email"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  errorMessage={emailErrorMessage}
-                  onChangeText={(text) => validate(text)}
-                  defaultValue={email}
-                /> */}
+            
                 <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="outlined"
-                  label="Mobile No."
-                  onChangeText={(text) => setmobile(text)}
-                  value={mobile}
+              
+                  render={props =>
+                    <TextInputMask
+                    {...props}
+  type={'cel-phone'}
+  options={{
+    maskType: 'INTERNATIONAL',
+    dddMask: '(63) '
+  }}
+  value={mobile}
+  onChangeText={text => 
+    setmobile(text)
+  }
+  ref={unmaskedmobile}
+/>
+                    }
+                    mode="flat"
+                  
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Mobile No."
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  //errorMessage={mobileErrorMessage}
-                  onChangeText={(text) => setmobile(text)}
-                  defaultValue={mobile}
-                /> */}
+            
                 <TextInput
                   theme={{
                     colors: {
@@ -813,7 +750,7 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Username"
                   error={errorUsernameMessage}
                   onChangeText={(text) => handleUsernameExist(text)}
@@ -844,7 +781,7 @@ const SignUp = () => {
                           underlineColor: 'transparent',
                         },
                       }}
-                      mode="outlined"
+                      mode="flat"
                       label="Password"
                       secureTextEntry={showpass}
                       error={errorMessage}
@@ -903,7 +840,7 @@ const SignUp = () => {
                           underlineColor: 'transparent',
                         },
                       }}
-                      mode="outlined"
+                      mode="flat"
                       label="Confirm Password"
                       secureTextEntry={showpass}
                       error={errorMessage}
@@ -958,7 +895,7 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="PIN"
                   keyboardType="number-pad"
                   error={PINErrorMessage}
@@ -982,28 +919,22 @@ const SignUp = () => {
                       underlineColor: 'transparent',
                     },
                   }}
-                  mode="outlined"
+                  mode="flat"
                   label="Confirm PIN"
                   keyboardType="number-pad"
                   error={PINErrorMessage}
                   onChangeText={(text) => handleConfirmPIN(text)}
                   value={confirmationpin}
                 />
-                {/* <Input
-                  style={styles.textInput}
-                  placeholder="Confirm PIN"
-                  inputContainerStyle={styles.inputContainer}
-                  inputStyle={styles.inputText}
-                  errorMessage={PINErrorMessage}
-                  onChangeText={(text) => handleConfirmPIN(text)}
-                  defaultValue={confirmationpin}
-                /> */}
-              </View>
+        
+                </Card>
             </ProgressStep>
           </ProgressSteps>
         </View>
       </View>
+    
     </ScrollView>
+    </ImageBackground>
   );
 };
 
@@ -1021,6 +952,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: '#fafafaa0',
   },
+  cardContainer:{
+    flex:1,
+    backgroundColor:"rgba(255,255,355,0.4)",
+    width:"93%",
+    height:"100%",
+    borderColor:"rgba(255,255,355,0.4)",
+    borderWidth:0.1,
+    borderRadius:30
+  },
   avatar: {
     width: 180,
     height: 180,
@@ -1037,7 +977,6 @@ const styles = StyleSheet.create({
   },
   Inputcontainer: {
     flex: 1,
-    padding: 30,
     width: '100%',
   },
   imagecontainer: {

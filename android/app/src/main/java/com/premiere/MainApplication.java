@@ -6,6 +6,7 @@ import android.content.Context;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.RNTextInputMask.RNTextInputMaskPackage;
 import com.reactnativejitsimeet.RNJitsiMeetPackage;
 import io.agora.rtc.react.RCTAgoraRtcPackage;
 import com.rumax.reactnative.pdfviewer.PDFViewPackage;
@@ -53,6 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
             
             
+
             new ModuleRegistryAdapter(mModuleRegistryProvider)
            
                  

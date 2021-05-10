@@ -8,7 +8,9 @@ import {
 } from '../Types/User_Types';
 import {BASE_URL} from '../Types/Default_Types';
 import RNFetchBlob from 'react-native-fetch-blob';
+const controller = new AbortController()
 export const action_GET_userdetails = (username) => async (dispatch) => {
+let isUnmount=false
   var url = `${BASE_URL}/api/user/getUserInfo`;
   await fetch(url, {
     method: 'POST',
@@ -22,18 +24,30 @@ export const action_GET_userdetails = (username) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: SET_DATA_USERS,
-          payload: res.data,
-        });
-      }
+    
+        try {
+          responseData = await response.json();
+        } catch (e) {
+          if(!isUnmount){
+            dispatch({
+              type: SET_DATA_USERS,
+              payload: res.data,
+            });
+          }
+      
+        }
+
+      
+    
 
       // console.log('users' + res.username);
+    }).catch(()=>{
+      return controller.abort()
     });
-};
+ return()=>{
+   isUnmount=true
+ }
+}
 export const action_GET_userpin = (username) => async (dispatch) => {
   var url = `${BASE_URL}/api/user/getuserpin`;
   await fetch(url, {
@@ -57,6 +71,8 @@ export const action_GET_userpin = (username) => async (dispatch) => {
         });
       }
       // console.log('users' + res.username);
+    }).catch(()=>{
+      return controller.abort()
     });
 };
 export const action_update_userlocked = (username, locked) => async () => {
@@ -78,6 +94,8 @@ export const action_update_userlocked = (username, locked) => async () => {
         responseData = await response.json();
       } catch (e) {}
       // console.log('users' + res.username);
+    }).catch(()=>{
+      return controller.abort()
     });
 };
 export const action_SET_LinkRequest = (patno, prem_id, status) => async (
@@ -109,9 +127,12 @@ export const action_SET_LinkRequest = (patno, prem_id, status) => async (
       }
 
       // console.log('users' + res.username);
+    }).catch(()=>{
+      return controller.abort()
     });
 };
 export const action_GET_Docs = (username) => async (dispatch) => {
+  let isUnmount=false
   var url = `${BASE_URL}/api/user/getimageDocs?username=${username}`;
 
   await RNFetchBlob.fetch('POST', url, {})
@@ -120,16 +141,20 @@ export const action_GET_Docs = (username) => async (dispatch) => {
       try {
         responseData = await response.json();
       } catch (e) {
-        dispatch({
-          type: SET_DOCIMAGE_USERS,
-          payload: base64Str,
-        });
+        if(!isUnmount){
+          dispatch({
+            type: SET_DOCIMAGE_USERS,
+            payload: base64Str,
+          });
+        }
+     
       }
       let text = res.text();
       let json = res.json();
     })
 
-    .catch((errorMessage, statusCode) => {});
+    .catch((errorMessage, statusCode) => {return controller.abort()});
+    return ()=>{isUnmount=true}
 };
 export const action_GET_Profileimage = (username) => async (dispatch) => {
   var url = `${BASE_URL}/api/user/getimage?username=${username}`;
@@ -147,7 +172,7 @@ export const action_GET_Profileimage = (username) => async (dispatch) => {
       let text = res.text();
       let json = res.json();
     })
-    .catch((errorMessage, statusCode) => {});
+    .catch((errorMessage, statusCode) => {return controller.abort()});
 };
 export const action_SET_files = (Base64) => async () => {
   const dirs = RNFetchBlob.fs.dirs;
@@ -159,5 +184,6 @@ export const action_SET_files = (Base64) => async () => {
     .then((result) => {
       console.log('File has been saved to:' + result);
     })
-    .catch((error) => console.log(error));
+    .catch((error) =>{return controller.abort()});
+ 
 };

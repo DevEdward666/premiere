@@ -21,6 +21,7 @@ import {
   action_update_userlocked,
 } from '../Services/Actions/Users_Actions';
 import {Actions} from 'react-native-router-flux';
+import styles from './style'
 const UIPin = () => {
   const dispatch = useDispatch();
   const users_image = useSelector((state) => state.User_Reducers.image);
@@ -31,59 +32,59 @@ const UIPin = () => {
   const [enteredPin, setEnteredPin] = useState('');
   const [username, setUsername] = useState('');
   const [showCompletedButton, setShowCompletedButton] = useState(false);
+  const controller = new AbortController()
   AsyncStorage.getItem('username').then((item) => {
     if (item == null) {
       Actions.home();
     }
     setUsername(item);
-  });
+  }).catch(()=>{return controller.abort()});
   useEffect(() => {
     let mounted = true;
-    const getdetailsofuser = async () => {
-      await dispatch(action_GET_userdetails(username));
+    const getdetailsofuser =  () => {
+       dispatch(action_GET_userdetails(username));
     };
     mounted && getdetailsofuser();
-    return () => (mounted = false);
+    return () => {mounted = false};
   }, [dispatch, username]);
   useEffect(() => {
     let mounted = true;
-    const eneterpin = async () => {
+    const eneterpin =  () => {
       if (enteredPin.length > 0) {
-        await setShowRemoveButton(true);
+         setShowRemoveButton(true);
       } else {
-        await setShowRemoveButton(false);
+         setShowRemoveButton(false);
       }
       if (enteredPin.length === 4) {
-        await setShowCompletedButton(true);
+         setShowCompletedButton(true);
       } else {
-        await setShowCompletedButton(false);
+         setShowCompletedButton(false);
       }
     };
     mounted && eneterpin();
-    return () => (mounted = false);
+    return () =>{mounted = false};
   }, [enteredPin]);
   useEffect(() => {
     let mounted = true;
-    const getuserdetailsandpin = async () => {
-      await dispatch(action_GET_userpin(username));
+    const getuserdetailsandpin =  () => {
+       dispatch(action_GET_userpin(username));
     };
 
     mounted && getuserdetailsandpin();
-    return () => (mounted = false);
+    return () => {mounted = false};
   }, [dispatch, username]);
 
-  const handlePinEntered = useCallback((value) => {
-    setEnteredPin(value);
+  const handlePinEntered = useCallback(async(value) => {
+    await setEnteredPin(value);
   }, []);
   const handleSubmitPin = useCallback(
     async (key) => {
       if (key === 'custom_left') {
-        pinView.current.clear();
+      await  pinView.current.clear();
       }
       if (key === 'custom_right') {
         if (user_pin == enteredPin) {
           await dispatch(action_update_userlocked(username, 'false'));
-
           await pinView.current.clearAll();
           await Actions.index();
         }
@@ -99,7 +100,7 @@ const UIPin = () => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
+          backgroundColor: '#4287f5',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -151,16 +152,6 @@ const UIPin = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 120,
-    borderWidth: 1,
-    borderColor: 'white',
-    alignContent: 'center',
-    marginBottom: 40,
-  },
-});
+
 
 export default UIPin;

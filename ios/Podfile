@@ -30,6 +30,8 @@ target 'Premiere' do
 
   pod 'react-native-fingerprint-scanner', :path => '../node_modules/react-native-fingerprint-scanner'
 
+  pod 'react-native-text-input-mask', :path => '../node_modules/react-native-text-input-mask'
+
   target 'PremiereTests' do
     inherit! :complete
     # Pods for testing

@@ -1,7 +1,7 @@
 import {SET_DATA} from '../Types/Events_Types';
 
 const events = {
-  data: [],
+  data: {data:[],loading:false},
 };
 const Events_Reducers = (data_state = events, actions) => {
   switch (actions.type) {

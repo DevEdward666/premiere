@@ -8,26 +8,29 @@ const styles = StyleSheet.create({
   },
   cardresultlist: {
     width: width - 20,
-    borderRadius: 10,
-    elevation: 5,
     padding: 10,
+    backgroundColor:"rgba(255,255,355,0.5)",
+    borderColor:"rgba(255,255,355,0.5)",
+    borderWidth:0.1,
+    borderRadius:10
   },
   author: {
     marginStart: 15,
-    fontSize: 15,
+    fontSize: 10,
     fontWeight: 'bold',
-    fontFamily: 'Open-Sans',
+    fontFamily: "SFUIDisplay-Bold",
+   textAlign:"right"
   },
   title: {
     marginStart: 15,
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: 'bold',
-    fontFamily: 'Open-Sans',
+    fontFamily: "SFUIDisplay-Light",
   },
   body: {
     marginStart: 15,
-    fontSize: 10,
-    fontFamily: 'Open-Sans',
+    fontSize: 12,
+    fontFamily: "SFUIDisplay-Light",
     maxHeight: height,
   },
 });

@@ -4,25 +4,44 @@ import {SafeAreaView, View, ScrollView} from 'react-native';
 import {BottomSheet} from 'react-native-elements/dist/bottomSheet/BottomSheet';
 import {Card} from 'react-native-elements/dist/card/Card';
 import CardView from 'react-native-rn-cardview';
-
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import  {action_open_bottomsheet} from '../Services/Actions/Default_Actions'
+import {useDispatch, useSelector} from 'react-redux'
 const CustomBottomSheet = ({isVisible, color, UI, Footer}) => {
-  //  const  onSwipeUp = useCallback((gestureState) {
-  //     this.setState({myText: 'You swiped up!'});
-  //   })
+  const open_bottomsheet = useSelector((state) => state.Default_Reducers.bottomSheet);
+  const [gestureName, setgestureName] = useState('');
 
-  //  const onSwipeDown  = useCallback((gestureState) {
-  //     this.setState({myText: 'You swiped down!'});
-  //   })
-
-  //   const onSwipeLeft  = useCallback((gestureState) {
-  //     this.setState({myText: 'You swiped left!'});
-  //   })
-
-  //   const onSwipeRight = useCallback((gestureState) {
-  //     this.setState({myText: 'You swiped right!'});
-  //   })
+  const dispatch=useDispatch()
+console.log(isVisible)
+  const onSwipe = useCallback((gestureName, gestureState) => {
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    setgestureName({gestureName: gestureName});
+    switch (gestureName) {
+      case SWIPE_UP:
+        // setopen(true);
+        break;
+      case SWIPE_DOWN:
+        dispatch(action_open_bottomsheet(false))
+        break;
+      case SWIPE_LEFT:
+        dispatch(action_open_bottomsheet(false))
+        // setgestureName({backgroundColor: 'blue'});
+        break;
+      case SWIPE_RIGHT:
+        dispatch(action_open_bottomsheet(false))
+        // setgestureName({backgroundColor: 'yellow'});
+        break;
+    }
+  },[isVisible]);
+  const config = {
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 1000,
+  };
 
   return (
+    <GestureRecognizer
+    onSwipe={(direction, state) => onSwipe(direction, state)}
+    config={config}>
     <BottomSheet
       isVisible={isVisible}
       modalProps={{animationType: 'slide'}}
@@ -31,6 +50,8 @@ const CustomBottomSheet = ({isVisible, color, UI, Footer}) => {
 
       <CardView>{Footer}</CardView>
     </BottomSheet>
+    </GestureRecognizer>
+
   );
 };
 
