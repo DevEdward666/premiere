@@ -124,7 +124,7 @@ return(
         navTransparent={true}
       />
       <Scene key="newsinfo" component={NewsInfo} title="News Info" navTransparent={true}/>
-      <Scene key="calendar" component={CalendarEvents} title="Events" navTransparent={true}/>
+      <Scene key="calendar" component={CalendarEvents} title="Events"  navTransparent={true}/>
       <Scene key="index" component={Index} title={app_name} initial="true" hideNavBar={true} />
     </Scene>
   </Router>

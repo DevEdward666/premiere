@@ -44,6 +44,8 @@ const Diagnostics = () => {
   const [lastname, setlastname] = useState('');
   const [gender, setgender] = useState('');
   const [civilstatus, setCivilStatus] = useState('');
+  const [civilstatuslabel, setCivilStatuslabel] = useState('');
+  const [civilstatusvalue, setCivilStatusvalue] = useState('');
   const [religion, setreligion] = useState('');
   const [suffix, setSuffix] = useState('');
   const [prefix, setPrefix] = useState('');
@@ -54,9 +56,21 @@ const Diagnostics = () => {
   const [zipcode, setzipcode] = useState('');
   const [nationality, setnationality] = useState('');
   const [city, setcity] = useState('');
+  const [citylabel, setcitylabel] = useState('');
+  const [cityvalue, setcityvalue] = useState('');
+
   const [region, setregion] = useState('');
   const [province, setprovince] = useState('');
+  const [provincelabel, setprovincelabel] = useState('');
+  const [provincevalue, setprovincevalue] = useState('');
+
   const [barangay, setbarangay] = useState('');
+  const [barangaylabel, setbarangaylabel] = useState('');
+  const [barangayvalue, setbarangayvalue] = useState('');
+
+  const [psgc, setpsgc] = useState('');
+  const [totalrequest, settotalrequest] = useState(0);
+
   const [fulladdress, setfulladdress] = useState('');
   const [fulladdress2, setfulladdress2] = useState('');
   const [selectedprocedure, setselectedprocedure] = useState([]);
@@ -194,6 +208,7 @@ const Diagnostics = () => {
         ...prev,
         {desc: pickprocedure.desc, price: pickprocedure.price},
       ]);
+      settotalrequest((prev)=>prev+parseInt(pickprocedure.price))
       setitemState((prev) => [
         ...prev,
         {desc: pickprocedure.desc, price: pickprocedure.price},
@@ -204,19 +219,22 @@ const Diagnostics = () => {
           premid: premid.toString(),
           reason: reasons.toString(),
           proccode: pickprocedure?.code.toString(),
+          procdesc: pickprocedure?.desc.toString(),
           proccost: pickprocedure?.price.toString(),
         },
       ]);
       setselectedprocedurecost([{price: pickprocedure.price}]);
+     
     } else {
       alert('Item Already in List');
     }
   };
+  console.log(totalrequest)
   const handleSubmitAppointment = useCallback(() => {
     let mounted =true
     if(mounted){
     setSpinner(true);
-    dispatch(action_POST_appointment(premid, 'test', selectedprocedurecode));
+    dispatch(action_POST_appointment(premid, reasons,totalrequest.toFixed(2), selectedprocedurecode));
 
     setSpinner(false);
     {
@@ -228,24 +246,33 @@ const Diagnostics = () => {
 
   const handleProvinceChange = (pickprovince) => {
     let mounted =true
+    let value=pickprovince.split("|")
     if(mounted){
     setprovince(pickprovince);
-    dispatch(action_GET_city(region, pickprovince));
+    setprovincelabel(value[0]);
+    setprovincevalue(value[1]);
+    dispatch(action_GET_city(region, value[1]));
     }
     return()=>{mounted=false}
   };
   const handleCityChange = (pickcity) => {
     let mounted =true
+    let value=pickcity.split("|")
     if(mounted){
     setcity(pickcity);
-    dispatch(action_GET_barangay(region, province, pickcity));
+    setcitylabel(value[0]);
+    setcityvalue(value[1]);
+    dispatch(action_GET_barangay(region, provincevalue, value[1]));
     }
     return ()=>{mounted=false}
   };
   const handleCivilStatus = (pickstatus) => {
     let mounted =true
+    let value=pickstatus.split("|")
     if(mounted){
     setCivilStatus(pickstatus);
+    setCivilStatuslabel(value[0]);
+    setCivilStatusvalue(value[1]);
     }
     return()=>{mounted=false}
   };
@@ -258,8 +285,13 @@ const Diagnostics = () => {
   };
   const handleBarangayChange = (pickBarangay) => {
     let mounted =true
+    let value=pickBarangay.split('|')
     if(mounted){
-    setbarangay(pickBarangay);
+    setbarangay(pickBarangay)
+    setbarangaylabel(value[0]);
+    setbarangayvalue(value[1])
+    setpsgc(value[0]+","+citylabel+","+provincelabel)
+  
     }
     return()=>{mounted=false}
   };
@@ -344,7 +376,7 @@ const Diagnostics = () => {
   };
 
   const handleSubmitCredentials = useCallback(() => {
-    console.log(diagnostics_message);
+
     if (stepError == false) {
       dispatch(
         action_POST_appointment_others(
@@ -355,18 +387,20 @@ const Diagnostics = () => {
           lastname,
           suffix,
           gender,
-          civilstatus,
+          civilstatusvalue,
+          civilstatuslabel,
           nationality,
           religion,
           birthdate,
           email,
           mobile,
           fulladdress,
-          fulladdress2,
-          barangay,
-          province,
-          city,
+          barangayvalue,
+          provincevalue,
+          cityvalue,
           region,
+          psgc,
+          totalrequest.toFixed(2),
           zipcode,
           reasons,
           selectedprocedurecode,
@@ -388,7 +422,8 @@ const Diagnostics = () => {
     lastname,
     suffix,
     gender,
-    civilstatus,
+    civilstatusvalue,
+    civilstatuslabel,
     nationality,
     religion,
     birthdate,
@@ -400,6 +435,8 @@ const Diagnostics = () => {
     province,
     city,
     region,
+    psgc,
+    totalrequest,
     zipcode,
     reasons,
     selectedprocedurecode,
@@ -433,6 +470,7 @@ const Diagnostics = () => {
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
+    
         <FlatList
           style={{height: 200, maxHeight: 400}}
           data={itemState}
@@ -453,15 +491,7 @@ const Diagnostics = () => {
             </TouchableOpacity>
           )}
         />
-        {isEnabled ? (
-          <View style={{width: '100%', padding: 20}}>
-            <Button
-              style={{borderRadius: 30}}
-              onPress={() => handleSubmitAppointment()}
-              title="Submit Appointment"
-            />
-          </View>
-        ) : null}
+ 
       </SafeAreaView>
     );
   };
@@ -480,7 +510,7 @@ const Diagnostics = () => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'stretch',
-            height: 30 + '%',
+            height: '30%',
           }}>
           <View style={{width: 80 + '%', height: 40}}>
             <Text>Use My Personal Information</Text>
@@ -499,7 +529,9 @@ const Diagnostics = () => {
       </View>
     
       {isEnabled ? (
-        <View style={styles.Inputcontainer}>
+        <Card containerStyle={styles.plate}>
+        
+               
           <Picker
             selectedValue={city}
             style={styles.PickerContainer}
@@ -520,7 +552,37 @@ const Diagnostics = () => {
             ))}
           </Picker>
           <Flatlists />
-        </View>
+      
+         
+                     {isEnabled ? (
+          <View style={{width: '100%',}}>
+        
+           
+             <TextInput
+                multiline
+                numberOfLines={5}
+                maxLength={100}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                style={{padding:10,marginBottom:30,marginTop:10}}
+                mode="flat"
+                label="Reason for Requisition"
+                onChangeText={(text) => setreasons(text)}
+                value={reasons}
+              />
+               <Button
+              style={{borderRadius: 30,}}
+              onPress={() => handleSubmitAppointment()}
+              title="Submit Appointment"
+            />
+          </View>
+        ) : null}
+          </Card>
       ) : (
     
         <ProgressSteps style={styles.plate}>
@@ -654,7 +716,7 @@ const Diagnostics = () => {
                     <Picker.Item
                       key={cs?.cskey}
                       label={cs?.csdesc}
-                      value={cs?.cskey}
+                      value={cs?.csdesc+"|"+cs?.cskey}
                     />
                   ))}
                 </Picker>
@@ -786,7 +848,7 @@ const Diagnostics = () => {
                   <Picker.Item
                     key={card.provincecode}
                     label={card.provincedesc}
-                    value={card.provincecode}
+                    value={card.provincedesc+"|"+card.provincecode}
                   />
                 ))}
               </Picker>
@@ -801,22 +863,23 @@ const Diagnostics = () => {
                   <Picker.Item
                     key={card.citymuncode}
                     label={card.citymundesc}
-                    value={card.citymuncode}
+                    value={card.citymundesc+"|"+card.citymuncode}
                   />
                 ))}
               </Picker>
               <Picker
                 selectedValue={barangay}
                 style={styles.PickerContainer}
-                onValueChange={(itemValue, itemIndex) =>
-                  handleBarangayChange(itemValue)
-                }>
+                onValueChange={(itemValue,itemIndex) =>
+                  handleBarangayChange(itemValue,itemIndex)
+                }
+                >
                 <Picker.Item label="Select Barangay" value="barangay" />
                 {barangay_reducers.map((card) => (
                   <Picker.Item
                     key={card.barangaycode}
                     label={card.barangaydesc}
-                    value={card.barangaycode}
+                    value={card.barangaydesc+"|"+card.barangaycode}
                   />
                 ))}
               </Picker>

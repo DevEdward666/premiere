@@ -8,7 +8,7 @@ import {
 } from '../Types/Diagnostic_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../Types/Default_Types';
-export const action_POST_appointment = (premid, reason, proccode) => async (
+export const action_POST_appointment = (premid, reason,req_total_cost, proccode) => async (
   dispatch,
 ) => {
   await fetch(`${BASE_URL}/api/users/addDiagnosticAppointment`, {
@@ -20,6 +20,7 @@ export const action_POST_appointment = (premid, reason, proccode) => async (
     body: JSON.stringify({
       premid: premid,
       reason: reason,
+      req_total_cost:req_total_cost,
       listofprocedures: proccode,
     }),
   })
@@ -33,6 +34,7 @@ export const action_POST_appointment = (premid, reason, proccode) => async (
       } else {
         alert('Something Went Wrong');
       }
+      console.log(res)
     });
 };
 
@@ -44,18 +46,20 @@ export const action_POST_appointment_others = (
   lastname,
   suffix,
   gender,
-  civilstatus,
+  civilstatusvalue,
+  civilstatuslabel,
   nationality,
   religion,
   birthdate,
   email,
   mobile,
   fulladdress,
-  fulladdress2,
   barangay,
   province,
   city,
   region,
+  psgc,
+  req_total,
   zipcode,
   reasons,
   appointmentprocedure,
@@ -74,18 +78,20 @@ export const action_POST_appointment_others = (
       lastname: lastname,
       suffix: suffix,
       gender: gender,
-      civil_status: civilstatus,
+      civil_status_key: civilstatusvalue,
+      civil_status_desc: civilstatuslabel,
       nationality_code: nationality,
       religion_code: religion,
       birthdate: birthdate,
       email: email,
       mobile: mobile,
       fulladdress: fulladdress,
-      fulladdress2: fulladdress2,
       barangay: barangay,
       province_code: province,
       city_code: city,
       region_code: region,
+      psgc_address:psgc,
+      req_total:req_total,
       zipcode: zipcode,
       reasons: reasons,
       listofprocedures: appointmentprocedure,
@@ -94,7 +100,7 @@ export const action_POST_appointment_others = (
     .then((response) => response.json())
     .then((res) => {
       if (res.success) {
-        console.log(res);
+      
         dispatch({
           type: SET_APPOINTMENT_MESSAGE,
           payload: {message: res.message, success: res.success},
@@ -102,6 +108,7 @@ export const action_POST_appointment_others = (
       } else {
         alert('Something Went Wrong');
       }
+      console.log(res);
     });
 };
 

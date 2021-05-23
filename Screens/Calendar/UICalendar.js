@@ -30,7 +30,7 @@ const UICalendar = () => {
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('date');
   const [date, setDate] = useState(new Date());
-  const [searchdate, setsearchdate] = useState(getCurrentDate);
+  const [searchdate, setsearchdate] = useState("");
   const [displaydate, setdisplaydate] = useState(new Date());
   const [eventsinfo, seteventsinfo] = useState('');
   const dispatch = useDispatch();
@@ -78,25 +78,22 @@ const UICalendar = () => {
     }
   return()=>{mounted=false}
   };
-  const getCurrentDate = async() => {
-    let mounted=true
-    if (mounted){
-   var dates = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
+  const getCurrentDate =() => {
+    let date=new Date()
+   var dates = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
 
-    if (month > 9) {
-      return year + '-' + month + '-' + dates; 
+    if (month <= 9 && dates <= 9) {
+      setDate(year + '-0' + month + '-0' + dates);
+    } else if (month <= 9) {
+      setDate(year + '-0' + month + '-' + dates);
+    } else if (dates <= 9) {
+      setDate(year + '-' + month + '-0' + dates);
     } else {
-      if (dates<9)
-      return year + '-0' + month + '-0' + dates; 
-      else
-      return year + '-0' + month + '-0' + dates; 
+      setDate(year + '-' + month + '-' + dates);
     }
-    
-    }
-    
-   return ()=>{mounted=false}
+
   };
   const onRefresh = useCallback(async() => {
     let mounted=true
@@ -122,8 +119,9 @@ return()=>{mounted=false}
         dispatch(action_GET_events(searchdate));
         setSpinner(false);
       }
+      setSpinner(false);
       dispatch(action_GET_events(searchdate));
-       setDate(getCurrentDate())
+     
       }
     };
 
