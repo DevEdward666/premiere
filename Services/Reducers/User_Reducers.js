@@ -5,7 +5,8 @@ import {
   GET_LINK_MESSAGE,
   SET_PIN,
   SET_LOCKED,
-  SET_USERNAME
+  SET_USERNAME,
+  SET_QR_USER,
 } from '../Types/User_Types';
 
 const users_infos = {
@@ -15,10 +16,13 @@ const users_infos = {
   user_pin: '',
   user_locked: '',
   userinfo: [],
-  username:""
+  username: '',
+  user_qr: {qrbase64: ''},
 };
 const User_Reducers = (data_state = users_infos, actions) => {
   switch (actions.type) {
+    case SET_QR_USER:
+      return {...data_state, user_qr: actions.payload};
     case SET_IMAGE_USERS:
       return {...data_state, image: actions.payload};
     case SET_DOCIMAGE_USERS:

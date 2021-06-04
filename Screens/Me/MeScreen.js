@@ -8,9 +8,9 @@ import {
   Text,
   TouchableHighlight,
   View,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
-import {Card, makeStyles} from 'react-native-elements'
+import {Card, makeStyles} from 'react-native-elements';
 import CardView from 'react-native-rn-cardview';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -21,9 +21,11 @@ import {
 } from '../../Services/Actions/Users_Actions';
 import wait from '../../Plugins/waitinterval';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
-import styles from './style'
+import styles from './style';
 import MeHeader from './MeHeader';
 import MeBody from './MeBody';
+import Skeleton from './SkeletonMe/SkeletonMe';
+import {SafeAreaView} from 'react-native';
 const MeScreen = () => {
   const currentyear = new Date();
   const thisyear = currentyear.getFullYear();
@@ -34,33 +36,30 @@ const MeScreen = () => {
   const mountedRef = useRef();
   const [refreshing, setRefreshing] = useState(false);
 
-  AsyncStorage.getItem('tokenizer').then(async(item) => {
-    let mounted=true
+  AsyncStorage.getItem('tokenizer').then(async (item) => {
+    let mounted = true;
     if (mounted)
-    if (item == null) {
-      Actions.home();
-    }
-    return()=>{
-      unmount=true
-    }
+      if (item == null) {
+        Actions.home();
+      }
+    return () => {
+      mounted = false;
+    };
   });
-  AsyncStorage.getItem('username').then(async(item) => {
-    let unmount=true
-    if(unmount){
-    if (item == null) {
-      Actions.home();
-    }
-  
-    await  setUsername(item);
-    await setValue(false);
-    }
-return()=>{
-  unmount=false
-}
-  });
+  AsyncStorage.getItem('username').then(async (item) => {
+    let unmount = true;
+    if (unmount) {
+      if (item == null) {
+        Actions.home();
+      }
 
-  
- 
+      await setUsername(item);
+      await setValue(false);
+    }
+    return () => {
+      unmount = false;
+    };
+  });
 
   const dispatch = useDispatch();
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
@@ -69,88 +68,93 @@ return()=>{
   const [doc, setdoc] = useState('');
   const onRefresh = React.useCallback(async () => {
     let mounted = true;
-    if(mounted){
-       dispatch(action_GET_userdetails(username));
-  
+    if (mounted) {
+      dispatch(action_GET_userdetails(username));
+
       await setRefreshing(true);
-      await setimg(users_reducers?.img);
       await setdoc(users_reducers?.doc);
-    
-       dispatch(action_GET_Profileimage(img));
-       dispatch(action_GET_Docs(doc));
+
+      // dispatch(action_GET_Profileimage(img));
+      dispatch(action_GET_Docs(doc));
     }
 
-    return ()=> {mounted=false}
-  }, [dispatch, img, doc]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, doc]);
   useEffect(() => {
     let mounted = true;
-    const getprofileimageanddocs = async() => {
-      if(mounted){
+    const getprofileimageanddocs = async () => {
+      if (mounted) {
         if (users_reducers?.img != undefined) {
           dispatch(action_GET_Profileimage(users_reducers?.img));
           dispatch(action_GET_Docs(users_reducers?.doc));
         }
-   
-          await setRefreshing(false);
-        
-          await setimg(users_reducers?.img);
-          await setdoc(users_reducers?.doc);
 
-          dispatch(action_GET_Profileimage(img));
-          dispatch(action_GET_Docs(doc));
-      
-      };
+        await setRefreshing(false);
+
+        await setimg(users_reducers?.img);
+        await setdoc(users_reducers?.doc);
+
+        dispatch(action_GET_Profileimage(img));
+        dispatch(action_GET_Docs(doc));
       }
-
+    };
 
     mounted && getprofileimageanddocs();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, img, doc]);
-
 
   const getMeInfo = async () => {
     let mounted = true;
-    if(mounted){
-    await Actions.profile();
-    }  
-    return () => {mounted = false};
+    if (mounted) {
+      await Actions.profile();
+    }
+    return () => {
+      mounted = false;
+    };
   };
   return (
-   
     <ScrollView
-  
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-<ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
-      <View style={styles.container}>
-        {/* <Appbar.Header style={{backgroundColor: '#00a15b'}}>
+      <ImageBackground
+        style={{flex: 1}}
+        source={require('../../assets/background/white.jpg')}
+        resizeMode="cover"
+        blurRadius={20}>
+        <View style={styles.container}>
+          {/* <Appbar.Header style={{backgroundColor: '#00a15b'}}>
         <Appbar.Content title="Premiere" />
       </Appbar.Header> */}
-      
-          <View style={{flex: 1, flexDirection: 'column'}} >
-            <TouchableHighlight   onPress={() => getMeInfo()} underlayColor="white">
-           <MeHeader />
-            </TouchableHighlight>
-             <MeBody/>
+
+          <SafeAreaView style={{flex: 1, flexDirection: 'column'}}>
+            {users_reducers ? (
+              <TouchableHighlight
+                onPress={() => getMeInfo()}
+                underlayColor="white">
+                <MeHeader />
+              </TouchableHighlight>
+            ) : (
+              <Skeleton />
+            )}
+
+            <MeBody />
             <View style={{flexDirection: 'row', height: 50}}>
               <View
                 style={{width: '100%', height: 50, justifyContent: 'center'}}>
-                <Text
-                  style={styles.footertext}>
+                <Text style={styles.footertext}>
                   Powered by TUO @ {thisyear}
                 </Text>
               </View>
             </View>
-          </View>
+          </SafeAreaView>
         </View>
       </ImageBackground>
     </ScrollView>
-   
   );
 };
 

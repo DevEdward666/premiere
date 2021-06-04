@@ -1,6 +1,6 @@
 import React from 'react';
-import { View,TouchableOpacity } from 'react-native';
-import { Actions, Router, Scene } from 'react-native-router-flux';
+import {View, TouchableOpacity} from 'react-native';
+import {Actions, Router, Scene} from 'react-native-router-flux';
 import Prompt from '../Plugins/PrompScreen';
 import Index from '../Screens/BottomNavigation';
 import DoctorInfo from '../Screens/Doctors/DoctorsInfoScreen';
@@ -28,105 +28,178 @@ import DiagnosticsResultsList from '../Screens/Diagnostics/UIDiagnosticsResultsL
 import DiagnosticsResults from '../Screens/Diagnostics/UIDiagnoticsResults';
 import UIFilePDFView from '../Screens/UIFilePDFView';
 import MainDiagnosticsUI from '../Screens/Diagnostics/UIMainDiagnostics';
-import {useSelector} from 'react-redux'
-import { Icon } from 'react-native-vector-icons';
+import {useSelector} from 'react-redux';
+import {Icon} from 'react-native-vector-icons';
+import {SafeAreaView} from 'react-native';
 
-const Routes = () =>{
+const Routes = () => {
   const app_name = useSelector((state) => state.Default_Reducers.app_name);
+
   const VideoCallIcon = () => {
     return (
-        <View style={{ marginRight: 10 }} >
-            <TouchableOpacity onPress={() => Actions.videocall2()} >
-                <Icon
-                    name='comment'
-                    type='font-awesome'
-                    size={30}
-                />
-            </TouchableOpacity>
-        </View>
+      <View style={{marginRight: 10}}>
+        <TouchableOpacity onPress={() => Actions.videocall2()}>
+          <Icon name="comment" type="font-awesome" size={30} />
+        </TouchableOpacity>
+      </View>
     );
+  };
+  return (
+    <Router>
+      <SafeAreaView>
+        <Scene key="root">
+          <Scene key="home" component={Login} title="Login" hideNavBar={true} />
+          <Scene
+            key="signup"
+            component={SignUp}
+            title="Signup"
+            hideNavBar={true}
+          />
+          <Scene
+            key="otp"
+            component={Otp}
+            title="One Time Password"
+            hideNavBar={true}
+          />
+          <Scene
+            key="tac"
+            component={tac}
+            title="Terms and Conditions"
+            hideNavBar={true}
+          />
+          <Scene
+            key="qrscreen"
+            component={QRScreen}
+            title="My QR"
+            navTransparent={true}
+          />
+          <Scene
+            key="doctorsinfo"
+            component={DoctorInfo}
+            title="Doctors Info"
+            navTransparent={true}
+          />
+          <Scene
+            key="profile"
+            component={MyProfile}
+            title="My Profile"
+            navTransparent={true}
+          />
+          <Scene
+            key="safedavaoqr"
+            component={SafeDavaoQR}
+            title="Safe Davao QR"
+            navTransparent={true}
+          />
+          <Scene
+            key="uiapps"
+            component={UIApps}
+            title="Apps"
+            navTransparent={true}
+          />
+          <Scene
+            key="diagnostics"
+            component={Diagnostic}
+            title="Diagnostics"
+            navTransparent={true}
+          />
+          <Scene key="prompt" component={Prompt} title="Alert" />
+          <Scene
+            key="files"
+            component={UIPatientFiles}
+            title="Files"
+            navTransparent={true}
+          />
+          <Scene
+            key="pdfviewer"
+            component={UIFilePDFView}
+            title="File"
+            navTransparent={true}
+          />
+          <Scene
+            key="listoffile"
+            component={UIListOfFile}
+            title="List of File"
+            navTransparent={true}
+          />
+          <Scene
+            key="videocall"
+            component={VideoCall}
+            title="VideoCall"
+            navTransparent={true}
+          />
+          <Scene
+            key="videocall2"
+            component={VideoCallJisti}
+            title="VideoCall"
+            navTransparent={true}
+          />
+          <Scene key="message" component={Message} title="Message" />
+          <Scene
+            key="pin"
+            component={UIPin}
+            title="PIN"
+            hideNavBar={true}
+            renderBackButton={() => <View />}
+          />
+          <Scene
+            key="link"
+            component={LinkMedicalRecords}
+            title="Link Medical Records"
+            navTransparent={true}
+          />
+          <Scene
+            key="medicalrecords"
+            component={UIMedicalRecords}
+            title="Medical Records"
+            navTransparent={true}
+          />
+          <Scene
+            key="diagnosticsresults"
+            component={DiagnosticsResults}
+            title="Results"
+            navTransparent={true}
+          />
+          <Scene
+            key="diagnosticsresultslist"
+            component={DiagnosticsResultsList}
+            title="Results List"
+            navTransparent={true}
+          />
+          <Scene
+            key="diagnosticsrequest"
+            component={DiagnosticRequest}
+            title="Diagnostics Request"
+            navTransparent={true}
+          />
+          <Scene
+            key="maindiagnosticsui"
+            component={MainDiagnosticsUI}
+            title="Diagnostics"
+            navTransparent={true}
+          />
+          <Scene
+            key="newsinfo"
+            component={NewsInfo}
+            title="News Info"
+            navTransparent={true}
+          />
+          <Scene
+            key="calendar"
+            component={CalendarEvents}
+            title="Events"
+            navTransparent={true}
+          />
+          <Scene
+            key="index"
+            component={Index}
+            title={app_name}
+            initial="true"
+            hideNavBar={true}
+          />
+        </Scene>
+      </SafeAreaView>
+    </Router>
+  );
 };
-return(
-  
-  <Router>
-    <Scene key="root">
-      <Scene
-        key="home"
-        component={Login}
-        title="Login"
-        hideNavBar={true}
-        renderBackButton={() => <View />}
-      />
-      <Scene key="signup" component={SignUp} title="Signup"    hideNavBar={true}/>
-      <Scene key="otp" component={Otp} title="One Time Password" navTransparent={true}/>
-      <Scene key="tac" component={tac} title="Terms and Conditions" navTransparent={true}/>
-      <Scene key="qrscreen" component={QRScreen} title="My QR" navTransparent={true}/>
-      <Scene key="doctorsinfo" component={DoctorInfo} title="Doctors Info" navTransparent={true}/>
-      <Scene key="profile" component={MyProfile} title="My Profile" navTransparent={true}/>
-      <Scene key="safedavaoqr" component={SafeDavaoQR} title="Safe Davao QR" navTransparent={true}/>
-      <Scene key="uiapps" component={UIApps} title="Apps" navTransparent={true}/>
-      <Scene key="diagnostics" component={Diagnostic} title="Diagnostics" navTransparent={true}/>
-      <Scene key="prompt" component={Prompt} title="Alert" />
-      <Scene key="files" component={UIPatientFiles} title="Files" navTransparent={true}/>
-      <Scene key="pdfviewer" component={UIFilePDFView} title="File" navTransparent={true}/>
-      <Scene key="listoffile" component={UIListOfFile} title="List of File" navTransparent={true}/>
-      <Scene key="videocall" component={VideoCall} title="VideoCall" navTransparent={true}/>
-      <Scene key="videocall2" component={VideoCallJisti} title="VideoCall" navTransparent={true}/>
-      <Scene 
-        key="message"
-        component={Message}
-        title="Message"
-
-     
-        
-      />
-      <Scene
-        key="pin"
-        component={UIPin}
-        title="PIN"
-        hideNavBar={true}
-        renderBackButton={() => <View />}
-      />
-      <Scene
-        key="link"
-        component={LinkMedicalRecords}
-        title="Link Medical Records"
-        navTransparent={true}
-      />
-      <Scene
-        key="medicalrecords"
-        component={UIMedicalRecords}
-        title="Medical Records"
-        navTransparent={true}
-      />
-      <Scene
-        key="diagnosticsresults"
-        component={DiagnosticsResults}
-        title="Results"
-        navTransparent={true}
-      />
-      <Scene
-        key="diagnosticsresultslist"
-        component={DiagnosticsResultsList}
-        title="Results List"
-        navTransparent={true}
-      />
-      <Scene
-        key="diagnosticsrequest"
-        component={DiagnosticRequest}
-        title="Diagnostics Request"
-        navTransparent={true}
-      />
-      <Scene
-        key="maindiagnosticsui"
-        component={MainDiagnosticsUI}
-        title="Diagnostics"
-        navTransparent={true}
-      />
-      <Scene key="newsinfo" component={NewsInfo} title="News Info" navTransparent={true}/>
-      <Scene key="calendar" component={CalendarEvents} title="Events"  navTransparent={true}/>
-      <Scene key="index" component={Index} title={app_name} initial="true" hideNavBar={true} />
-    </Scene>
-  </Router>
-)};
 export default Routes;

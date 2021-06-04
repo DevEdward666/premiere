@@ -1,11 +1,15 @@
 import {SET_DATA, SET_USERNAME} from '../Types/SignUp_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
-import {BASE_URL} from '../Types/Default_Types';
+import {
+  BASE_URL,
+  REGISTRATION_COMPLETE,
+  SPINNER_ALERT,
+} from '../Types/Default_Types';
 import {Platform} from 'react-native';
+import {ACTION_SPINNER_ALERT} from '../Actions/Default_Actions';
 const finished = false;
 export const action_update_user = (username) => async (dispatch) => {
-  console.log(username);
   var url = `${BASE_URL}/api/user/getUserOTP`;
   const fetchdata = await fetch(url, {
     method: 'POST',
@@ -18,10 +22,14 @@ export const action_update_user = (username) => async (dispatch) => {
     }),
   });
   const parseData = await fetchdata.json();
-  if (parseData.success != false) {
+  if (parseData.success) {
+    dispatch({
+      type: REGISTRATION_COMPLETE,
+      payload: {message: parseData.message, success: parseData.success},
+    });
     Actions.index();
   } else {
-    alert(parseData.message);
+    alert(`Something went wrong ${parseData.message}`);
   }
 };
 export const action_GET_usernameExist = (username) => async (dispatch) => {
@@ -104,11 +112,11 @@ export const action_SignUp_user = (
   zipcode,
   nationality_code,
   fulladdress,
-  responseProfile,
   responseVerfication,
+  responseProfile,
 ) => async () => {
-const mobile=mobileno.split("+").join('')
-console.log(mobile)
+  const mobile = mobileno.split('+').join('');
+  console.log(mobile);
   const value = await AsyncStorage.getItem('tokenizer');
   var url = `${BASE_URL}/api/user/addnewuser`;
   await fetch(url, {
@@ -188,7 +196,6 @@ console.log(mobile)
               .then((response) => {
                 AsyncStorage.setItem('mobileno', mobileno);
                 Actions.tac();
-                console.log(res);
               })
               .catch((err) => {
                 alert(err);
@@ -199,8 +206,7 @@ console.log(mobile)
           });
       } else {
         alert('Something Went Wrong');
-        console.log(res)
+        console.log(res);
       }
     });
-
 };

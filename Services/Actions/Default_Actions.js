@@ -17,6 +17,8 @@ import {
   GET_NOTIFICATION_LIST,
   SET_OPEN_BOTTOMSHEET,
   SET_NOTIFICATION_OFFSET,
+  REGISTRATION_COMPLETE,
+  SPINNER_ALERT,
 } from '../Types/Default_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
@@ -211,8 +213,8 @@ export const action_GET_procedure = () => async (dispatch) => {
       }
     });
 };
-export const action_GET_notications = (name,offset) => async (dispatch) => {
-  let isUnmount=false
+export const action_GET_notications = (name, offset) => async (dispatch) => {
+  let isUnmount = false;
   var url = `${BASE_URL}/api/default/getnotications`;
   await fetch(url, {
     method: 'POST',
@@ -222,24 +224,25 @@ export const action_GET_notications = (name,offset) => async (dispatch) => {
     },
     body: JSON.stringify({
       name: name,
-      offset:offset
+      offset: offset,
     }),
   })
     .then((response) => response.json())
     .then(async (res) => {
-        try {
-          responseData = await response.json();
-        } catch (e) {
-          if(!isUnmount){
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        if (!isUnmount) {
           dispatch({
             type: GET_NOTIFICATION_LIST,
             payload: {data: res.data, loading: res.success},
           });
         }
       }
- 
     });
-    return()=>{isUnmount=true}
+  return () => {
+    isUnmount = true;
+  };
 };
 export const action_SET_notications = (
   title,
@@ -287,6 +290,9 @@ export const signalr_notify_connection = () => async (dispatch) => {
   dispatch({type: SIGNALR_CONNECT_NOTIFY, payload: hubConnect});
 };
 
+export const ACTION_SPINNER_ALERT = (isSpinner) => async (dispatch) => {
+  dispatch({type: SPINNER_ALERT, payload: isSpinner});
+};
 export const ACTION_REFRESH = (isRefresh) => async (dispatch) => {
   dispatch({type: SET_REFRESHING, payload: isRefresh});
 };
@@ -294,28 +300,32 @@ export const ACTION_OFFSET = (offset) => async (dispatch) => {
   dispatch({type: SET_OFFSET, payload: offset});
 };
 export const ACTION_NOTIF = (title, body, to, type) => async (dispatch) => {
-    dispatch({
-      type: GET_NOTIF,
-      payload: {title: title, body: body, to: to, type: type},
-    });
+  dispatch({
+    type: GET_NOTIF,
+    payload: {title: title, body: body, to: to, type: type},
+  });
 };
 export const ACTION_NOTIFICATION_OFFSET = (offset) => async (dispatch) => {
-    dispatch({
-      type: SET_NOTIFICATION_OFFSET,
-      payload: offset,
-    });
+  dispatch({
+    type: SET_NOTIFICATION_OFFSET,
+    payload: offset,
+  });
 };
 export const ACTION_GET_DEVICE = (device) => async (dispatch) => {
-  let isUnmount=false
-  if(!isUnmount){
-  dispatch({type: GET_DEVICE, payload: device});
+  let isUnmount = false;
+  if (!isUnmount) {
+    dispatch({type: GET_DEVICE, payload: device});
   }
-return()=>{isUnmount=true}
+  return () => {
+    isUnmount = true;
+  };
 };
 export const action_open_bottomsheet = (open) => async (dispatch) => {
-  let isUnmount=false
-  if(!isUnmount){
-  dispatch({type: SET_OPEN_BOTTOMSHEET, payload: open});
+  let isUnmount = false;
+  if (!isUnmount) {
+    dispatch({type: SET_OPEN_BOTTOMSHEET, payload: open});
   }
-  return()=>{isUnmount=true}
+  return () => {
+    isUnmount = true;
+  };
 };

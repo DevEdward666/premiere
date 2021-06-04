@@ -6,6 +6,8 @@ import android.content.Context;
 import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import com.horcrux.svg.SvgPackage;
 import com.RNTextInputMask.RNTextInputMaskPackage;
 import com.reactnativejitsimeet.RNJitsiMeetPackage;
 import io.agora.rtc.react.RCTAgoraRtcPackage;

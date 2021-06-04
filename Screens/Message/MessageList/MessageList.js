@@ -23,7 +23,7 @@ import {
   ACTION_OFFSET,
   ACTION_NOTIF,
 } from '../../Services/Actions/Default_Actions';
-
+import SkeletonMsgLst from '../SkeletonMessageList/SkeletonMsgLst';
 const MessageList = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const dispatch = useDispatch();
@@ -108,7 +108,7 @@ const MessageList = () => {
       setmessage(messages);
     }, 100);
   }, [dispatch, addoffset, messages]);
-  return (
+  return messages?.loading ? (
     <FlatList
       refreshControl={
         <RefreshControl
@@ -174,6 +174,8 @@ const MessageList = () => {
         }
       }}
     />
+  ) : (
+    <SkeletonMsgLst />
   );
 };
 

@@ -5,3 +5,4 @@ export const GET_LINK_MESSAGE = 'GET_LINK_MESSAGE';
 export const SET_PIN = 'SET_PIN';
 export const SET_LOCKED = 'SET_LOCKED';
 export const SET_USERNAME = 'SET_USERNAME';
+export const SET_QR_USER = 'SET_QR_USER';

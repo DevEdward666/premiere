@@ -14,7 +14,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Input} from 'react-native-elements';
@@ -36,8 +36,8 @@ import {
   action_POST_appointment,
   action_POST_appointment_others,
 } from '../../Services/Actions/Diagnostic_Actions';
-import styles from './styles'
-import { Card } from 'react-native-elements';
+import styles from './styles';
+import {Card} from 'react-native-elements';
 const Diagnostics = () => {
   const [firstname, setfirstname] = useState('');
   const [middlename, setmiddlename] = useState('');
@@ -176,22 +176,26 @@ const Diagnostics = () => {
   const [spinner, setSpinner] = useState(false);
 
   const toggleSwitch = () => {
-    let mounted =true
-    if(mounted){
-    setIsEnabled((previousState) => !previousState);
+    let mounted = true;
+    if (mounted) {
+      setIsEnabled((previousState) => !previousState);
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleRegionChange = (pickregion) => {
-    let mounted =true
-    if(mounted){
-    setregion(pickregion);
-    setprovince('');
-    setcity('');
-    setbarangay('');
-    dispatch(action_GET_province(pickregion));
+    let mounted = true;
+    if (mounted) {
+      setregion(pickregion);
+      setprovince('');
+      setcity('');
+      setbarangay('');
+      dispatch(action_GET_province(pickregion));
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleProcedureChange = (pickprocedure) => {
     let found = false;
@@ -208,7 +212,7 @@ const Diagnostics = () => {
         ...prev,
         {desc: pickprocedure.desc, price: pickprocedure.price},
       ]);
-      settotalrequest((prev)=>prev+parseInt(pickprocedure.price))
+      settotalrequest((prev) => prev + parseInt(pickprocedure.price));
       setitemState((prev) => [
         ...prev,
         {desc: pickprocedure.desc, price: pickprocedure.price},
@@ -224,159 +228,185 @@ const Diagnostics = () => {
         },
       ]);
       setselectedprocedurecost([{price: pickprocedure.price}]);
-     
     } else {
       alert('Item Already in List');
     }
   };
-  console.log(totalrequest)
-  const handleSubmitAppointment = useCallback(() => {
-    let mounted =true
-    if(mounted){
-    setSpinner(true);
-    dispatch(action_POST_appointment(premid, reasons,totalrequest.toFixed(2), selectedprocedurecode));
+  const handleSubmitAppointment = useCallback(async () => {
+    let mounted = true;
+    if (mounted) {
+      setSpinner(true);
+      dispatch(
+        action_POST_appointment(
+          premid,
+          reasons,
+          totalrequest.toFixed(2),
+          selectedprocedurecode,
+        ),
+      );
 
-    setSpinner(false);
-    {
-      alert('The Diagnostic Appointment Added sucessfully.');
+      setSpinner(false);
+      {
+        await alert('The Diagnostic Appointment Added sucessfully.');
+      }
+      await Actions.diagnostics();
     }
-  }
-  return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, premid, selectedprocedurecode]);
 
   const handleProvinceChange = (pickprovince) => {
-    let mounted =true
-    let value=pickprovince.split("|")
-    if(mounted){
-    setprovince(pickprovince);
-    setprovincelabel(value[0]);
-    setprovincevalue(value[1]);
-    dispatch(action_GET_city(region, value[1]));
+    let mounted = true;
+    let value = pickprovince.split('|');
+    if (mounted) {
+      setprovince(pickprovince);
+      setprovincelabel(value[0]);
+      setprovincevalue(value[1]);
+      dispatch(action_GET_city(region, value[1]));
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleCityChange = (pickcity) => {
-    let mounted =true
-    let value=pickcity.split("|")
-    if(mounted){
-    setcity(pickcity);
-    setcitylabel(value[0]);
-    setcityvalue(value[1]);
-    dispatch(action_GET_barangay(region, provincevalue, value[1]));
+    let mounted = true;
+    let value = pickcity.split('|');
+    if (mounted) {
+      setcity(pickcity);
+      setcitylabel(value[0]);
+      setcityvalue(value[1]);
+      dispatch(action_GET_barangay(region, provincevalue, value[1]));
     }
-    return ()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleCivilStatus = (pickstatus) => {
-    let mounted =true
-    let value=pickstatus.split("|")
-    if(mounted){
-    setCivilStatus(pickstatus);
-    setCivilStatuslabel(value[0]);
-    setCivilStatusvalue(value[1]);
+    let mounted = true;
+    let value = pickstatus.split('|');
+    if (mounted) {
+      setCivilStatus(pickstatus);
+      setCivilStatuslabel(value[0]);
+      setCivilStatusvalue(value[1]);
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleReligion = (pickreligion) => {
-    let mounted =true
-    if(mounted){
-    setreligion(pickreligion);
+    let mounted = true;
+    if (mounted) {
+      setreligion(pickreligion);
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleBarangayChange = (pickBarangay) => {
-    let mounted =true
-    let value=pickBarangay.split('|')
-    if(mounted){
-    setbarangay(pickBarangay)
-    setbarangaylabel(value[0]);
-    setbarangayvalue(value[1])
-    setpsgc(value[0]+","+citylabel+","+provincelabel)
-  
+    let mounted = true;
+    let value = pickBarangay.split('|');
+    if (mounted) {
+      setbarangay(pickBarangay);
+      setbarangaylabel(value[0]);
+      setbarangayvalue(value[1]);
+      setpsgc(value[0] + ',' + citylabel + ',' + provincelabel);
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const handleNationality = (pickNationality) => {
-    let mounted =true
-    if(mounted){
-    setnationality(pickNationality);
+    let mounted = true;
+    if (mounted) {
+      setnationality(pickNationality);
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
 
   useEffect(() => {
     let mounted = true;
     const geterrors = () => {
-      if(mounted){
-      getprem_id();
+      if (mounted) {
+        getprem_id();
 
-      if (SignUp_Reducers.username?.username == username) {
-        setErrorMessageUsername('Username Already Exists');
-        setstepError(true);
-      } else {
-        setErrorMessageUsername('');
-        setstepError(false);
+        if (SignUp_Reducers.username?.username == username) {
+          setErrorMessageUsername('Username Already Exists');
+          setstepError(true);
+        } else {
+          setErrorMessageUsername('');
+          setstepError(false);
+        }
       }
-    }
     };
 
     mounted && geterrors();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [username, SignUp_Reducers]);
   const handleNextInfo = () => {
-    let mounted =true
-    if(mounted){
-    if (
-      firstname == '' ||
-      lastname == '' ||
-      gender == '' ||
-      birthdate == ''
-    ) {
-      setInfoError(true);
-      alert('Please Fill All Fields');
-    } else {
-      setInfoError(false);
+    let mounted = true;
+    if (mounted) {
+      if (
+        firstname == '' ||
+        lastname == '' ||
+        gender == '' ||
+        birthdate == ''
+      ) {
+        setInfoError(true);
+        alert('Please Fill All Fields');
+      } else {
+        setInfoError(false);
+      }
     }
-  }
-  return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
 
   const handleNextAddress = () => {
-    let mounted =true
-    if(mounted){
-    if (
-      nationality == '' ||
-      region == '' ||
-      province == '' ||
-      city == '' ||
-      gender == '' ||
-      barangay == ''
-    ) {
-      setAddressError(true);
-      alert('Please Fill All Fields');
-    } else {
-      setAddressError(false);
+    let mounted = true;
+    if (mounted) {
+      if (
+        nationality == '' ||
+        region == '' ||
+        province == '' ||
+        city == '' ||
+        gender == '' ||
+        barangay == ''
+      ) {
+        setAddressError(true);
+        alert('Please Fill All Fields');
+      } else {
+        setAddressError(false);
+      }
     }
-  }
-  return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
 
   const validate = (email) => {
-    let mounted =true
-    if(mounted){
-    setemail(email);
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(email) === false) {
-      setemailErrorMessage(true);
-    } else {
-      setemailErrorMessage(false);
+    let mounted = true;
+    if (mounted) {
       setemail(email);
+      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if (reg.test(email) === false) {
+        setemailErrorMessage(true);
+      } else {
+        setemailErrorMessage(false);
+        setemail(email);
+      }
     }
-  }
-  return ()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
 
-  const handleSubmitCredentials = useCallback(() => {
-
+  const handleSubmitCredentials = useCallback(async () => {
     if (stepError == false) {
       dispatch(
         action_POST_appointment_others(
@@ -406,8 +436,8 @@ const Diagnostics = () => {
           selectedprocedurecode,
         ),
       );
-      alert('The Diagnostic Appointment Added sucessfully.');
-
+      await alert('The Diagnostic Appointment Added sucessfully.');
+      await Actions.diagnostics();
       // setTimeout(() => {
       //   Actions.diagnostics();
       // }, 1000);
@@ -470,7 +500,7 @@ const Diagnostics = () => {
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
-    
+
         <FlatList
           style={{height: 200, maxHeight: 400}}
           data={itemState}
@@ -491,191 +521,101 @@ const Diagnostics = () => {
             </TouchableOpacity>
           )}
         />
- 
       </SafeAreaView>
     );
   };
 
   return (
     <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
-    <SafeAreaView style={styles.maincontainer}>
-      <View style={styles.Inputcontainer}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'stretch',
-            height: '30%',
-          }}>
-          <View style={{width: 80 + '%', height: 40}}>
-            <Text>Use My Personal Information</Text>
-          </View>
-          <View style={{width: 5 + '%', height: 40}}>
-            <Switch
-              trackColor={{false: '#767577', true: '#add8e6'}}
-              thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-              accessibilityLabel={'Use My Information'}
-            />
+      style={{flex: 1}}
+      source={require('../../assets/background/white.jpg')}
+      resizeMode="cover"
+      blurRadius={20}>
+      <SafeAreaView style={styles.maincontainer}>
+        <View style={styles.Inputcontainer}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'stretch',
+              height: '30%',
+            }}>
+            <View style={{width: 80 + '%', height: 40}}>
+              <Text>Use My Personal Information</Text>
+            </View>
+            <View style={{width: 5 + '%', height: 40}}>
+              <Switch
+                trackColor={{false: '#767577', true: '#add8e6'}}
+                thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+                accessibilityLabel={'Use My Information'}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    
-      {isEnabled ? (
-        <Card containerStyle={styles.plate}>
-        
-               
-          <Picker
-            selectedValue={city}
-            style={styles.PickerContainer}
-            onValueChange={(itemValue, itemIndex) =>
-              handleProcedureChange(itemValue)
-            }>
-            <Picker.Item label="Select Procedure" value="null" />
-            {procedure_reducers.map((card) => (
-              <Picker.Item
-                key={card.proccode}
-                label={card.procdesc}
-                value={{
-                  code: card.proccode,
-                  desc: card.procdesc,
-                  price: card.regprice,
-                }}
-              />
-            ))}
-          </Picker>
-          <Flatlists />
-      
-         
-                     {isEnabled ? (
-          <View style={{width: '100%',}}>
-        
-           
-             <TextInput
-                multiline
-                numberOfLines={5}
-                maxLength={100}
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                style={{padding:10,marginBottom:30,marginTop:10}}
-                mode="flat"
-                label="Reason for Requisition"
-                onChangeText={(text) => setreasons(text)}
-                value={reasons}
-              />
-               <Button
-              style={{borderRadius: 30,}}
-              onPress={() => handleSubmitAppointment()}
-              title="Submit Appointment"
-            />
-          </View>
-        ) : null}
-          </Card>
-      ) : (
-    
-        <ProgressSteps style={styles.plate}>
-     
-          <ProgressStep
-            label="Information"
-            onNext={handleNextInfo}
-            errors={InfoError}>
-                <Card containerStyle={styles.plate}>
-            <View style={styles.Inputcontainer}>
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="First name"
-                onChangeText={(text) => setfirstname(text)}
-                value={firstname}
-              />
-          
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="Middle name"
-                onChangeText={(text) => setmiddlename(text)}
-                value={middlename}
-              />
-  
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="Last name"
-                onChangeText={(text) => setlastname(text)}
-                value={lastname}
-              />
-            
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="Suffix"
-                onChangeText={(text) => setSuffix(text)}
-                value={suffix}
-              />
-          
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="Prefix"
-                onChangeText={(text) => setPrefix(text)}
-                value={prefix}
-              />
-        
 
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <View
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}>
-                  <TouchableHighlight
-                    underlayColor="white"
-                   
-                    onPress={showDatepicker}>
+        {isEnabled ? (
+          <Card containerStyle={styles.plate}>
+            <Picker
+              selectedValue={city}
+              style={styles.PickerContainer}
+              onValueChange={(itemValue, itemIndex) =>
+                handleProcedureChange(itemValue)
+              }>
+              <Picker.Item label="Select Procedure" value="null" />
+              {procedure_reducers.map((card) => (
+                <Picker.Item
+                  key={card.proccode}
+                  label={card.procdesc}
+                  value={{
+                    code: card.proccode,
+                    desc: card.procdesc,
+                    price: card.regprice,
+                  }}
+                />
+              ))}
+            </Picker>
+            <Flatlists />
+
+            {isEnabled ? (
+              <View style={{width: '100%'}}>
+                <TextInput
+                  multiline
+                  numberOfLines={5}
+                  maxLength={100}
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  style={{padding: 10, marginBottom: 30, marginTop: 10}}
+                  mode="flat"
+                  label="Reason for Requisition"
+                  onChangeText={(text) => setreasons(text)}
+                  value={reasons}
+                />
+                <Button
+                  style={{borderRadius: 30}}
+                  onPress={() => handleSubmitAppointment()}
+                  title="Submit Appointment"
+                />
+              </View>
+            ) : null}
+          </Card>
+        ) : (
+          <ProgressSteps style={styles.plate}>
+            <ProgressStep
+              label="Information"
+              onNext={handleNextInfo}
+              errors={InfoError}>
+              <Card containerStyle={styles.plate}>
+                <View style={styles.Inputcontainer}>
                   <TextInput
-                    disabled={true}
                     theme={{
                       colors: {
                         primary: '#3eb2fa',
@@ -684,287 +624,356 @@ const Diagnostics = () => {
                       },
                     }}
                     mode="flat"
-                    label="Birthdate"
-                    value={birthdate}
+                    label="First name"
+                    onChangeText={(text) => setfirstname(text)}
+                    value={firstname}
                   />
-         </TouchableHighlight>
-                </View>
-             
-                  
-                   
-           
-              </View>
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode}
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                />
-              )}
-              <View>
-                <Picker
-                  selectedValue={civilstatus}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleCivilStatus(itemValue)
-                  }>
-                  <Picker.Item label="Civil Status" value="Civil Status" />
-                  {civil_status_reducers.map((cs) => (
-                    <Picker.Item
-                      key={cs?.cskey}
-                      label={cs?.csdesc}
-                      value={cs?.csdesc+"|"+cs?.cskey}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              <View>
-                <Picker
-                  selectedValue={nationality}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleNationality(itemValue)
-                  }>
-                  <Picker.Item label="Select Nationality" />
-                  {nationality_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.nationality}
-                      label={card.nationality}
-                      value={card.nationality}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              <View>
-                <Picker
-                  selectedValue={religion}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleReligion(itemValue)
-                  }>
-                  <Picker.Item label="Religion" value="Religion" />
-                  {religion_reducers.map((cs) => (
-                    <Picker.Item
-                      key={cs?.religion}
-                      label={cs?.description}
-                      value={cs?.religion}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              <View>
-                <Picker
-                  selectedValue={gender}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setgender(itemValue)
-                  }>
-                  <Picker.Item label="Gender" />
-                  <Picker.Item label="Male" value="M" />
-                  <Picker.Item label="Female" value="F" />
-                </Picker>
-              </View>
-              <TextInput
-                multiline
-                numberOfLines={5}
-                maxLength={100}
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                label="Reason for Requisition"
-                onChangeText={(text) => setreasons(text)}
-                value={reasons}
-              />
-            </View>
-            </Card>
-          </ProgressStep>
 
-          <ProgressStep
-            label="Contact Details"
-            onNext={handleNextAddress}
-            errors={AddressError}>
-             <Card containerStyle={styles.plate}>
-            <View style={styles.Inputcontainer}>
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                error={emailErrorMessage}
-                onChangeText={(text) => validate(text)}
-                label="Email"
-                value={email}
-              />
-       
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                onChangeText={(text) => setmobile(text)}
-                label="Mobile No."
-                value={mobile}
-              />
-     
-              <Picker
-                selectedValue={region}
-                style={styles.PickerContainer}
-                onValueChange={(itemValue, itemIndex) =>
-                  handleRegionChange(itemValue)
-                }>
-                <Picker.Item label="Select Region" value="region" />
-                {region_reducers.map((card) => (
-                  <Picker.Item
-                    key={card.regioncode}
-                    label={card.regiondesc}
-                    value={card.regioncode}
-                  />
-                ))}
-              </Picker>
-              <Picker
-                selectedValue={province}
-                style={styles.PickerContainer}
-                onValueChange={(itemValue, itemIndex) =>
-                  handleProvinceChange(itemValue)
-                }>
-                <Picker.Item label="Select Province" value="province" />
-                {province_reducers?.map((card) => (
-                  <Picker.Item
-                    key={card.provincecode}
-                    label={card.provincedesc}
-                    value={card.provincedesc+"|"+card.provincecode}
-                  />
-                ))}
-              </Picker>
-              <Picker
-                selectedValue={city}
-                style={styles.PickerContainer}
-                onValueChange={(itemValue, itemIndex) =>
-                  handleCityChange(itemValue)
-                }>
-                <Picker.Item label="Select City" value="city" />
-                {city_reducers.map((card) => (
-                  <Picker.Item
-                    key={card.citymuncode}
-                    label={card.citymundesc}
-                    value={card.citymundesc+"|"+card.citymuncode}
-                  />
-                ))}
-              </Picker>
-              <Picker
-                selectedValue={barangay}
-                style={styles.PickerContainer}
-                onValueChange={(itemValue,itemIndex) =>
-                  handleBarangayChange(itemValue,itemIndex)
-                }
-                >
-                <Picker.Item label="Select Barangay" value="barangay" />
-                {barangay_reducers.map((card) => (
-                  <Picker.Item
-                    key={card.barangaycode}
-                    label={card.barangaydesc}
-                    value={card.barangaydesc+"|"+card.barangaycode}
-                  />
-                ))}
-              </Picker>
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                onChangeText={(text) => setfulladdress(text)}
-                label="Address 1"
-                value={fulladdress}
-              />
-       
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                onChangeText={(text) => setfulladdress2(text)}
-                label="Address 2"
-                value={fulladdress2}
-              />
-        
-              <TextInput
-                theme={{
-                  colors: {
-                    primary: '#3eb2fa',
-                    background: 'white',
-                    underlineColor: 'transparent',
-                  },
-                }}
-                mode="flat"
-                onChangeText={(text) => setzipcode(text)}
-                label="Zipcode"
-                value={zipcode}
-              />
-          
-            </View>
-            </Card>
-          </ProgressStep>
-          <ProgressStep
-            label="Laboratory Request"
-            onSubmit={() => handleSubmitCredentials()}>
-                <Card containerStyle={styles.plate}>
-            <View style={styles.Inputcontainer}>
-              <Picker
-                style={styles.PickerContainer}
-                onValueChange={(itemValue, itemIndex) =>
-                  handleProcedureChange(itemValue)
-                }>
-                <Picker.Item label="Select Procedure" value="null" />
-                {procedure_reducers.map((card) => (
-                  <Picker.Item
-                    key={card.proccode}
-                    label={card.procdesc}
-                    value={{
-                      code: card.proccode,
-                      desc: card.procdesc,
-                      price: card.regprice,
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
                     }}
+                    mode="flat"
+                    label="Middle name"
+                    onChangeText={(text) => setmiddlename(text)}
+                    value={middlename}
                   />
-                ))}
-              </Picker>
-              <Flatlists />
-            </View>
-            </Card>
-          </ProgressStep>
-       
-        </ProgressSteps>
-       
-      )}
-    </SafeAreaView>
-    
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Last name"
+                    onChangeText={(text) => setlastname(text)}
+                    value={lastname}
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Suffix"
+                    onChangeText={(text) => setSuffix(text)}
+                    value={suffix}
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Prefix"
+                    onChangeText={(text) => setPrefix(text)}
+                    value={prefix}
+                  />
+
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                      }}>
+                      <TouchableHighlight
+                        underlayColor="white"
+                        onPress={showDatepicker}>
+                        <TextInput
+                          disabled={true}
+                          theme={{
+                            colors: {
+                              primary: '#3eb2fa',
+                              background: 'white',
+                              underlineColor: 'transparent',
+                            },
+                          }}
+                          mode="flat"
+                          label="Birthdate"
+                          value={birthdate}
+                        />
+                      </TouchableHighlight>
+                    </View>
+                  </View>
+                  {show && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={date}
+                      mode={mode}
+                      is24Hour={true}
+                      display="default"
+                      onChange={onChange}
+                    />
+                  )}
+                  <View>
+                    <Picker
+                      selectedValue={civilstatus}
+                      style={styles.PickerContainer}
+                      onValueChange={(itemValue, itemIndex) =>
+                        handleCivilStatus(itemValue)
+                      }>
+                      <Picker.Item label="Civil Status" value="Civil Status" />
+                      {civil_status_reducers.map((cs) => (
+                        <Picker.Item
+                          key={cs?.cskey}
+                          label={cs?.csdesc}
+                          value={cs?.csdesc + '|' + cs?.cskey}
+                        />
+                      ))}
+                    </Picker>
+                  </View>
+                  <View>
+                    <Picker
+                      selectedValue={nationality}
+                      style={styles.PickerContainer}
+                      onValueChange={(itemValue, itemIndex) =>
+                        handleNationality(itemValue)
+                      }>
+                      <Picker.Item label="Select Nationality" />
+                      {nationality_reducers.map((card) => (
+                        <Picker.Item
+                          key={card.nationality}
+                          label={card.nationality}
+                          value={card.nationality}
+                        />
+                      ))}
+                    </Picker>
+                  </View>
+                  <View>
+                    <Picker
+                      selectedValue={religion}
+                      style={styles.PickerContainer}
+                      onValueChange={(itemValue, itemIndex) =>
+                        handleReligion(itemValue)
+                      }>
+                      <Picker.Item label="Religion" value="Religion" />
+                      {religion_reducers.map((cs) => (
+                        <Picker.Item
+                          key={cs?.religion}
+                          label={cs?.description}
+                          value={cs?.religion}
+                        />
+                      ))}
+                    </Picker>
+                  </View>
+                  <View>
+                    <Picker
+                      selectedValue={gender}
+                      style={styles.PickerContainer}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setgender(itemValue)
+                      }>
+                      <Picker.Item label="Gender" />
+                      <Picker.Item label="Male" value="M" />
+                      <Picker.Item label="Female" value="F" />
+                    </Picker>
+                  </View>
+                  <TextInput
+                    multiline
+                    numberOfLines={5}
+                    maxLength={100}
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Reason for Requisition"
+                    onChangeText={(text) => setreasons(text)}
+                    value={reasons}
+                  />
+                </View>
+              </Card>
+            </ProgressStep>
+
+            <ProgressStep
+              label="Contact Details"
+              onNext={handleNextAddress}
+              errors={AddressError}>
+              <Card containerStyle={styles.plate}>
+                <View style={styles.Inputcontainer}>
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    error={emailErrorMessage}
+                    onChangeText={(text) => validate(text)}
+                    label="Email"
+                    value={email}
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    onChangeText={(text) => setmobile(text)}
+                    label="Mobile No."
+                    value={mobile}
+                  />
+
+                  <Picker
+                    selectedValue={region}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleRegionChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Region" value="region" />
+                    {region_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.regioncode}
+                        label={card.regiondesc}
+                        value={card.regioncode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={province}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleProvinceChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Province" value="province" />
+                    {province_reducers?.map((card) => (
+                      <Picker.Item
+                        key={card.provincecode}
+                        label={card.provincedesc}
+                        value={card.provincedesc + '|' + card.provincecode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={city}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleCityChange(itemValue)
+                    }>
+                    <Picker.Item label="Select City" value="city" />
+                    {city_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.citymuncode}
+                        label={card.citymundesc}
+                        value={card.citymundesc + '|' + card.citymuncode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={barangay}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleBarangayChange(itemValue, itemIndex)
+                    }>
+                    <Picker.Item label="Select Barangay" value="barangay" />
+                    {barangay_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.barangaycode}
+                        label={card.barangaydesc}
+                        value={card.barangaydesc + '|' + card.barangaycode}
+                      />
+                    ))}
+                  </Picker>
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    onChangeText={(text) => setfulladdress(text)}
+                    label="Address 1"
+                    value={fulladdress}
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    onChangeText={(text) => setfulladdress2(text)}
+                    label="Address 2"
+                    value={fulladdress2}
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    onChangeText={(text) => setzipcode(text)}
+                    label="Zipcode"
+                    value={zipcode}
+                  />
+                </View>
+              </Card>
+            </ProgressStep>
+            <ProgressStep
+              label="Laboratory Request"
+              onSubmit={() => handleSubmitCredentials()}>
+              <Card containerStyle={styles.plate}>
+                <View style={styles.Inputcontainer}>
+                  <Picker
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleProcedureChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Procedure" value="null" />
+                    {procedure_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.proccode}
+                        label={card.procdesc}
+                        value={{
+                          code: card.proccode,
+                          desc: card.procdesc,
+                          price: card.regprice,
+                        }}
+                      />
+                    ))}
+                  </Picker>
+                  <Flatlists />
+                </View>
+              </Card>
+            </ProgressStep>
+          </ProgressSteps>
+        )}
+      </SafeAreaView>
     </ImageBackground>
   );
 };
-
-
 
 export default Diagnostics;

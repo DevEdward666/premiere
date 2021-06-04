@@ -32,6 +32,10 @@ target 'Premiere' do
 
   pod 'react-native-text-input-mask', :path => '../node_modules/react-native-text-input-mask'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'PremiereTests' do
     inherit! :complete
     # Pods for testing

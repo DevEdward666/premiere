@@ -7,7 +7,7 @@ import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 
 public class SSLPinnerFactory implements OkHttpClientFactory {
-    private static String hostname = "https://192.168.1.3:45455";
+    private static String hostname = "https://192.168.1.107:45455";
 
     public OkHttpClient createNewNetworkModuleClient() {
         CertificatePinner certificatePinner = new CertificatePinner.Builder()

@@ -13,26 +13,30 @@ const UIDiagnoticsResults = () => {
   });
   const [resurls, setresurls] = useState('');
   const geturl = async () => {
-    let mounted =true
-    if(mounted){
-    try {
-      const resurl = await AsyncStorage.getItem('resurl');
-      if (resurl !== null) {
-        setresurls(resurl);
+    let mounted = true;
+    if (mounted) {
+      try {
+        const resurl = await AsyncStorage.getItem('resurl');
+        if (resurl !== null) {
+          setresurls(resurl);
+        }
+      } catch (e) {
+        alert('Failed to fetch the data from storage');
       }
-    } catch (e) {
-      alert('Failed to fetch the data from storage');
     }
-  } 
-  return ()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
 
   useEffect(() => {
-    let mounted =true
-    if(mounted){
-    geturl();
+    let mounted = true;
+    if (mounted) {
+      geturl();
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   }, [resurls]);
   const resources = {
     file:
@@ -41,11 +45,11 @@ const UIDiagnoticsResults = () => {
         : '/sdcard/DCIM/Premiere/SOA_00745411.pdf',
     url:
       //'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      `${diagnostic_url}${resurls}`,
+      `${diagnostic_url}/${resurls}`,
     //'https://pdftron.s3.amazonaws.com/downloads/pdfref.pdf',
     base64: 'asdsadasd',
   };
-  const resourceType = 'file';
+  const resourceType = 'url';
 
   return (
     <View style={{flex: 1}}>

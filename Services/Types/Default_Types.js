@@ -6,8 +6,8 @@ export const SET_NATIONALITY = 'SET_NATIONALITY';
 export const SET_CIVIL_STATUS = 'SET_CIVIL_STATUS';
 export const SET_RELIGION = 'SET_RELIGION';
 export const SET_PROCEDURE = 'SET_PROCEDURE';
-export const BASE_URL = 'https://192.168.1.95:45455';
-export const REMOTE_URL = 'https://192.168.1.40:45457';
+export const BASE_URL = 'https://deliveryroomwatcher.conveyor.cloud';
+export const REMOTE_URL = 'https://ddt-server.conveyor.cloud/';
 export const SIGNALR_CONNECT = 'SIGNALR_CONNECT';
 export const SIGNALR_CONNECT_NOTIFY = 'SIGNALR_CONNECT_NOTIFY';
 export const SET_REFRESHING = 'SET_REFRESHING';
@@ -18,3 +18,6 @@ export const GET_NOTIFICATION_LIST = 'GET_NOTIFICATION_LIST';
 export const SET_NOTIFICATION_OFFSET = 'SET_NOTIFICATION_OFFSET';
 export const SET_OPEN_BOTTOMSHEET = 'SET_OPEN_BOTTOMSHEET';
 export const APP_NAME = 'APP_NAME';
+
+export const REGISTRATION_COMPLETE = 'REGISTRATION_COMPLETE';
+export const SPINNER_ALERT = 'SPINNER_ALERT';

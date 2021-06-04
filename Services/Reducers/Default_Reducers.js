@@ -18,11 +18,13 @@ import {
   GET_NOTIFICATION_LIST,
   SET_OPEN_BOTTOMSHEET,
   APP_NAME,
-  SET_NOTIFICATION_OFFSET
+  SET_NOTIFICATION_OFFSET,
+  REGISTRATION_COMPLETE,
+  SPINNER_ALERT,
 } from '../Types/Default_Types';
 
 const defult_values = {
-  app_name:"Premiere",
+  app_name: 'Premiere',
   region: [],
   barangay: [],
   city: [],
@@ -41,11 +43,17 @@ const defult_values = {
   notification: {title: '', body: '', to: '', type: ''},
   notificationlist: {data: [], loading: false},
   device: '',
-  bottomSheet:false,
-  notifoffset:0,
+  bottomSheet: false,
+  notifoffset: 0,
+  registrationcomplete: {message: '', success: false},
+  spinneralert: false,
 };
 const Default_Reducer = (data_state = defult_values, actions) => {
   switch (actions.type) {
+    case SPINNER_ALERT:
+      return {...data_state, spinneralert: actions.payload};
+    case REGISTRATION_COMPLETE:
+      return {...data_state, registrationcomplete: actions.payload};
     case SET_NOTIFICATION_OFFSET:
       return {...data_state, notifoffset: actions.payload};
     case APP_NAME:

@@ -1,51 +1,85 @@
-import React, {useState, useEffect} from 'react';
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
-import {action_GET_userdetails} from '../Services/Actions/Users_Actions';
-import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Actions} from 'react-native-router-flux';
+import React, {useState, useEffect} from 'react';
+import {SafeAreaView, StyleSheet, Text, View, Image} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import {useDispatch, useSelector} from 'react-redux';
+import {action_setqr} from '../Services/Actions/Users_Actions';
 const MyQRCodeScreen = () => {
-  
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
+  const user_qr = useSelector((state) => state.User_Reducers.user_qr);
   const [inputText, setInputText] = useState('');
   const [username, setUsername] = useState('');
-  const [qrvalue, setQrvalue] = useState(users_reducers?.prem_id);
+  const [qrvalue, setQrvalue] = useState('');
   const dispatch = useDispatch();
-
-  let logo = require('../assets//icons/premiereicon.jpeg');
-
+  useEffect(() => {
+    let mounted = true;
+    const getqr = () => {
+      if (mounted) {
+        dispatch(action_setqr(users_reducers?.prem_id));
+      }
+    };
+    mounted && getqr();
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch]);
+  useEffect(() => {
+    let mounted = true;
+    const setqr = async () => {
+      if (mounted) {
+        if (user_qr?.qrbase64 !== '') {
+          await AsyncStorage.setItem('prem_user_qr', user_qr?.qrbase64);
+          await AsyncStorage.getItem('prem_user_qr').then(async (item) => {
+            await setQrvalue('data:image/png;base64,' + item);
+          });
+        }
+        await AsyncStorage.getItem('prem_user_qr').then(async (item) => {
+          await setQrvalue('data:image/png;base64,' + item);
+        });
+      }
+    };
+    mounted && setqr();
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch]);
+  console.log(users_reducers?.prem_id);
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         <Text style={styles.titleStyle}>This is your personal QR</Text>
-        <QRCode
+        <Image
+          style={{
+            marginTop: 10,
+            marginStart: 10,
+            width: 300,
+            height: 300,
+            borderRadius: 120 / 2,
+            overflow: 'hidden',
+            borderWidth: 3,
+          }}
+          source={{uri: qrvalue, scale: 1}}
+        />
+        {/* <QRCode
           //QR code value
-          value={"LPH-8D20RN"}
+          value={users_reducers?.prem_id}
           //size of QR Code
           size={250}
           //Color of the QR Code (Optional)
-          color="black"
+          // color="black"
           //Background Color of the QR Code (Optional)
-          backgroundColor="white"
+          // backgroundColor="white"
           //Logo of in the center of QR Code (Optional)
-          logo={logo}
+          //   logo={logo}
           //Center Logo size  (Optional)
-          logoSize={50}
+          // logoSize={50}
           //Center Logo margin (Optional)
-          logoMargin={1}
+          // logoMargin={1}
           //Center Logo radius (Optional)
-          logoBorderRadius={1}
-          //Center Logo background (Optional)
-          logoBackgroundColor="white"
-        />
+          // logoBorderRadius={1}
+          // Center Logo background (Optional)
+          // logoBackgroundColor="white"
+        /> */}
       </View>
     </SafeAreaView>
   );
@@ -57,7 +91,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 50,
     margin: 30,
-    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',

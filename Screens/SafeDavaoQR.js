@@ -63,7 +63,7 @@ const SafeDavaoQR = () => {
       },
       (response) => {
         // let source = 'data:image/jpeg;base64,' + response.base64;
-        let source = response.uri;
+        let source = response.base64;
         setresourcePath(response.uri); // update the local state, this will rerender your TomarFoto component with the photo uri path.
         if (response.didCancel) {
           alert('Action Cancelled');

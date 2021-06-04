@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, SafeAreaView, View, Button} from 'react-native';
 import {Text} from 'react-native-elements';
 import {action_update_user} from '../Services/Actions/SignUp_Actions';
+import {action_add_OTP} from '../Services/Actions/Login_Actions';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const OTPScreen = () => {
@@ -12,28 +13,48 @@ const OTPScreen = () => {
   useEffect(() => {
     let mounted = true;
     const settimers = () => {
-      setTimeout(() => setTimer(timer - 1), 1000);
-      if (timer <= 0) {
-        setTimer('');
+      if (timer > 0) {
+        setTimeout(() => setTimer(timer - 1), 1000);
+      } else {
+        setTimer(0);
       }
     };
 
     mounted && settimers();
-    return () => (mounted = false);
+    return () => {
+      mounted = false;
+    };
   }, [timer]);
   const handleSubmit = () => {
-    AsyncStorage.getItem('username').then((item) => {
-      if (item) {
-        dispatch(action_update_user(item));
-      }
-      console.log(item);
-    });
+    let mounted = true;
+    if (mounted) {
+      AsyncStorage.getItem('username').then((item) => {
+        if (item) {
+          dispatch(action_update_user(item));
+        }
+      });
+    }
+    return () => {
+      mounted = false;
+    };
+  };
+  const handleResend = () => {
+    let mounted = true;
+    if (mounted) {
+      AsyncStorage.getItem('username').then((item) => {
+        if (item) {
+          dispatch(action_add_OTP(item));
+        }
+      });
+    }
+    return () => {
+      mounted = false;
+    };
   };
   AsyncStorage.getItem('mobileno').then((item) => {
     if (item) {
       setmobileno(item);
     }
-    console.log(item);
   });
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -66,6 +87,15 @@ const OTPScreen = () => {
             title="Submit"
             color="#0148a4"
             accessibilityLabel="Submit"
+          />
+        </View>
+        <View style={{padding: 60, borderRadius: 20, marginTop: -90}}>
+          <Button
+            style={{color: '#0148a4'}}
+            onPress={handleResend}
+            title="Resend OTP"
+            color="#0148a4"
+            accessibilityLabel="Resend OTP"
           />
         </View>
       </View>
