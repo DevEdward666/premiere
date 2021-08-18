@@ -5,6 +5,7 @@ import {
   SET_DATA_RESULT,
   SET_DATA_DIAGNOSTIC,
   SET_APPOINTMENT_MESSAGE,
+  TOGGLE_ENABLED
 } from '../Types/Diagnostic_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BASE_URL} from '../Types/Default_Types';
@@ -187,4 +188,8 @@ export const action_GET_diagnostics_resultlist = (premid, offset) => async (
         });
       }
     });
+};
+
+export const TOGGLE_SWITCH = (isEnabled) => async (dispatch) => {
+  dispatch({type: TOGGLE_ENABLED, payload: isEnabled});
 };

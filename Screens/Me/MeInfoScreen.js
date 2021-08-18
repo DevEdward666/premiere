@@ -4,7 +4,7 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity,
+  TouchableHighlight,
   Dimensions,
   ImageBackground,
 } from 'react-native';
@@ -21,6 +21,7 @@ import styles from './infostyle';
 import {Card} from 'react-native-elements';
 import moment from 'moment';
 import {SafeAreaView} from 'react-native';
+import ImageView from "react-native-image-viewing";
 const MeInfo = () => {
   const dispatch = useDispatch();
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
@@ -29,13 +30,17 @@ const MeInfo = () => {
   const base_url = useSelector((state) => state.Default_Reducers.base_url);
   const [username, setusername] = useState('');
   const [docname, setdocname] = useState('');
-  let imageUri = `${base_url}/${users_reducers?.img}`;
-  let DocimageUri = `${base_url}/${users_reducers?.docs}`;
-
+  
+  const [visible, setIsVisible] = useState(false);
+  // let imageUri = `${base_url}/${users_reducers?.img}`;
+  let imageUri = `${users_image}`;
+  // let DocimageUri = `${base_url}/${users_reducers?.docs}`;
+  let DocimageUri =`${docs_image}`;
   useEffect(() => {
     let mounted = true;
     const getuserdocs = () => {
       if (mounted) {
+        if(users_image=="")
         AsyncStorage.getItem('username').then((item) => {
           setusername(item);
           dispatch(action_GET_userdetails(item));
@@ -49,7 +54,6 @@ const MeInfo = () => {
       mounted = false;
     };
   }, [dispatch, username]);
-
   const FirstRoute = () => (
     <SafeAreaView>
       <Card containerStyle={styles.userplate}>
@@ -88,17 +92,32 @@ const MeInfo = () => {
     first: FirstRoute,
     second: SecondRoute,
   });
-
+  const images = [
+    {
+      uri: imageUri,
+    },
+    {
+      uri: DocimageUri,
+    }
+  ];
   return (
+    
     <ImageBackground
       style={{flex: 1}}
       source={require('../../assets/background/white.jpg')}
       resizeMode="cover"
       blurRadius={20}>
+        <ImageView
+  images={images}
+  imageIndex={0}
+  visible={visible}
+  onRequestClose={() => setIsVisible(false)}
+/>
       <ScrollView style={styles.container}>
         <Card containerStyle={styles.userplate}>
           <View>
             <View style={styles.header}></View>
+            <TouchableHighlight   style={styles.avatar}  onPress={() => setIsVisible(true)}>
             <Image
               style={styles.avatar}
               source={{
@@ -106,6 +125,7 @@ const MeInfo = () => {
                 scale: 1,
               }}
             />
+            </TouchableHighlight>
           </View>
           <View style={styles.body2}>
             <View style={styles.bodyContent2}>
@@ -128,6 +148,7 @@ const MeInfo = () => {
             <TabBar {...props} style={{backgroundColor: '#1dc259'}} />
           )}
         />
+        
       </ScrollView>
     </ImageBackground>
   );

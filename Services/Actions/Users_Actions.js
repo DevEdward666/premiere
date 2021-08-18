@@ -159,53 +159,58 @@ export const action_SET_LinkRequest = (patno, prem_id, status) => async (
     });
 };
 export const action_GET_Docs = (username) => async (dispatch) => {
-  let isUnmount = false;
   var url = `${BASE_URL}/api/user/getimageDocs?username=${username}`;
-
-  await RNFetchBlob.fetch('POST', url, {})
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
     .then(async (res) => {
-      let base64Str = res.base64();
       try {
         responseData = await response.json();
       } catch (e) {
-        if (!isUnmount) {
-          dispatch({
-            type: SET_DOCIMAGE_USERS,
-            payload: base64Str,
-          });
-        }
+        dispatch({
+          type: SET_DOCIMAGE_USERS,
+          payload: res.message,
+        });
       }
-      let text = res.text();
-      let json = res.json();
-    })
 
-    .catch((errorMessage, statusCode) => {
+      // console.log('users' + res.username);
+    })
+    .catch(() => {
       return controller.abort();
     });
-  return () => {
-    isUnmount = true;
-  };
 };
 export const action_GET_Profileimage = (username) => async (dispatch) => {
   var url = `${BASE_URL}/api/user/getimage?username=${username}`;
-  await RNFetchBlob.fetch('POST', url, {})
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
     .then(async (res) => {
-      let base64Str = res.base64();
       try {
         responseData = await response.json();
       } catch (e) {
         dispatch({
           type: SET_IMAGE_USERS,
-          payload: base64Str,
+          payload: res.message,
         });
       }
-      let text = res.text();
-      let json = res.json();
+
+      // console.log('users' + res.username);
     })
-    .catch((errorMessage, statusCode) => {
+    .catch(() => {
       return controller.abort();
     });
 };
+
 export const action_SET_files = (Base64) => async () => {
   // const paths = `${RNFetchBlob.fs.dirs.DCIMDir}/${new Date().getTime()}.jpg`; // where u need to put that
 
@@ -216,16 +221,12 @@ export const action_SET_files = (Base64) => async () => {
 
     RNFS.exists(filepath)
       .then((result) => {
-        console.log('file exists: ', result);
-
         if (result) {
           return (
             RNFS.unlink(filepath)
               .then(() => {
-                console.log('FILE DELETED');
                 RNFS.writeFile(path, Base64, 'base64') //data.base64 is your photo with convert base64
                   .then((value) => {
-                    console.log(value);
                     // try {
                     //   RNFS.scanFile(paths) //after save to notify gallry for that
                     //     .then(() => {
@@ -248,7 +249,6 @@ export const action_SET_files = (Base64) => async () => {
         } else {
           RNFS.writeFile(path, Base64, 'base64') //data.base64 is your photo with convert base64
             .then((value) => {
-              console.log(value);
               // try {
               //   RNFS.scanFile(paths) //after save to notify gallry for that
               //     .then(() => {

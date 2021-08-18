@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image,ImageBackground } from 'react-native'
 import { Card, ListItem, Button, Icon } from 'react-native-elements'
 import styles from './styles';
+
+import { useDispatch, useSelector } from 'react-redux';
 const NewsCard = ({title,img,description,userimg,UI}) => {
+
+
     return (
     
      
@@ -11,6 +15,7 @@ const NewsCard = ({title,img,description,userimg,UI}) => {
       <View style={styles.cardviewimage}>
         <View style={styles.cardviewimagesecond}>
         <Image
+        progressiveRenderingEnabled={true}
         style={styles.image}
         source={require('../../../assets/icons/premiereicon.jpeg')}
         />

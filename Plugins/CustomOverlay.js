@@ -19,7 +19,7 @@ const CustomOverlay = ({Visible, message}) => {
             <View style={{width: 95 + '%', height: 20}}>
               <Image
                 style={{width: 95 + '%', height: 100}}
-                source={require('../assets/icons/test.gif')}
+                source={require('../../assets/icons/test.gif')}
               />
               <Text
                 style={{textAlign: 'center', fontSize: 14, fontWeight: 'bold'}}>

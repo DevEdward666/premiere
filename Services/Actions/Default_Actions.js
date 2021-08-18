@@ -19,6 +19,7 @@ import {
   SET_NOTIFICATION_OFFSET,
   REGISTRATION_COMPLETE,
   SPINNER_ALERT,
+  SET_LOADED,
 } from '../Types/Default_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
@@ -277,16 +278,27 @@ export const action_SET_notications = (
 };
 export const signalr_connection = () => async (dispatch) => {
   const hubConnect = new signalR.HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/message`)
-    .build();
-  hubConnect.start();
+    .withUrl(`${BASE_URL}/api/message/message`,{
+      transport:
+        signalR.HttpTransportType.WebSockets |
+        signalR.HttpTransportType.LongPolling,
+    })
+    .configureLogging(signalR.LogLevel.Debug)
+    .build(); 
+     hubConnect.start().catch(err => console.log(err)); 
   dispatch({type: SIGNALR_CONNECT, payload: hubConnect});
 };
 export const signalr_notify_connection = () => async (dispatch) => {
   const hubConnect = new signalR.HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/notify`)
+    .withUrl(`${BASE_URL}/api/notif/notify`,{
+      transport:
+        signalR.HttpTransportType.WebSockets |
+        signalR.HttpTransportType.LongPolling,
+    })
+    .configureLogging(signalR.LogLevel.Debug)
     .build();
-  hubConnect.start();
+    hubConnect.start().catch(err => console.log(err)); 
+
   dispatch({type: SIGNALR_CONNECT_NOTIFY, payload: hubConnect});
 };
 
@@ -309,6 +321,12 @@ export const ACTION_NOTIFICATION_OFFSET = (offset) => async (dispatch) => {
   dispatch({
     type: SET_NOTIFICATION_OFFSET,
     payload: offset,
+  });
+};
+export const ACTION_LOADED = (loaded) => async (dispatch) => {
+  dispatch({
+    type: SET_LOADED,
+    payload: loaded,
   });
 };
 export const ACTION_GET_DEVICE = (device) => async (dispatch) => {

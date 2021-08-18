@@ -66,6 +66,10 @@ const MeBody = (props) => {
     //  await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
     Actions.calendar();
   };
+  const gotoqueue = async () => {
+    //  await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
+    Actions.indexqueue();
+  };
   const removeValue = async () => {
     try {
       await AsyncStorage.getAllKeys().then(
@@ -197,7 +201,9 @@ const MeBody = (props) => {
           </View>
         </View>
       </TouchableHighlight>
-
+      <TouchableHighlight
+        onPress={() => gotoqueue()}
+        underlayColor="#f7f7f7">
       <View
         style={{
           flexDirection: 'row',
@@ -205,7 +211,7 @@ const MeBody = (props) => {
           alignItems: 'center',
         }}>
         <View style={styles.viewstyle}>
-          <Text style={styles.textstyle}>Health Declaration</Text>
+          <Text style={styles.textstyle}>Queue</Text>
         </View>
         <View style={{width: '10%', height: 50, justifyContent: 'center'}}>
           <Image
@@ -214,6 +220,7 @@ const MeBody = (props) => {
           />
         </View>
       </View>
+      </TouchableHighlight>
       <TouchableHighlight
         onPress={() => gotocalendar()}
         underlayColor="#f7f7f7">

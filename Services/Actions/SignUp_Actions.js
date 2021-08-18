@@ -116,7 +116,6 @@ export const action_SignUp_user = (
   responseProfile,
 ) => async () => {
   const mobile = mobileno.split('+').join('');
-  console.log(mobile);
   const value = await AsyncStorage.getItem('tokenizer');
   var url = `${BASE_URL}/api/user/addnewuser`;
   await fetch(url, {
@@ -195,7 +194,16 @@ export const action_SignUp_user = (
             })
               .then((response) => {
                 AsyncStorage.setItem('mobileno', mobileno);
+                var url = `${BASE_URL}/api/email/sendOTP?toname=${username}&&to=${email}&&otp=${res.other_info}`;
+                 fetch(url, {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                  },
+                })
                 Actions.tac();
+               
               })
               .catch((err) => {
                 alert(err);
@@ -206,7 +214,8 @@ export const action_SignUp_user = (
           });
       } else {
         alert('Something Went Wrong');
-        console.log(res);
+        console.log(res)
+
       }
     });
 };

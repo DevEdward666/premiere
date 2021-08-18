@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   
     borderColor:"rgba(255,255,355,0.5)",
     borderWidth:0.1,
-    borderRadius:30
+    borderRadius:10
   },
   image:{
       width:30,
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#fafafa',
       flex: 1,
       paddingTop: 10,
+      marginTop:10
     },
     flatlistitem: {
       marginStart: 30,

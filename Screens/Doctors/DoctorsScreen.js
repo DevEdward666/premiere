@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import CardView from 'react-native-rn-cardview';
-import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -232,6 +232,7 @@ const DoctorScreen = () => {
     },
     container: {
       flex: 1,
+      marginTop:30
     },
     paragraph: {
       margin: 24,

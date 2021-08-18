@@ -13,6 +13,7 @@ import {Card} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch, useSelector} from 'react-redux';
 import {action_GET_diagnostics_resultlist} from '../Services/Actions/Diagnostic_Actions';
+import {action_get_diagnostics_results} from '../../Services/Actions/MedicalRecords_Actions';
 import styles from './diagnosticresultstyles';
 const UIDiagnosticsRequestList = () => {
   const [premid, setpremid] = useState('');
@@ -20,18 +21,16 @@ const UIDiagnosticsRequestList = () => {
   const [resulturl, setresulturl] = useState('');
   const dispatch = useDispatch();
   const diagnostics_result_reducers = useSelector(
-    (state) => state.Diagnostic_Reducers.data_result,
+    (state) => state.FTP_Reducers.ftp_results,
   );
+  const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
 
   const getprem_id = async () => {
     let mounted = true;
     if (mounted) {
       try {
-        const prem_id = await AsyncStorage.getItem('prem_id');
-
-        if (prem_id !== null) {
-          setpremid(prem_id);
-          await dispatch(action_GET_diagnostics_resultlist(prem_id, offset));
+        if (users_reducers?.patno) {
+          await dispatch(action_get_diagnostics_results(users_reducers?.patno));
         }
       } catch (e) {
         alert('Failed to fetch the data from storage');
@@ -55,21 +54,21 @@ const UIDiagnosticsRequestList = () => {
       mounted = false;
     };
   }, [dispatch, premid]);
-  const loadmore = async () => {
-    let mounted = true;
-    if (mounted) {
-      setoffset((prev) => prev + 10);
-      await dispatch(action_GET_diagnostics_resultlist(premid, offset));
-    }
-    return () => {
-      mounted = false;
-    };
-  };
+  // const loadmore = async () => {
+  //   let mounted = true;
+  //   if (mounted) {
+  //     setoffset((prev) => prev + 10);
+  //     await dispatch(action_get_diagnostics_results(premid, offset));
+  //   }
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // };
   const gotoresult = async (item) => {
     let mounted = true;
     if (mounted) {
-      await setresulturl(item.resurl);
-      await AsyncStorage.setItem('resurl', item.resurl);
+      await setresulturl(item.file_path);
+      await AsyncStorage.setItem('resurl', item.file_path);
 
       await Actions.diagnosticsresults();
     }
@@ -87,10 +86,10 @@ const UIDiagnosticsRequestList = () => {
         blurRadius={20}>
         <FlatList
           style={styles.container}
-          data={diagnostics_result_reducers}
+          data={diagnostics_result_reducers?.data}
           keyExtractor={(item, index) => index.toString()}
-          onEndReached={loadmore}
-          onEndReachedThreshold={0.1}
+          // onEndReached={loadmore}
+          // onEndReachedThreshold={0.1}
           renderItem={({item, index}) => (
             <TouchableHighlight
               onPress={() => gotoresult(item)}
@@ -103,9 +102,11 @@ const UIDiagnosticsRequestList = () => {
                 }}>
                 <Card containerStyle={styles.cardresultlist}>
                   <Text style={styles.flatlistitemappointmentno}>
-                    #{item.appointmentno}
+                    {item.file_name}
                   </Text>
-                  <Text style={styles.textfinishedat}>#{item.finishedat}</Text>
+                  <Text style={styles.textfinishedat}>
+                    #{item.modified_time}
+                  </Text>
                 </Card>
               </View>
             </TouchableHighlight>

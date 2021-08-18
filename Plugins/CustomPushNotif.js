@@ -66,54 +66,9 @@ const CustomPushNotif = ({
     mounted && triggernotif();
     return () => (mounted = false);
   }, [notfititle, notifbody, to]);
-  return (
-    // <View
-    //   style={{
-    //     flex: 1,
-    //     alignItems: 'center',
-    //     justifyContent: 'space-around',
-    //   }}>
-    //   <Text>Your expo push token: {expoPushToken}</Text>
-    //   <View style={{alignItems: 'center', justifyContent: 'center'}}>
-    //     <Text>
-    //       Title: {notification && notification.request.content.title}{' '}
-    //     </Text>
-    //     <Text>Body: {notification && notification.request.content.body}</Text>
-    //     <Text>
-    //       Data:{' '}
-    //       {notification && JSON.stringify(notification.request.content.data)}
-    //     </Text>
-    //   </View>
-    //   <Button
-    //     title="Press to schedule a notification"
-    //     onPress={async () => {
-    //       await schedulePushNotification();
-    //     }}
-    //   />
-    // </View>
-    <></>
-  );
+  return <></>;
 };
-async function sendPushNotification(expoPushToken, title, body) {
-  //  lert(JSON.stringify(Constants));
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: title,
-    body: body,
-    data: {someData: 'goes here'},
-  };
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-}
 const schedulePushNotification = async (notfititle, notifbody) => {
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -125,7 +80,7 @@ const schedulePushNotification = async (notfititle, notifbody) => {
   });
 };
 
-async function registerForPushNotificationsAsync() {
+const registerForPushNotificationsAsync = async () => {
   let token;
   if (Constants.isDevice) {
     const {status: existingStatus} = await Notifications.getPermissionsAsync();
@@ -152,6 +107,6 @@ async function registerForPushNotificationsAsync() {
   }
 
   return token;
-}
+};
 
 export default CustomPushNotif;

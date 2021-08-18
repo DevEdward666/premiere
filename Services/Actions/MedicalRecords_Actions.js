@@ -1,10 +1,11 @@
-import {BASE_URL} from '../Types/Default_Types';
+import {BASE_URL, REMOTE_URL} from '../Types/Default_Types';
 import {
   GET_SINGLE_MEDICAL_RECORDS,
   PATIENT_INFO,
 } from '../Types/MedicalRecords_Types';
+import {FTP_SINGLE_RESULTS} from '../Types/FTP_Types';
 import RNFetchBlob from 'react-native-fetch-blob';
-import {FILE_NAME, GET_FILES} from '../Types/FTP_Types';
+import {FILE_NAME, FTP_RESULTS, GET_FILES} from '../Types/FTP_Types';
 
 export const action_get_info = (data, visible) => (dispatch) => {
   dispatch({
@@ -63,6 +64,52 @@ export const action_get_patient_files = (nameofFile, prem_id, device) => async (
         dispatch({
           type: GET_FILES,
           payload: res.data,
+        });
+      }
+    });
+};
+export const action_get_diagnostics_results = (patno) => async (dispatch) => {
+  var url = `${REMOTE_URL}api/lab-result/getLabReqResults`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      value: patno,
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (res) => {
+      dispatch({
+        type: FTP_RESULTS,
+        payload: {data: res.data, loading: true},
+      });
+    });
+};
+export const action_get_diagnostics_singleresults_pdf = (file_url) => async (
+  dispatch,
+) => {
+  var url = `${BASE_URL}api/diagnostics/getLabReqPdf`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      value: file_url,
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (res) => {
+      try {
+        responseData = await response.json();
+      } catch (e) {
+        dispatch({
+          type: FTP_SINGLE_RESULTS,
+          payload: {data: res.data, loading: true},
         });
       }
     });

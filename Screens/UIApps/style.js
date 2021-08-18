@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
         backgroundColor:"rgba(255,255,355,0.4)",
         borderColor:"rgba(255,255,355,0.4)",
         borderWidth:0.1,
-        borderRadius:30
+        borderRadius:10
     },
     scrollapps:{
      marginTop:50,

@@ -5,6 +5,7 @@ import {
   SET_DATA_RESULT,
   SET_URL,
   SET_APPOINTMENT_MESSAGE,
+  TOGGLE_ENABLED
 } from '../Types/Diagnostic_Types';
 import {REMOTE_URL} from '../Types/Default_Types';
 const diagnostic = {
@@ -13,10 +14,13 @@ const diagnostic = {
   data_result: [],
   appointment_message: {message: '', success: ''},
   loading: false,
+  isEnabled: false,
   url: REMOTE_URL,
 };
 const Diagnostic_Reducer = (data_state = diagnostic, actions) => {
   switch (actions.type) {
+    case TOGGLE_ENABLED:
+      return {...data_state, isEnabled: actions.payload};
     case SET_DATA_DIAGNOSTIC:
       return {...data_state, data_diagnostic: actions.payload};
     case SET_DATA_FINISHED:

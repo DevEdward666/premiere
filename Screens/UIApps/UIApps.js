@@ -1,34 +1,25 @@
 import React from 'react';
 import {
-  Image,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
+  Image, ImageBackground, ScrollView, Text,
   TouchableHighlight,
-  View,
-  ImageBackground
+  View
 } from 'react-native';
 import { Card } from 'react-native-elements';
-import CardView from 'react-native-rn-cardview';
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+import styles from './style';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
-import styles from './style'
 const UIApps = () => {
-
-
   const gotodiagnostics = () => {
     Actions.maindiagnosticsui();
   };
   return (
-    <ImageBackground
+  <ImageBackground
     style={{flex: 1}}
     source={require('../../assets/background/white.jpg')}
     resizeMode="cover"
     blurRadius={20}>
       <View style={styles.container}>
     <ScrollView >
-    
         <View>
           <View style={{flexDirection: 'column'}}>
             <TouchableHighlight
@@ -38,13 +29,13 @@ const UIApps = () => {
                 <View
                   style={{
                     flexDirection: 'row',
-                    height: 70,
+                    height: 30,
                     alignItems: 'center',
                   }}>
                   <View
                     style={{
                       width: '80%',
-                      height: 50,
+                      height: 20,
                       justifyContent: 'center',
                     }}>
                     <Text
@@ -78,7 +69,6 @@ const UIApps = () => {
             </TouchableHighlight>
           </View>
         </View>
-
     </ScrollView>
     </View>
     </ImageBackground>

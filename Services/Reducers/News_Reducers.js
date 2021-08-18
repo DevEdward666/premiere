@@ -6,6 +6,7 @@ import {
   SET_DATA_INFO,
   GET_NEWS_REACTION,
   GET_NEWS_COMMENT,
+  BASE64_IMAGE
 } from '../Types/News_Types';
 import {BASE_URL} from '../Types/Default_Types';
 
@@ -13,15 +14,18 @@ const news = {
   data: [],
   data_week: [],
   data_today: [],
-  data_info: [],
+  data_info: {data:[],loading:false},
   data_comment: [],
   data_reaction: [],
   url: BASE_URL,
+  image_base64:""
 };
 const News_Reducers = (data_state = news, actions) => {
   switch (actions.type) {
     case SET_DATA:
       return {...data_state, data: actions.payload};
+    case BASE64_IMAGE:
+      return {...data_state, image_base64: actions.payload};
     case SET_DATA_WEEK:
       return {...data_state, data_week: actions.payload};
     case SET_DATA_TODAY:

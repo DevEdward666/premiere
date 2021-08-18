@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-community/picker';
-import React, {useEffect, useState, useCallback,useRef} from 'react';
+import {Picker} from '@react-native-picker/picker';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   Button,
@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  
 } from 'react-native';
 import {TextInput, HelperText} from 'react-native-paper';
 import CardView from 'react-native-rn-cardview';
@@ -22,7 +21,7 @@ import {Input} from 'react-native-elements';
 import {ProgressStep, ProgressSteps} from 'react-native-progress-steps';
 import {useDispatch, useSelector} from 'react-redux';
 // import TextInputMask from 'react-native-text-input-mask';
-import { TextInputMask } from 'react-native-masked-text'
+import {TextInputMask} from 'react-native-masked-text';
 import {
   action_GET_barangay,
   action_GET_city,
@@ -37,7 +36,7 @@ import {
   action_POST_FileImageProfile,
 } from '../Services/Actions/SignUp_Actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Card } from 'react-native-elements';
+import {Card} from 'react-native-elements';
 const SignUp = () => {
   // const DropDown = require('react-native-material-dropdown-v2');
   // const {Select, Option, OptionList, updatePosition} = DropDown;
@@ -293,12 +292,7 @@ const SignUp = () => {
     [pin, confirmationpin],
   );
   const handleNextInfo = () => {
-    if (
-      firstname == '' ||
-      lastname == '' ||
-      gender == '' ||
-      birthdate == ''
-    ) {
+    if (firstname == '' || lastname == '' || gender == '' || birthdate == '') {
       setInfoError(true);
       alert('Please Fill All Fields');
     }
@@ -366,10 +360,6 @@ const SignUp = () => {
           profileimageresponse,
         ),
       );
-      // await dispatch(action_POST_FileImage(imageresponse, username));
-      // await dispatch(
-      //   action_POST_FileImageProfile(profileimageresponse, username),
-      // );
     } else {
       alert('Please Provide Valid Data');
     }
@@ -385,134 +375,61 @@ const SignUp = () => {
   }, [dispatch]);
   return (
     <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/background.jpeg')}
-    resizeMode="cover"
-    blurRadius={2}>
-    <ScrollView style={{backgroundScrollViewColor: 'white'}}>
-    
-      <View style={styles.container}>
-        <View style={{flex: 1}}>
-          <ProgressSteps>
-            <ProgressStep
-              label="Information"
-              onNext={handleNextInfo}
-              errors={InfoError}>
-                <Card  containerStyle={styles.cardContainer}>
-              {resourcePathProfile ? (
-                <TouchableHighlight
-                  onPress={profileImage}
-                  style={{
-                    width: '100%',
-                    height: 180,
-                    resizeMode: 'contain',
-                    alignContent: 'flex-start',
-                  }}
-                  underlayColor="white">
-                  <ImageBackground
-                    style={styles.avatar}
-                    source={{
-                      uri: resourcePathProfile,
-                    }}>
-                    <Text style={styles.text}>Choose Image</Text>
-                  </ImageBackground>
-                </TouchableHighlight>
-              ) : (
-                <TouchableHighlight
-                  onPress={profileImage}
-                  style={{
-                    width: '100%',
-                    height: 180,
-                    resizeMode: 'contain',
-                    alignContent: 'flex-start',
-                  }}
-                  underlayColor="white">
-                  <ImageBackground
-                    style={styles.avatar}
-                    source={{
-                      uri: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-                    }}>
-                    <Text style={styles.text}>Take a Photo</Text>
-                  </ImageBackground>
-                </TouchableHighlight>
-              )}
-
-              <View style={styles.Inputcontainer}>
-                <TextInput
-                style={{marginTop:10}}
-                  theme={{
-                    
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    
-                    },
-                  }}
-                  mode="flat"
-                  label="First name"
-                  onChangeText={(text) => setfirstname(text)}
-                  value={firstname}
-                />
-         
-                <TextInput
-                  style={{marginTop:10}}
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Middle name"
-                  onChangeText={(text) => setmiddlename(text)}
-                  value={middlename}
-                />
-           
-                <TextInput
-                  style={{marginTop:10}}
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Last name"
-                  onChangeText={(text) => setlastname(text)}
-                  value={lastname}
-                />
-            
-                <TextInput
-                  style={{marginTop:10}}
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Suffix"
-                  onChangeText={(text) => setSuffix(text)}
-                  value={suffix}
-                />
-        
-
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                <TouchableHighlight
+      style={{flex: 1}}
+      source={require('../../assets/background/background.jpeg')}
+      resizeMode="cover"
+      blurRadius={2}>
+      <ScrollView style={{backgroundScrollViewColor: 'white'}}>
+        <View style={styles.container}>
+          <View style={{flex: 1}}>
+            <ProgressSteps>
+              <ProgressStep
+                label="Information"
+                onNext={handleNextInfo}
+                errors={InfoError}>
+                <Card containerStyle={styles.cardContainer}>
+                  {resourcePathProfile ? (
+                    <TouchableHighlight
+                      onPress={profileImage}
                       style={{
                         width: '100%',
-                      height: '100%',
-                     
+                        height: 180,
+                        resizeMode: 'contain',
+                        alignContent: 'flex-start',
                       }}
-                      onPress={showDatepicker}>
-                 
+                      underlayColor="white">
+                      <ImageBackground
+                        style={styles.avatar}
+                        source={{
+                          uri: resourcePathProfile,
+                        }}>
+                        <Text style={styles.text}>Choose Image</Text>
+                      </ImageBackground>
+                    </TouchableHighlight>
+                  ) : (
+                    <TouchableHighlight
+                      onPress={profileImage}
+                      style={{
+                        width: '100%',
+                        height: 180,
+                        resizeMode: 'contain',
+                        alignContent: 'flex-start',
+                      }}
+                      underlayColor="white">
+                      <ImageBackground
+                        style={styles.avatar}
+                        source={{
+                          uri:
+                            'https://bootdey.com/img/Content/avatar/avatar6.png',
+                        }}>
+                        <Text style={styles.text}>Take a Photo</Text>
+                      </ImageBackground>
+                    </TouchableHighlight>
+                  )}
+
+                  <View style={styles.Inputcontainer}>
                     <TextInput
-                      style={{marginTop:10}}
-                      disabled={true}
+                      style={{marginTop: 10}}
                       theme={{
                         colors: {
                           primary: '#3eb2fa',
@@ -521,245 +438,305 @@ const SignUp = () => {
                         },
                       }}
                       mode="flat"
-                      label="Birthdate"
-                      value={birthdate}
+                      label="First name"
+                      onChangeText={(text) => setfirstname(text)}
+                      value={firstname}
                     />
-             
-               
-                  </TouchableHighlight>
-                 
-                </View>
-                {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                  />
-                )}
-                <View>
+
+                    <TextInput
+                      style={{marginTop: 10}}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="flat"
+                      label="Middle name"
+                      onChangeText={(text) => setmiddlename(text)}
+                      value={middlename}
+                    />
+
+                    <TextInput
+                      style={{marginTop: 10}}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="flat"
+                      label="Last name"
+                      onChangeText={(text) => setlastname(text)}
+                      value={lastname}
+                    />
+
+                    <TextInput
+                      style={{marginTop: 10}}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="flat"
+                      label="Suffix"
+                      onChangeText={(text) => setSuffix(text)}
+                      value={suffix}
+                    />
+
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <TouchableHighlight
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                        }}
+                        onPress={showDatepicker}>
+                        <TextInput
+                          style={{marginTop: 10}}
+                          disabled={true}
+                          theme={{
+                            colors: {
+                              primary: '#3eb2fa',
+                              background: 'white',
+                              underlineColor: 'transparent',
+                            },
+                          }}
+                          mode="flat"
+                          label="Birthdate"
+                          value={birthdate}
+                        />
+                      </TouchableHighlight>
+                    </View>
+                    {show && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                      />
+                    )}
+                    <View>
+                      <Picker
+                        selectedValue={gender}
+                        style={styles.PickerContainer}
+                        onValueChange={(itemValue, itemIndex) =>
+                          setgender(itemValue)
+                        }>
+                        <Picker.Item label="Gender" />
+                        <Picker.Item label="Male" value="M" />
+                        <Picker.Item label="Female" value="F" />
+                      </Picker>
+                    </View>
+                  </View>
+                  <CardView radius={1} backgroundColor={'#fafafafa'}>
+                    <View style={styles.imagecontainer}>
+                      {resourcePath ? (
+                        <TouchableHighlight
+                          onPress={tomarFoto}
+                          style={{
+                            width: '100%',
+                            height: 220,
+                            resizeMode: 'contain',
+                            alignContent: 'flex-start',
+                          }}
+                          underlayColor="rgba(255,255,355,0.1)">
+                          <ImageBackground
+                            style={{
+                              width: '100%',
+                              height: 220,
+                              resizeMode: 'contain',
+                              backgroundColor: 'rgba(255,255,355,0.1)',
+                              alignContent: 'flex-start',
+                            }}
+                            source={{uri: resourcePath}}>
+                            <Text style={styles.text}>Capture Valid ID</Text>
+                          </ImageBackground>
+                        </TouchableHighlight>
+                      ) : (
+                        <TouchableHighlight
+                          onPress={tomarFoto}
+                          style={{
+                            width: '100%',
+                            height: 220,
+                            resizeMode: 'contain',
+                            alignContent: 'flex-start',
+                          }}
+                          underlayColor="rgba(255,255,355,0.1)">
+                          <ImageBackground
+                            style={{
+                              width: '100%',
+                              height: 220,
+                              backgroundColor: 'rgba(255,255,355,0.1)',
+                              resizeMode: 'contain',
+                              alignContent: 'flex-start',
+                            }}
+                            source={require('../assets/icons/valid_id.jpg')}>
+                            <Text style={styles.text}>Capture Valid ID</Text>
+                          </ImageBackground>
+                        </TouchableHighlight>
+                      )}
+                    </View>
+                  </CardView>
+                </Card>
+              </ProgressStep>
+              <ProgressStep
+                label="Address"
+                onNext={handleNextAddress}
+                errors={AddressError}>
+                <Card containerStyle={styles.cardContainer}>
                   <Picker
-                    selectedValue={gender}
+                    selectedValue={nationality}
                     style={styles.PickerContainer}
                     onValueChange={(itemValue, itemIndex) =>
-                      setgender(itemValue)
+                      handleNationality(itemValue)
                     }>
-                    <Picker.Item label="Gender" />
-                    <Picker.Item label="Male" value="M" />
-                    <Picker.Item label="Female" value="F" />
+                    <Picker.Item label="Select Nationality" />
+                    {nationality_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.nationality}
+                        label={card.country}
+                        value={card.nationality}
+                      />
+                    ))}
                   </Picker>
-                </View>
-              </View>
-              <CardView radius={1} backgroundColor={'#fafafafa'}>
-                <View style={styles.imagecontainer}>
-                  {resourcePath ? (
-                    <TouchableHighlight
-                      onPress={tomarFoto}
-                      style={{
-                        width: '100%',
-                        height: 220,
-                        resizeMode: 'contain',
-                        alignContent: 'flex-start',
-                      }}
-                      underlayColor="rgba(255,255,355,0.1)">
-                      <ImageBackground
-                        style={{
-                          width: '100%',
-                          height: 220,
-                          resizeMode: 'contain',
-                          backgroundColor:"rgba(255,255,355,0.1)",
-                          alignContent: 'flex-start',
-                        }}
-                        source={{uri: resourcePath}}>
-                        <Text style={styles.text}>Capture Valid ID</Text>
-                      </ImageBackground>
-                    </TouchableHighlight>
-                  ) : (
-                    <TouchableHighlight
-                      onPress={tomarFoto}
-                      style={{
-                        width: '100%',
-                        height: 220,
-                        resizeMode: 'contain',
-                        alignContent: 'flex-start',
-                      }}
-                      underlayColor="rgba(255,255,355,0.1)">
-                      <ImageBackground
-                        style={{
-                          width: '100%',
-                          height: 220,
-                          backgroundColor:"rgba(255,255,355,0.1)",
-                          resizeMode: 'contain',
-                          alignContent: 'flex-start',
-                        }}
-                        source={require('../assets/icons/valid_id.jpg')}>
-                        <Text style={styles.text}>Capture Valid ID</Text>
-                      </ImageBackground>
-                    </TouchableHighlight>
-                  )}
-      
-                </View>
-              </CardView>
-              </Card>
-            </ProgressStep>
-            <ProgressStep
-              label="Address"
-              onNext={handleNextAddress}
-              errors={AddressError}>
-                  <Card  containerStyle={styles.cardContainer}>
-                <Picker
-                  selectedValue={nationality}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleNationality(itemValue)
-                  }>
-                  <Picker.Item label="Select Nationality" />
-                  {nationality_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.nationality}
-                      label={card.country}
-                      value={card.nationality}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={region}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleRegionChange(itemValue)
-                  }>
-                  <Picker.Item label="Select Region" value="region" />
-                  {region_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.regioncode}
-                      label={card.regiondesc}
-                      value={card.regioncode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={province}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleProvinceChange(itemValue)
-                  }>
-                  <Picker.Item label="Select Province" value="province" />
-                  {province_reducers?.map((card) => (
-                    <Picker.Item
-                      key={card.provincecode}
-                      label={card.provincedesc}
-                      value={card.provincecode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={city}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleCityChange(itemValue)
-                  }>
-                  <Picker.Item label="Select City" value="city" />
-                  {city_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.citymuncode}
-                      label={card.citymundesc}
-                      value={card.citymuncode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={barangay}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleBarangayChange(itemValue)
-                  }>
-                  <Picker.Item label="Select Barangay" value="barangay" />
-                  {barangay_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.barangaycode}
-                      label={card.barangaydesc}
-                      value={card.barangaycode}
-                    />
-                  ))}
-                </Picker>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Street/Lot No./Blk/"
-                  onChangeText={(text) => setfulladdress(text)}
-                  value={fulladdress}
-                />
-            </Card>
-            </ProgressStep>
-            <ProgressStep
-              label="Credentials"
-              onSubmit={handleSubmitCredentials}>
-            <Card  containerStyle={styles.cardContainer}>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Email"
-                  error={emailErrorMessage}
-                  onChangeText={(text) => validate(text)}
-                  value={email}
-                />
-                <HelperText type="error" visible={emailErrorMessage}>
-                  Email not valid
-                </HelperText>
-            
-                <TextInput
-              
-                  render={props =>
-                    <TextInputMask
-                    {...props}
-  type={'cel-phone'}
-  options={{
-    maskType: 'INTERNATIONAL',
-    dddMask: '(63) '
-  }}
-  value={mobile}
-  onChangeText={text => 
-    setmobile(text)
-  }
-  ref={unmaskedmobile}
-/>
-                    }
+                  <Picker
+                    selectedValue={region}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleRegionChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Region" value="region" />
+                    {region_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.regioncode}
+                        label={card.regiondesc}
+                        value={card.regioncode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={province}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleProvinceChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Province" value="province" />
+                    {province_reducers?.map((card) => (
+                      <Picker.Item
+                        key={card.provincecode}
+                        label={card.provincedesc}
+                        value={card.provincecode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={city}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleCityChange(itemValue)
+                    }>
+                    <Picker.Item label="Select City" value="city" />
+                    {city_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.citymuncode}
+                        label={card.citymundesc}
+                        value={card.citymuncode}
+                      />
+                    ))}
+                  </Picker>
+                  <Picker
+                    selectedValue={barangay}
+                    style={styles.PickerContainer}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleBarangayChange(itemValue)
+                    }>
+                    <Picker.Item label="Select Barangay" value="barangay" />
+                    {barangay_reducers.map((card) => (
+                      <Picker.Item
+                        key={card.barangaycode}
+                        label={card.barangaydesc}
+                        value={card.barangaycode}
+                      />
+                    ))}
+                  </Picker>
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
                     mode="flat"
-                  
-                />
-            
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Username"
-                  error={errorUsernameMessage}
-                  onChangeText={(text) => handleUsernameExist(text)}
-                  value={username}
-                />
-                <HelperText type="error" visible={errorUsernameMessage}>
-                  Username already exist
-                </HelperText>
-                {/* <Input
+                    label="Street/Lot No./Blk/"
+                    onChangeText={(text) => setfulladdress(text)}
+                    value={fulladdress}
+                  />
+                </Card>
+              </ProgressStep>
+              <ProgressStep
+                label="Credentials"
+                onSubmit={handleSubmitCredentials}>
+                <Card containerStyle={styles.cardContainer}>
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Email"
+                    error={emailErrorMessage}
+                    onChangeText={(text) => validate(text)}
+                    value={email}
+                  />
+                  <HelperText type="error" visible={emailErrorMessage}>
+                    Email not valid
+                  </HelperText>
+
+                  <TextInput
+                    render={(props) => (
+                      <TextInputMask
+                        {...props}
+                        type={'cel-phone'}
+                        options={{
+                          maskType: 'INTERNATIONAL',
+                          dddMask: '(63) ',
+                        }}
+                        value={mobile}
+                        onChangeText={(text) => setmobile(text)}
+                        ref={unmaskedmobile}
+                      />
+                    )}
+                    mode="flat"
+                  />
+
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Username"
+                    error={errorUsernameMessage}
+                    onChangeText={(text) => handleUsernameExist(text)}
+                    value={username}
+                  />
+                  <HelperText type="error" visible={errorUsernameMessage}>
+                    Username already exist
+                  </HelperText>
+                  {/* <Input
                   style={styles.textInput}
                   placeholder="Username"
                   inputContainerStyle={styles.inputContainer}
@@ -768,30 +745,30 @@ const SignUp = () => {
                   onChangeText={(text) => handleUsernameExist(text)}
                   defaultValue={username}
                 /> */}
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      width: '85%',
-                    }}>
-                    <TextInput
-                      theme={{
-                        colors: {
-                          primary: '#3eb2fa',
-                          background: 'white',
-                          underlineColor: 'transparent',
-                        },
-                      }}
-                      mode="flat"
-                      label="Password"
-                      secureTextEntry={showpass}
-                      error={errorMessage}
-                      onChangeText={(text) => handlePassword(text)}
-                      value={password}
-                    />
-                    <HelperText type="error" visible={errorMessage}>
-                      {passworderrormessage}
-                    </HelperText>
-                    {/* <Input
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        width: '85%',
+                      }}>
+                      <TextInput
+                        theme={{
+                          colors: {
+                            primary: '#3eb2fa',
+                            background: 'white',
+                            underlineColor: 'transparent',
+                          },
+                        }}
+                        mode="flat"
+                        label="Password"
+                        secureTextEntry={showpass}
+                        error={errorMessage}
+                        onChangeText={(text) => handlePassword(text)}
+                        value={password}
+                      />
+                      <HelperText type="error" visible={errorMessage}>
+                        {passworderrormessage}
+                      </HelperText>
+                      {/* <Input
                       style={styles.textInput}
                       placeholder="Password"
                       inputContainerStyle={styles.inputContainer}
@@ -801,57 +778,57 @@ const SignUp = () => {
                       onChangeText={(text) => handlePassword(text)}
                       defaultValue={password}
                     /> */}
-                  </View>
-                  <View
-                    style={{
-                      width: '25%',
-                    }}>
-                    <TouchableHighlight
-                      underlayColor="white"
+                    </View>
+                    <View
                       style={{
-                        borderWidth: 1,
-                        borderColor: 'rgba(0,0,0,0)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 55,
-                        height: 55,
-                        backgroundColor: '#fff',
-                        borderRadius: 50,
-                      }}
-                      onPress={showpassword}>
-                      {iconpass ? (
-                        <Icon name="visibility" />
-                      ) : (
-                        <Icon name="visibility-off" />
-                      )}
-                    </TouchableHighlight>
+                        width: '25%',
+                      }}>
+                      <TouchableHighlight
+                        underlayColor="white"
+                        style={{
+                          borderWidth: 1,
+                          borderColor: 'rgba(0,0,0,0)',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 55,
+                          height: 55,
+                          backgroundColor: '#fff',
+                          borderRadius: 50,
+                        }}
+                        onPress={showpassword}>
+                        {iconpass ? (
+                          <Icon name="visibility" />
+                        ) : (
+                          <Icon name="visibility-off" />
+                        )}
+                      </TouchableHighlight>
+                    </View>
                   </View>
-                </View>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      width: '85%',
-                    }}>
-                    <TextInput
-                      theme={{
-                        colors: {
-                          primary: '#3eb2fa',
-                          background: 'white',
-                          underlineColor: 'transparent',
-                        },
-                      }}
-                      mode="flat"
-                      label="Confirm Password"
-                      secureTextEntry={showpass}
-                      error={errorMessage}
-                      secureTextEntry={showconfirmpass}
-                      onChangeText={(text) => handleConfirmPassword(text)}
-                      value={confirmpassword}
-                    />
-                    <HelperText type="error" visible={errorMessage}>
-                      {passworderrormessage}
-                    </HelperText>
-                    {/* <Input
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        width: '85%',
+                      }}>
+                      <TextInput
+                        theme={{
+                          colors: {
+                            primary: '#3eb2fa',
+                            background: 'white',
+                            underlineColor: 'transparent',
+                          },
+                        }}
+                        mode="flat"
+                        label="Confirm Password"
+                        secureTextEntry={showpass}
+                        error={errorMessage}
+                        secureTextEntry={showconfirmpass}
+                        onChangeText={(text) => handleConfirmPassword(text)}
+                        value={confirmpassword}
+                      />
+                      <HelperText type="error" visible={errorMessage}>
+                        {passworderrormessage}
+                      </HelperText>
+                      {/* <Input
                       style={styles.textInput}
                       placeholder="Confirm Password"
                       inputContainerStyle={styles.inputContainer}
@@ -861,48 +838,48 @@ const SignUp = () => {
                       onChangeText={(text) => handleConfirmPassword(text)}
                       defaultValue={confirmpassword}
                     /> */}
-                  </View>
-                  <View
-                    style={{
-                      width: '25%',
-                    }}>
-                    <TouchableHighlight
-                      underlayColor="white"
+                    </View>
+                    <View
                       style={{
-                        borderWidth: 1,
-                        borderColor: 'rgba(0,0,0,0)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 55,
-                        height: 55,
-                        backgroundColor: '#fff',
-                        borderRadius: 50,
-                      }}
-                      onPress={showconfirmpassword}>
-                      {iconconfirmpass ? (
-                        <Icon name="visibility" />
-                      ) : (
-                        <Icon name="visibility-off" />
-                      )}
-                    </TouchableHighlight>
+                        width: '25%',
+                      }}>
+                      <TouchableHighlight
+                        underlayColor="white"
+                        style={{
+                          borderWidth: 1,
+                          borderColor: 'rgba(0,0,0,0)',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 55,
+                          height: 55,
+                          backgroundColor: '#fff',
+                          borderRadius: 50,
+                        }}
+                        onPress={showconfirmpassword}>
+                        {iconconfirmpass ? (
+                          <Icon name="visibility" />
+                        ) : (
+                          <Icon name="visibility-off" />
+                        )}
+                      </TouchableHighlight>
+                    </View>
                   </View>
-                </View>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="PIN"
-                  keyboardType="number-pad"
-                  error={PINErrorMessage}
-                  onChangeText={(text) => handlePIN(text)}
-                  value={pin}
-                />
-                {/* <Input
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="PIN"
+                    keyboardType="number-pad"
+                    error={PINErrorMessage}
+                    onChangeText={(text) => handlePIN(text)}
+                    value={pin}
+                  />
+                  {/* <Input
                   style={styles.textInput}
                   placeholder="PIN"
                   inputContainerStyle={styles.inputContainer}
@@ -911,29 +888,27 @@ const SignUp = () => {
                   onChangeText={(text) => handlePIN(text)}
                   defaultValue={pin}
                 /> */}
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Confirm PIN"
-                  keyboardType="number-pad"
-                  error={PINErrorMessage}
-                  onChangeText={(text) => handleConfirmPIN(text)}
-                  value={confirmationpin}
-                />
-        
+                  <TextInput
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Confirm PIN"
+                    keyboardType="number-pad"
+                    error={PINErrorMessage}
+                    onChangeText={(text) => handleConfirmPIN(text)}
+                    value={confirmationpin}
+                  />
                 </Card>
-            </ProgressStep>
-          </ProgressSteps>
+              </ProgressStep>
+            </ProgressSteps>
+          </View>
         </View>
-      </View>
-    
-    </ScrollView>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -952,14 +927,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: '#fafafaa0',
   },
-  cardContainer:{
-    flex:1,
-    backgroundColor:"rgba(255,255,355,0.4)",
-    width:"93%",
-    height:"100%",
-    borderColor:"rgba(255,255,355,0.4)",
-    borderWidth:0.1,
-    borderRadius:30
+  cardContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,355,0.4)',
+    width: '93%',
+    height: '100%',
+    borderColor: 'rgba(255,255,355,0.4)',
+    borderWidth: 0.1,
+    borderRadius: 30,
   },
   avatar: {
     width: 180,

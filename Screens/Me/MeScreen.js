@@ -30,7 +30,7 @@ const MeScreen = () => {
   const currentyear = new Date();
   const thisyear = currentyear.getFullYear();
   const [username, setUsername] = useState('');
-
+  const users_image = useSelector((state) => state.User_Reducers.image);
   const [loading, setLoading] = useState(1);
   const [value, setValue] = useState(false);
   const mountedRef = useRef();
@@ -66,27 +66,32 @@ const MeScreen = () => {
 
   const [img, setimg] = useState('');
   const [doc, setdoc] = useState('');
-  const onRefresh = React.useCallback(async () => {
+  const onRefresh = useCallback(async () => {
     let mounted = true;
     if (mounted) {
-      dispatch(action_GET_userdetails(username));
+      if (users_reducers?.img === '') {
+        dispatch(action_GET_Profileimage(users_reducers?.img));
+        dispatch(action_GET_Docs(users_reducers?.doc));
+      }
 
-      await setRefreshing(true);
+      await setRefreshing(false);
+
+      await setimg(users_reducers?.img);
       await setdoc(users_reducers?.doc);
 
-      // dispatch(action_GET_Profileimage(img));
-      dispatch(action_GET_Docs(doc));
+      dispatch(action_GET_Profileimage(img));
+      dispatch(action_GET_Docs(users_reducers?.username));
     }
 
     return () => {
       mounted = false;
     };
-  }, [dispatch, doc]);
+  }, [dispatch, doc, users_reducers]);
   useEffect(() => {
     let mounted = true;
     const getprofileimageanddocs = async () => {
       if (mounted) {
-        if (users_reducers?.img != undefined) {
+        if (users_reducers?.img === '') {
           dispatch(action_GET_Profileimage(users_reducers?.img));
           dispatch(action_GET_Docs(users_reducers?.doc));
         }
@@ -97,7 +102,7 @@ const MeScreen = () => {
         await setdoc(users_reducers?.doc);
 
         dispatch(action_GET_Profileimage(img));
-        dispatch(action_GET_Docs(doc));
+        dispatch(action_GET_Docs(users_reducers?.username));
       }
     };
 
@@ -121,39 +126,22 @@ const MeScreen = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      <ImageBackground
-        style={{flex: 1}}
-        source={require('../../assets/background/white.jpg')}
-        resizeMode="cover"
-        blurRadius={20}>
-        <View style={styles.container}>
-          {/* <Appbar.Header style={{backgroundColor: '#00a15b'}}>
-        <Appbar.Content title="Premiere" />
-      </Appbar.Header> */}
+      <SafeAreaView style={{flex: 1, flexDirection: 'column'}}>
+        {users_reducers ? (
+          <TouchableHighlight onPress={() => getMeInfo()} underlayColor="white">
+            <MeHeader />
+          </TouchableHighlight>
+        ) : (
+          <Skeleton />
+        )}
 
-          <SafeAreaView style={{flex: 1, flexDirection: 'column'}}>
-            {users_reducers ? (
-              <TouchableHighlight
-                onPress={() => getMeInfo()}
-                underlayColor="white">
-                <MeHeader />
-              </TouchableHighlight>
-            ) : (
-              <Skeleton />
-            )}
-
-            <MeBody />
-            <View style={{flexDirection: 'row', height: 50}}>
-              <View
-                style={{width: '100%', height: 50, justifyContent: 'center'}}>
-                <Text style={styles.footertext}>
-                  Powered by TUO @ {thisyear}
-                </Text>
-              </View>
-            </View>
-          </SafeAreaView>
+        <MeBody />
+        <View style={{flexDirection: 'row', height: 50}}>
+          <View style={{width: '100%', height: 50, justifyContent: 'center'}}>
+            <Text style={styles.footertext}>Powered by TUO @ {thisyear}</Text>
+          </View>
         </View>
-      </ImageBackground>
+      </SafeAreaView>
     </ScrollView>
   );
 };

@@ -7,7 +7,9 @@ import {
   SET_DATA_INFO,
   GET_NEWS_COMMENT,
   GET_NEWS_REACTION,
+  BASE64_IMAGE
 } from '../Types/News_Types';
+import RNFetchBlob from 'react-native-fetch-blob';
 // import {fetchwithdispatch} from '../middleware/api';
 
 // export const action_GET_news = (offset) => {
@@ -26,7 +28,23 @@ import {
 //       });
 //   };
 // };
-
+export const convert_to_base64 = (url) => async (dispatch) => {
+  await RNFetchBlob.fetch('GET', url, {})
+  .then(async (res) => {
+    let base64Str = res.base64();
+    try {
+      responseData = await response.json();
+    } catch (e) {
+    
+    }
+    dispatch({
+      type:BASE64_IMAGE,
+      payload:base64Str
+    })
+    let text = res.text();
+    let json = res.json();
+  })
+};
 export const action_GET_news = (offset) => async (dispatch) => {
   var url = `${BASE_URL}/api/news/getallnews`;
   const value = await AsyncStorage.getItem('tokenizer');
@@ -76,14 +94,12 @@ export const action_GET_news_info = (id) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
+  
         dispatch({
           type: SET_DATA_INFO,
-          payload: res.data,
+          payload: {data:res.data,loading:true},
         });
-      }
+      
     });
 };
 

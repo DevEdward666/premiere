@@ -14,12 +14,13 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CardView from 'react-native-rn-cardview';
-import {Card} from 'react-native-elements'
+import {Card} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import wait from '../Plugins/waitinterval';
 import {action_GET_news_info} from '../Services/Actions/News_Actions';
 const MORE_ICON = Platform.OS === 'ios' ? 'dots-horizontal' : 'dots-vertical';
-import styles from './style'
+import styles from './style';
+import ImageView from 'react-native-image-viewing';
 const UINews = () => {
   const [offset, setoffset] = useState(10);
   const [refreshing, setRefreshing] = useState(false);
@@ -40,66 +41,95 @@ const UINews = () => {
   useEffect(() => {
     let mounted = true;
     const getnewsinfo = () => {
-      setSpinner(true);
-      setInterval(() => {
-        setSpinner(false);
-      }, 1000);
-      dispatch(action_GET_news_info(news_id.toString()));
+      if (!news_reducers_info?.data == '') {
+        dispatch(action_GET_news_info(news_id.toString()));
+      }
     };
 
     mounted && getnewsinfo();
-    return () => (mounted = false);
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, news_id]);
 
-  return (
-    <ImageBackground
-      style={{flex: 1}}
-      source={require('../../../assets/background/white.jpg')}
-      resizeMode="cover"
-      blurRadius={20}>
-    <ScrollView>
+  useEffect(() => {
+    let mounted = true;
+    const getnewsinfo = async () => {
+      await setSpinner(true);
+      if (news_reducers_info?.loading) {
+        setSpinner(false);
+      }
+    };
 
+    mounted && getnewsinfo();
+    return () => {
+      mounted = false;
+    };
+  }, [news_reducers_info?.loading]);
+  const images = [
+    {
+      uri: `${news_reducers_url}/${news_reducers_info.data[0]?.Image}`,
+    },
+  ];
+  const [visible, setIsVisible] = useState(false);
+
+  return (
+    <ScrollView>
       <SafeAreaView style={styles.flatlistcontainer}>
         <Spinner
           visible={spinner}
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
-        <Card
-          containerStyle={styles.cardmain}>
+        <Card containerStyle={styles.cardmain}>
           <View
             style={{
               flexDirection: 'row',
               height: 300,
               alignItems: 'center',
             }}>
-            <Image
-              source={{
-                uri: `${news_reducers_url}/${news_reducers_info[0]?.Image}`,
-              }}
-              style={styles.topicimage}></Image>
+            <ImageView
+              images={images}
+              imageIndex={0}
+              visible={visible}
+              onRequestClose={() => setIsVisible(false)}
+            />
+
+            <TouchableHighlight
+              style={styles.topicimage}
+              onPress={() => setIsVisible(true)}>
+              <>
+                <Image
+                  progressiveRenderingEnabled={true}
+                  source={{
+                    uri: `${news_reducers_url}/${news_reducers_info.data[0]?.Image}`,
+                  }}
+                  style={styles.topicimage}
+                />
+              </>
+            </TouchableHighlight>
           </View>
-      
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 300,
-            alignItems: 'center',
-          }}>
-          <Text style={styles.baseText}>
-            <Text style={styles.textTitle}>{news_reducers_info[0]?.Title}</Text>
-            {'\n'}
-            {'\n'}
-            <Text style={styles.text}>
-              {news_reducers_info[0]?.description}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              height: 300,
+              alignItems: 'center',
+            }}>
+            <Text style={styles.baseText}>
+              <Text style={styles.textTitle}>
+                {news_reducers_info.data[0]?.Title}
+              </Text>
+              {'\n'}
+              {'\n'}
+              <Text style={styles.text}>
+                {news_reducers_info.data[0]?.description}
+              </Text>
             </Text>
-          </Text>
-        </View>
+          </View>
         </Card>
       </SafeAreaView>
-    
-   </ScrollView>
-     </ImageBackground>
+    </ScrollView>
   );
 };
 export default UINews;

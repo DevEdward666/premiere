@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
       marginLeft: 5,
     },
     image: {
-      margin: 10,
+      margin: 50,
       width: '100%',
       maxHeight: 150,
     },

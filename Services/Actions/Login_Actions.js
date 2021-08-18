@@ -55,6 +55,8 @@ export const action_Login_user = (username, password) => async (dispatch) => {
             .then((response) => response.json())
             .then(async (res) => {
               await AsyncStorage.setItem('mobileno', res.data.mobileno);
+            
+
               await Actions.otp();
             });
         }

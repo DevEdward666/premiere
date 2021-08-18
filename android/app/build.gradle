@@ -47,7 +47,7 @@ dexOptions {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+        multiDexEnabled  true
     }
     splits {
         abi {
@@ -75,6 +75,7 @@ dexOptions {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            crunchPngs = false
         }
     }
 
@@ -95,7 +96,10 @@ dexOptions {
 }
 
 dependencies {
-      implementation(project(':react-native-jitsi-meet'))
+      implementation(project(':react-native-jitsi-meet')) {
+  exclude group: 'com.facebook.react',module:'react-native-svg'
+      exclude group: 'com.facebook.react', module:'react-native-community-async-storage'
+}
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules

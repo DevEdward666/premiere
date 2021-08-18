@@ -8,7 +8,6 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import  {action_open_bottomsheet} from '../Services/Actions/Default_Actions'
 import {useDispatch, useSelector} from 'react-redux'
 const CustomBottomSheet = ({isVisible, color, UI, Footer}) => {
-  const open_bottomsheet = useSelector((state) => state.Default_Reducers.bottomSheet);
   const [gestureName, setgestureName] = useState('');
 
   const dispatch=useDispatch()

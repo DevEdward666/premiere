@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Card} from 'react-native-elements';
 import {View, Image, Text} from 'react-native';
@@ -12,24 +12,23 @@ const MeHeader = () => {
 
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const [imagerender, setimagerender] = useState(false);
-  const [image, setimage] = useState('');
-
-  AsyncStorage.getItem('prem_image').then(async (item) => {
+  const [image, setimage] = useState(false);
+  useEffect(() => {
     let mounted = true;
-    const getprem_image = async () => {
+    const getprem_image = () => {
       if (mounted) {
-        await setimage(item);
-        await setimagerender(true);
+        if (users_image !== '') setimage(true);
+        setimagerender(true);
       }
     };
     mounted && getprem_image();
     return () => {
       mounted = false;
     };
-  });
+  }, [users_image]);
+  console.log(users_image);
 
-  let imageUri = 'data:image/png;base64,' + image;
-
+  let imageUri = users_image;
   return (
     <Card containerStyle={styles.userplate}>
       <View style={{flexDirection: 'row', width: '100%'}}>
@@ -52,16 +51,14 @@ const MeHeader = () => {
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 13,
-              fontFamily: 'SFUIDisplay-Light',
+              fontSize: 14,
             }}>
             {users_reducers?.lastname + ',' + users_reducers?.firstname}
           </Text>
           <Text
             style={{
               textAlign: 'left',
-              fontSize: 13,
-              fontFamily: 'SFUIDisplay-Light',
+              fontSize: 14,
             }}>
             Premiere ID: {users_reducers?.prem_id}
           </Text>

@@ -21,6 +21,7 @@ import {
   SET_NOTIFICATION_OFFSET,
   REGISTRATION_COMPLETE,
   SPINNER_ALERT,
+  SET_LOADED,
 } from '../Types/Default_Types';
 
 const defult_values = {
@@ -47,9 +48,12 @@ const defult_values = {
   notifoffset: 0,
   registrationcomplete: {message: '', success: false},
   spinneralert: false,
+  loaded: false,
 };
 const Default_Reducer = (data_state = defult_values, actions) => {
   switch (actions.type) {
+    case SET_LOADED:
+      return {...data_state, loaded: actions.payload};
     case SPINNER_ALERT:
       return {...data_state, spinneralert: actions.payload};
     case REGISTRATION_COMPLETE:

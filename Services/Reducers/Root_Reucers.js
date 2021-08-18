@@ -11,6 +11,7 @@ import MedicalRecords_Reducers from './MedicalRecords_Reducers';
 import FTP_Reducers from './FTP_Reducers';
 import SignalRReducers from './SignalRReducers';
 import AgoraReducers from './AgoraReducers';
+import QueueReducers from './QueueReducers';
 import {combineReducers} from 'redux';
 
 const Root_Reducer = combineReducers({
@@ -27,5 +28,6 @@ const Root_Reducer = combineReducers({
   FTP_Reducers: FTP_Reducers,
   SignalRReducers: SignalRReducers,
   AgoraReducers: AgoraReducers,
+  QueueReducers: QueueReducers,
 });
 export default Root_Reducer;
