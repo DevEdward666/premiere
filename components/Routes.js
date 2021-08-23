@@ -32,6 +32,7 @@ import IndexQueue from '../Screens/Queing/Queueing';
 import GenerateQueue from '../Screens/Queing/IndexQueue';
 import ViewNumbersonQueue from '../Screens/Queing/QueueNumbers';
 import UIFilePDFView from '../Screens/UIFilePDFView';
+import styles from './style';
 import {TOGGLE_SWITCH} from '../Services/Actions/Diagnostic_Actions';
 const Routes = () => {
   const app_name = useSelector((state) => state.Default_Reducers.app_name);
@@ -49,7 +50,7 @@ const Routes = () => {
     };
   }, [dispatch, isEnabled]);
   return (
-    <Router>
+    <Router navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}>
       <Stack key="root">
         <Scene key="home" component={Login} title="Login" hideNavBar={true} />
         <Scene

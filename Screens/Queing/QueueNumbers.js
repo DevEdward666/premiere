@@ -12,6 +12,9 @@ import UserQueueNumber from './UserQueueNumber';
 const QueueNumbers = () => {
   const dispatch = useDispatch();
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
+  const notification = useSelector(
+    (state) => state.Default_Reducers.notification,
+  );
   const counter = useSelector((state) => state.QueueReducers.counter);
 
   useEffect(() => {
@@ -27,7 +30,7 @@ const QueueNumbers = () => {
     return () => {
       mounted = false;
     };
-  }, [dispatch, users_reducers?.prem_id, counter]);
+  }, [dispatch, users_reducers?.prem_id, counter, notification]);
   return (
     <SafeAreaView>
       <ListofCounter />

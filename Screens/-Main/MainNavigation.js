@@ -7,6 +7,7 @@ import {
   signalr_notify_connection,
   ACTION_SPINNER_ALERT,
   ACTION_LOADED,
+  signalr_notify_connection_from_queue,
 } from '../Services/Actions/Default_Actions';
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,6 +17,9 @@ import {Actions} from 'react-native-router-flux';
 const MainNavigation = () => {
   const hubconnectnotify = useSelector(
     (state) => state.Default_Reducers.hubconnect_notify,
+  );
+  const hubconnectnotifyfromqueue = useSelector(
+    (state) => state.Default_Reducers.hubconnect_notify_from_queue,
   );
   const hubConnect = useSelector((state) => state.Default_Reducers.hubconnect);
   const [token, settoken] = useState('');
@@ -54,6 +58,7 @@ const MainNavigation = () => {
       if (mounted) {
         if (username) {
           dispatch(signalr_connection());
+          dispatch(signalr_notify_connection_from_queue());
           dispatch(signalr_notify_connection());
           dispatch(ACTION_LOADED(true));
           dispatch(action_GET_userdetails(username));
@@ -93,6 +98,32 @@ const MainNavigation = () => {
                 ),
               );
             }
+          });
+        } catch (err) {
+          console.log(err);
+          console.log('Error while establishing connection: ' + {err});
+        }
+      }
+    };
+    mounted && createHubConnection();
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch]);
+  useEffect(() => {
+    let mounted = true;
+    const createHubConnection = () => {
+      if (mounted) {
+        try {
+          hubconnectnotifyfromqueue.on('notifyfrommobile', (message) => {
+            dispatch(
+              ACTION_NOTIF(
+                'Queue No. ' + message?.notification,
+                'Please go to ' + message?.type + ' Counter' + message?.to,
+                'Counter' + message?.to,
+                'high',
+              ),
+            );
           });
         } catch (err) {
           console.log(err);

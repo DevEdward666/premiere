@@ -7,7 +7,8 @@ export const SET_CIVIL_STATUS = 'SET_CIVIL_STATUS';
 export const SET_RELIGION = 'SET_RELIGION';
 export const SET_PROCEDURE = 'SET_PROCEDURE';
 
-export const BASE_URL = 'https://192.168.1.3:45455';
+export const BASE_URL = 'https://192.168.1.11:45456';
+export const QUEUE_BASE_URL = 'https://192.168.1.11:45455';
 export const REMOTE_URL = 'https://ddt-server.conveyor.cloud/';
 // export const BASE_URL = 'https://89.107.58.254:5020';
 // export const REMOTE_URL = 'https://89.107.58.254:60315/';
@@ -15,6 +16,8 @@ export const REMOTE_URL = 'https://ddt-server.conveyor.cloud/';
 export const WSS_BASE_URL = 'wss://89.107.58.254:5020';
 export const SIGNALR_CONNECT = 'SIGNALR_CONNECT';
 export const SIGNALR_CONNECT_NOTIFY = 'SIGNALR_CONNECT_NOTIFY';
+export const SIGNALR_CONNECT_NOTIFY_FROM_QUEUE =
+  'SIGNALR_CONNECT_NOTIFY_FROM_QUEUE';
 export const SET_REFRESHING = 'SET_REFRESHING';
 export const SET_OFFSET = 'SET_OFFSET';
 export const GET_DEVICE = 'GET_DEVICE';

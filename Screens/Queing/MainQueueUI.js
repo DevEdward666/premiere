@@ -30,7 +30,7 @@ const MainQueueUI = () => {
       );
       setoverlayvisible(true);
     },
-    [dispatch],
+    [dispatch, users_reducers?.prem_id],
   );
   const handleDone = useCallback(() => {
     setoverlayvisible(false);

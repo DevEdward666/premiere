@@ -149,7 +149,6 @@ export const action_SET_LinkRequest = (patno, prem_id, status) => async (
           type: GET_LINK_MESSAGE,
           payload: res.message,
         });
-        console.log(res);
       }
 
       // console.log('users' + res.username);

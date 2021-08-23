@@ -10,6 +10,8 @@ import {
   SET_PROCEDURE,
   SIGNALR_CONNECT,
   SIGNALR_CONNECT_NOTIFY,
+  SIGNALR_CONNECT_NOTIFY_FROM_QUEUE,
+  QUEUE_BASE_URL,
   SET_REFRESHING,
   SET_OFFSET,
   GET_NOTIF,
@@ -271,37 +273,31 @@ export const action_SET_notications = (
     .then(async (res) => {
       try {
         responseData = await response.json();
-      } catch (e) {
-        console.log(res);
-      }
+      } catch (e) {}
     });
 };
 export const signalr_connection = () => async (dispatch) => {
   const hubConnect = new signalR.HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/api/message/message`,{
-      transport:
-        signalR.HttpTransportType.WebSockets |
-        signalR.HttpTransportType.LongPolling,
-    })
-    .configureLogging(signalR.LogLevel.Debug)
-    .build(); 
-     hubConnect.start().catch(err => console.log(err)); 
+    .withUrl(`${BASE_URL}/api/message/message`)
+    .build();
+  hubConnect.start();
   dispatch({type: SIGNALR_CONNECT, payload: hubConnect});
 };
 export const signalr_notify_connection = () => async (dispatch) => {
   const hubConnect = new signalR.HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/api/notif/notify`,{
-      transport:
-        signalR.HttpTransportType.WebSockets |
-        signalR.HttpTransportType.LongPolling,
-    })
-    .configureLogging(signalR.LogLevel.Debug)
+    .withUrl(`${BASE_URL}/api/notif/notify`)
     .build();
-    hubConnect.start().catch(err => console.log(err)); 
+  hubConnect.start();
 
   dispatch({type: SIGNALR_CONNECT_NOTIFY, payload: hubConnect});
 };
-
+export const signalr_notify_connection_from_queue = () => async (dispatch) => {
+  const hubConnect = new signalR.HubConnectionBuilder()
+    .withUrl(`${QUEUE_BASE_URL}/api/notifmobile/notifymobile`)
+    .build();
+  hubConnect.start();
+  dispatch({type: SIGNALR_CONNECT_NOTIFY_FROM_QUEUE, payload: hubConnect});
+};
 export const ACTION_SPINNER_ALERT = (isSpinner) => async (dispatch) => {
   dispatch({type: SPINNER_ALERT, payload: isSpinner});
 };

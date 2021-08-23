@@ -161,6 +161,7 @@ function BottomNavigation() {
       </Stack.Navigator>
     );
   }
+  console.log(notification);
 
   return (
     <>

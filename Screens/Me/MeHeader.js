@@ -26,7 +26,6 @@ const MeHeader = () => {
       mounted = false;
     };
   }, [users_image]);
-  console.log(users_image);
 
   let imageUri = users_image;
   return (

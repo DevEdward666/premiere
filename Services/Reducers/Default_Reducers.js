@@ -11,6 +11,7 @@ import {
   REMOTE_URL,
   SIGNALR_CONNECT,
   SIGNALR_CONNECT_NOTIFY,
+  SIGNALR_CONNECT_NOTIFY_FROM_QUEUE,
   SET_REFRESHING,
   SET_OFFSET,
   GET_NOTIF,
@@ -22,6 +23,7 @@ import {
   REGISTRATION_COMPLETE,
   SPINNER_ALERT,
   SET_LOADED,
+  QUEUE_BASE_URL,
 } from '../Types/Default_Types';
 
 const defult_values = {
@@ -35,10 +37,12 @@ const defult_values = {
   religion: [],
   procedures: [],
   base_url: BASE_URL,
+  queue_base_url: QUEUE_BASE_URL,
   remote_url: BASE_URL,
   loading: false,
   hubconnect: '',
   hubconnect_notify: '',
+  hubconnect_notify_from_queue: '',
   refresh: false,
   offset: 0,
   notification: {title: '', body: '', to: '', type: ''},
@@ -86,6 +90,8 @@ const Default_Reducer = (data_state = defult_values, actions) => {
       return {...data_state, hubconnect: actions.payload};
     case SIGNALR_CONNECT_NOTIFY:
       return {...data_state, hubconnect_notify: actions.payload};
+    case SIGNALR_CONNECT_NOTIFY_FROM_QUEUE:
+      return {...data_state, hubconnect_notify_from_queue: actions.payload};
     case SET_REFRESHING:
       return {...data_state, refresh: actions.payload};
     case SET_OFFSET:

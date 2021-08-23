@@ -13,7 +13,6 @@ const UserQueueNumber = () => {
       containerStyle={{
         borderRadius: 10,
         elevation: 15,
-        height: 180,
         padding: 10,
       }}>
       <View
@@ -49,11 +48,20 @@ const UserQueueNumber = () => {
             style={{
               fontSize: 24,
               fontFamily: 'SFUIDisplay-SemiBold',
-              fontWeight: '900',
+              fontWeight: 'bold',
               textAlign: 'center',
               textTransform: 'uppercase',
             }}>
             {queueusernumber.data[0]?.queueno}
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              fontFamily: 'SFUIDisplay-SemiBold',
+              fontWeight: '900',
+              textAlign: 'center',
+            }}>
+            Location: {queueusernumber.data[0]?.location}
           </Text>
         </View>
       </View>
