@@ -12,6 +12,9 @@ import FTP_Reducers from './FTP_Reducers';
 import SignalRReducers from './SignalRReducers';
 import AgoraReducers from './AgoraReducers';
 import QueueReducers from './QueueReducers';
+import Clinic_Reducers from './Clinic_Reducers';
+import PaymongoReducers from './PaymongoReducers';
+import PassbaseReducers from './PassBaseReducers';
 import {combineReducers} from 'redux';
 
 const Root_Reducer = combineReducers({
@@ -29,5 +32,7 @@ const Root_Reducer = combineReducers({
   SignalRReducers: SignalRReducers,
   AgoraReducers: AgoraReducers,
   QueueReducers: QueueReducers,
+  Clinic_Reducers: Clinic_Reducers,
+  PassbaseReducers: PassbaseReducers,
 });
 export default Root_Reducer;

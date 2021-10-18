@@ -18,6 +18,7 @@ import {
   ACTION_NOTIFICATION_OFFSET,
 } from '../../Services/Actions/Default_Actions';
 import Skeleton from './SkeletonNotif/Skeletonnotif';
+import {SafeAreaView} from 'react-native';
 const UINotification = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const [refreshing, setRefreshing] = useState(false);
@@ -68,11 +69,7 @@ const UINotification = () => {
     };
   }, [dispatch, offset]);
   return (
-    <ImageBackground
-      style={{flex: 1}}
-      source={require('../../assets/background/white.jpg')}
-      resizeMode="cover"
-      blurRadius={20}>
+    <SafeAreaView>
       {notification_list?.loading ? (
         <FlatList
           refreshControl={
@@ -93,6 +90,7 @@ const UINotification = () => {
                 style={{
                   flex: 1,
                   flexDirection: 'row',
+                  backgroundColor: 'white',
                   padding: 2,
                 }}>
                 <Card style={styles.cardresultlist}>
@@ -109,7 +107,7 @@ const UINotification = () => {
       ) : (
         <Skeleton />
       )}
-    </ImageBackground>
+    </SafeAreaView>
   );
 };
 

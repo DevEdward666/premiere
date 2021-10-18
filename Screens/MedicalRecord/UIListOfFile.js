@@ -25,6 +25,7 @@ import {Card} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import {getDeviceId, getUniqueId} from 'react-native-device-info';
+import {requestLocationPermission} from '../../Services/Actions/Default_Actions';
 const UIListOfFile = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   let deviceStored = getDeviceId() + '-' + getUniqueId();
@@ -53,6 +54,7 @@ const UIListOfFile = () => {
   }, [dispatch, filetype]);
   const getfile = useCallback(
     async (item) => {
+      dispatch(requestLocationPermission());
       //   await dispatch(action_get_files(filetype, item?.filename));
       await AsyncStorage.setItem('mobile_pdf_filename', item?.filename);
       await Actions.pdfviewer();

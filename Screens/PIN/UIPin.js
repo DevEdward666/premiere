@@ -21,7 +21,7 @@ import {
   action_update_userlocked,
 } from '../Services/Actions/Users_Actions';
 import {Actions} from 'react-native-router-flux';
-import styles from './style'
+import styles from './style';
 const UIPin = () => {
   const dispatch = useDispatch();
   const users_image = useSelector((state) => state.User_Reducers.image);
@@ -32,55 +32,65 @@ const UIPin = () => {
   const [enteredPin, setEnteredPin] = useState('');
   const [username, setUsername] = useState('');
   const [showCompletedButton, setShowCompletedButton] = useState(false);
-  const controller = new AbortController()
-  AsyncStorage.getItem('username').then((item) => {
-    if (item == null) {
-      Actions.home();
-    }
-    setUsername(item);
-  }).catch(()=>{return controller.abort()});
+  const controller = new AbortController();
+  AsyncStorage.getItem('username')
+    .then((item) => {
+      if (item == null) {
+        Actions.home();
+      }
+      setUsername(item);
+    })
+    .catch(() => {
+      return controller.abort();
+    });
   useEffect(() => {
     let mounted = true;
-    const getdetailsofuser =  () => {
-       dispatch(action_GET_userdetails(username));
+    const getdetailsofuser = () => {
+      dispatch(action_GET_userdetails(username));
     };
     mounted && getdetailsofuser();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, username]);
   useEffect(() => {
     let mounted = true;
-    const eneterpin =  () => {
+    const eneterpin = () => {
       if (enteredPin.length > 0) {
-         setShowRemoveButton(true);
+        setShowRemoveButton(true);
       } else {
-         setShowRemoveButton(false);
+        setShowRemoveButton(false);
       }
       if (enteredPin.length === 4) {
-         setShowCompletedButton(true);
+        setShowCompletedButton(true);
       } else {
-         setShowCompletedButton(false);
+        setShowCompletedButton(false);
       }
     };
     mounted && eneterpin();
-    return () =>{mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [enteredPin]);
   useEffect(() => {
     let mounted = true;
-    const getuserdetailsandpin =  () => {
-       dispatch(action_GET_userpin(username));
+    const getuserdetailsandpin = () => {
+      dispatch(action_GET_userpin(username));
     };
 
     mounted && getuserdetailsandpin();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, username]);
 
-  const handlePinEntered = useCallback(async(value) => {
+  const handlePinEntered = useCallback(async (value) => {
     await setEnteredPin(value);
   }, []);
   const handleSubmitPin = useCallback(
     async (key) => {
       if (key === 'custom_left') {
-      await  pinView.current.clear();
+        await pinView.current.clear();
       }
       if (key === 'custom_right') {
         if (user_pin == enteredPin) {
@@ -106,7 +116,7 @@ const UIPin = () => {
         }}>
         <Image
           style={styles.avatar}
-          source={require('../../assets/icons/premiereicon.jpeg')}
+          source={require('../../assets/icons/premiereicon.png')}
         />
         <ReactNativePinView
           inputSize={12}
@@ -151,7 +161,5 @@ const UIPin = () => {
     </>
   );
 };
-
-
 
 export default UIPin;

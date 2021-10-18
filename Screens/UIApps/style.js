@@ -1,19 +1,19 @@
-import {StyleSheet} from 'react-native'
+import {Dimensions} from 'react-native';
+import {StyleSheet} from 'react-native';
+const windowHeight = Dimensions.get('screen').height;
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginTop: 50,
-    },
-    plate:{
-        flex:1,
-        backgroundColor:"rgba(255,255,355,0.4)",
-        borderColor:"rgba(255,255,355,0.4)",
-        borderWidth:0.1,
-        borderRadius:10
-    },
-    scrollapps:{
-     marginTop:50,
-    }
-  });
+  container: {
+    height: windowHeight,
+  },
+  plate: {
+    backgroundColor: 'white',
+    borderWidth: 0.1,
+    elevation: 20,
+    borderRadius: 10,
+  },
+  scrollapps: {
+    marginTop: 50,
+  },
+});
 
-  export default styles
+export default styles;

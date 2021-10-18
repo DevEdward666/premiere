@@ -48,6 +48,7 @@ dexOptions {
         versionCode 1
         versionName "1.0"
         multiDexEnabled  true
+        vectorDrawables.useSupportLibrary = true
     }
     splits {
         abi {
@@ -107,6 +108,11 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(':@react-native-async-storage')
+    implementation 'com.facebook.fresco:webpsupport:2.0.0'
+  // Optionally, to display animated WebP images, you have to add:
+  implementation 'com.facebook.fresco:animated-webp:2.0.0'
+  implementation 'com.facebook.fresco:fresco:2.0.0'
+implementation 'com.facebook.fresco:animated-gif:2.0.0'
     implementation project(':react-native-image-picker')
       implementation project(':react-native-text-input-mask')
     implementation 'com.google.firebase:firebase-core:16.0.0'

@@ -36,16 +36,6 @@ const MeScreen = () => {
   const mountedRef = useRef();
   const [refreshing, setRefreshing] = useState(false);
 
-  AsyncStorage.getItem('tokenizer').then(async (item) => {
-    let mounted = true;
-    if (mounted)
-      if (item == null) {
-        Actions.home();
-      }
-    return () => {
-      mounted = false;
-    };
-  });
   AsyncStorage.getItem('username').then(async (item) => {
     let unmount = true;
     if (unmount) {

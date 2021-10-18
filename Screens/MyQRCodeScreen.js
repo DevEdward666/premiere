@@ -28,22 +28,15 @@ const MyQRCodeScreen = () => {
     const setqr = async () => {
       if (mounted) {
         if (user_qr?.qrbase64 !== '') {
-          await AsyncStorage.setItem('prem_user_qr', user_qr?.qrbase64);
-          await AsyncStorage.getItem('prem_user_qr').then(async (item) => {
-            await setQrvalue('data:image/png;base64,' + item);
-          });
+          await setQrvalue('data:image/png;base64,' + user_qr?.qrbase64);
         }
-        await AsyncStorage.getItem('prem_user_qr').then(async (item) => {
-          await setQrvalue('data:image/png;base64,' + item);
-        });
       }
     };
     mounted && setqr();
     return () => {
       mounted = false;
     };
-  }, [dispatch]);
-  console.log(users_reducers?.prem_id);
+  }, [user_qr?.qrbase64]);
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
@@ -60,26 +53,6 @@ const MyQRCodeScreen = () => {
           }}
           source={{uri: qrvalue, scale: 1}}
         />
-        {/* <QRCode
-          //QR code value
-          value={users_reducers?.prem_id}
-          //size of QR Code
-          size={250}
-          //Color of the QR Code (Optional)
-          // color="black"
-          //Background Color of the QR Code (Optional)
-          // backgroundColor="white"
-          //Logo of in the center of QR Code (Optional)
-          //   logo={logo}
-          //Center Logo size  (Optional)
-          // logoSize={50}
-          //Center Logo margin (Optional)
-          // logoMargin={1}
-          //Center Logo radius (Optional)
-          // logoBorderRadius={1}
-          // Center Logo background (Optional)
-          // logoBackgroundColor="white"
-        /> */}
       </View>
     </SafeAreaView>
   );
@@ -100,6 +73,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    fontFamily: 'SFUIDisplay-Bold',
   },
   textStyle: {
     textAlign: 'center',

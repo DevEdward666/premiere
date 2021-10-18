@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   Animated,
   Dimensions,
@@ -9,7 +9,8 @@ import {
   RefreshControl,
   Text,
   View,
-  ImageBackground
+  ImageBackground,
+  TouchableHighlight,
 } from 'react-native';
 import {Appbar} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +20,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   action_GET_Services,
   action_GET_Servicesimage,
+  action_set_service_id,
 } from '../Services/Actions/Services_Actions';
 import wait from '../Plugins/waitinterval';
 import {FlatList} from 'react-native';
@@ -124,81 +126,87 @@ const ServicesScreen = () => {
   const [img, setimg] = useState('');
   useEffect(() => {
     let mounted = true;
-    const getservices = async() => {
-
-      if(mounted){
-     await setSpinner(true);
-     await  setSpinner(false);
-      dispatch(action_GET_Services(offset));
-      if (services_reducer.services_img != undefined) {
-        for (var i = 0; i < services_reducer.length; i++) {
-          await      setimg(services_reducer[i]?.services_img);
-          dispatch(action_GET_Servicesimage(img));
+    const getservices = async () => {
+      if (mounted) {
+        await setSpinner(true);
+        await setSpinner(false);
+        dispatch(action_GET_Services(offset));
+        if (services_reducer.services_img != undefined) {
+          for (var i = 0; i < services_reducer.length; i++) {
+            await setimg(services_reducer[i]?.services_img);
+            dispatch(action_GET_Servicesimage(img));
+          }
         }
       }
-    }
     };
 
     mounted && getservices();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, offset]);
   useEffect(() => {
     let mounted = true;
-    const getservices = async() => {
+    const getservices = async () => {
+      if (mounted) {
+        if ((prev) => prev != offset) {
+          await setSpinner(true);
 
-      if(mounted){
-      if ((prev) => prev != offset) {
-        await setSpinner(true);
-      
-        await setSpinner(false);
-     
+          await setSpinner(false);
 
-        dispatch(action_GET_Services(offset));
-      } else {
-        await  setSpinner(true);
-      
-        await setSpinner(false);
-     
+          dispatch(action_GET_Services(offset));
+        } else {
+          await setSpinner(true);
 
-        dispatch(action_GET_Services(offset));
+          await setSpinner(false);
+
+          dispatch(action_GET_Services(offset));
+        }
       }
-    }
     };
 
     mounted && getservices();
-    return () => {mounted = false};
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, offset, loadmore]);
-  const loadmore = async() => {
-    let mounted=true
-    if(mounted){
+  const loadmore = async () => {
+    let mounted = true;
+    if (mounted) {
       await setoffset((prev) => prev + 10);
 
-    dispatch(action_GET_Services(offset));
+      dispatch(action_GET_Services(offset));
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
-  const onRefresh = React.useCallback(async() => {
-    let mounted=true
-    if(mounted){
+  const onRefresh = React.useCallback(async () => {
+    let mounted = true;
+    if (mounted) {
       await setRefreshing(true);
-   
-      await   setRefreshing(false);
-        for (var i = 0; i < services_reducer.length; i++) {
-          await setimg(services_reducer[i]?.services_img);
-          dispatch(action_GET_Servicesimage(services_reducer[i]?.services_img));
-        }
-        dispatch(action_GET_Services(offset));
- 
+
+      await setRefreshing(false);
+      for (var i = 0; i < services_reducer.length; i++) {
+        await setimg(services_reducer[i]?.services_img);
+        dispatch(action_GET_Servicesimage(services_reducer[i]?.services_img));
+      }
+      dispatch(action_GET_Services(offset));
     }
-return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, img, offset]);
+  const handleService = useCallback(
+    (item) => {
+      dispatch(action_set_service_id(item?.id));
+
+      Actions.service_desc();
+    },
+    [dispatch],
+  );
   let imageUri = 'data:image/png;base64,' + services_image;
   return (
-    <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
     <View style={styles.container}>
       <Backdrop
         images={require('../assets/doctors/john.jpg')}
@@ -237,40 +245,44 @@ return()=>{mounted=false}
             extrapolate: 'clamp',
           });
           return (
-            <View style={{width: ITEM_SIZE}}>
-              <Animated.View
-                key={item?.id}
-                style={{
-                  marginHorizontal: SPACING,
-                  padding: SPACING * 2,
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(255,255,355,0.4)',
-                  borderRadius: 20,
-                  transform: [{translateY}],
-                }}>
-                <Image
-                  source={{uri: `${base_url}/${item?.services_img}`}}
-                  style={styles.posterImage}></Image>
-                <Text style={{fontSize: 18, fontFamily: "SFUIDisplay-Bold",}} numberOfLines={1}>
-                  {item?.hosp_serv_name}
-                </Text>
-                <Text
+            <TouchableHighlight onPress={() => handleService(item)}>
+              <View style={{width: ITEM_SIZE}}>
+                <Animated.View
+                  key={item?.id}
                   style={{
-                    fontSize: 12,
-                    textAlign: 'justify',
-                    fontFamily: "SFUIDisplay-Light"
-                  }}
-                  numberOfLines={8}>
-                  {item?.hosp_serv_description}
-                </Text>
-              </Animated.View>
-            </View>
+                    marginHorizontal: SPACING,
+                    padding: SPACING * 2,
+                    alignItems: 'center',
+                    elevation: 50,
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    transform: [{translateY}],
+                  }}>
+                  <Image
+                    source={{uri: `${base_url}/${item?.services_img}`}}
+                    style={styles.posterImage}></Image>
+                  <Text
+                    style={{fontSize: 18, fontFamily: 'SFUIDisplay-Bold'}}
+                    numberOfLines={1}>
+                    {item?.hosp_serv_name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      textAlign: 'justify',
+                      fontFamily: 'SFUIDisplay-Light',
+                    }}
+                    numberOfLines={8}>
+                    {item?.hosp_serv_description}
+                  </Text>
+                </Animated.View>
+              </View>
+            </TouchableHighlight>
           );
           //<Text style={styles.item}>{item.title}</Text>
         }}
       />
     </View>
-    </ImageBackground>
   );
 };
 

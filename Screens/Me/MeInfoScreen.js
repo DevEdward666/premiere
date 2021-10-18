@@ -21,7 +21,8 @@ import styles from './infostyle';
 import {Card} from 'react-native-elements';
 import moment from 'moment';
 import {SafeAreaView} from 'react-native';
-import ImageView from "react-native-image-viewing";
+import ImageView from 'react-native-image-viewing';
+import {TextInput} from 'react-native-paper';
 const MeInfo = () => {
   const dispatch = useDispatch();
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
@@ -30,22 +31,22 @@ const MeInfo = () => {
   const base_url = useSelector((state) => state.Default_Reducers.base_url);
   const [username, setusername] = useState('');
   const [docname, setdocname] = useState('');
-  
+
   const [visible, setIsVisible] = useState(false);
   // let imageUri = `${base_url}/${users_reducers?.img}`;
   let imageUri = `${users_image}`;
   // let DocimageUri = `${base_url}/${users_reducers?.docs}`;
-  let DocimageUri =`${docs_image}`;
+  let DocimageUri = `${docs_image}`;
   useEffect(() => {
     let mounted = true;
     const getuserdocs = () => {
       if (mounted) {
-        if(users_image=="")
-        AsyncStorage.getItem('username').then((item) => {
-          setusername(item);
-          dispatch(action_GET_userdetails(item));
-          dispatch(action_GET_Docs(item));
-        });
+        if (users_image == '')
+          AsyncStorage.getItem('username').then((item) => {
+            setusername(item);
+            dispatch(action_GET_userdetails(item));
+            dispatch(action_GET_Docs(item));
+          });
       }
     };
 
@@ -55,28 +56,123 @@ const MeInfo = () => {
     };
   }, [dispatch, username]);
   const FirstRoute = () => (
-    <SafeAreaView>
-      <Card containerStyle={styles.userplate}>
-        <View style={styles.body}>
-          <View style={styles.mainbody}>
-            <View style={styles.bodyTitle}>
-              <Text style={styles.details}>Mobile No.</Text>
-              <Text style={styles.details}>Email</Text>
-              <Text style={styles.details}>Birthdate</Text>
-            </View>
-            <View style={styles.bodyContent}>
-              <Text style={styles.details}>{users_reducers?.mobileno}</Text>
-              <Text style={styles.details}>{users_reducers?.email}</Text>
-              <Text style={styles.details}>
-                {moment(users_reducers?.birthdate).format('MMMM D, YYYY')}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Card>
+    <SafeAreaView style={{padding: 10}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+        }}>
+        <TextInput
+          label="First Name"
+          value={users_reducers?.firstname}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+        <TextInput
+          label="Middle Name"
+          value={users_reducers?.middlename}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+        <TextInput
+          label="Last Name"
+          value={users_reducers?.lastname}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+        }}>
+        <TextInput
+          label="Mobile No"
+          value={users_reducers?.mobileno}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+        <TextInput
+          label="Email"
+          value={users_reducers?.email}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+        }}>
+        <TextInput
+          label="Birthdate"
+          value={moment(users_reducers?.birthdate).format('MMMM D, YYYY')}
+          dense={true}
+          style={styles.infotext}
+          editable={false}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              backgroundColor: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+        />
+      </View>
     </SafeAreaView>
   );
-
   const SecondRoute = () => (
     <Image style={styles.docs} source={{uri: DocimageUri}} />
   );
@@ -98,33 +194,30 @@ const MeInfo = () => {
     },
     {
       uri: DocimageUri,
-    }
+    },
   ];
   return (
-    
-    <ImageBackground
-      style={{flex: 1}}
-      source={require('../../assets/background/white.jpg')}
-      resizeMode="cover"
-      blurRadius={20}>
-        <ImageView
-  images={images}
-  imageIndex={0}
-  visible={visible}
-  onRequestClose={() => setIsVisible(false)}
-/>
+    <SafeAreaView>
+      <ImageView
+        images={images}
+        imageIndex={0}
+        visible={visible}
+        onRequestClose={() => setIsVisible(false)}
+      />
       <ScrollView style={styles.container}>
         <Card containerStyle={styles.userplate}>
           <View>
             <View style={styles.header}></View>
-            <TouchableHighlight   style={styles.avatar}  onPress={() => setIsVisible(true)}>
-            <Image
+            <TouchableHighlight
               style={styles.avatar}
-              source={{
-                uri: imageUri,
-                scale: 1,
-              }}
-            />
+              onPress={() => setIsVisible(true)}>
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: imageUri,
+                  scale: 1,
+                }}
+              />
             </TouchableHighlight>
           </View>
           <View style={styles.body2}>
@@ -145,12 +238,11 @@ const MeInfo = () => {
           onIndexChange={setIndex}
           initialLayout={initialLayout}
           renderTabBar={(props) => (
-            <TabBar {...props} style={{backgroundColor: '#1dc259'}} />
+            <TabBar {...props} style={{backgroundColor: '#0084FF'}} />
           )}
         />
-        
       </ScrollView>
-    </ImageBackground>
+    </SafeAreaView>
   );
 };
 export default MeInfo;

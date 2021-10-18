@@ -19,13 +19,28 @@ export const action_Login_user = (username, password) => async (dispatch) => {
     }),
   });
   const parseData = await fetchdata.json();
-  if (parseData.status != 400) {
-    if (parseData.success != false) {
-      await AsyncStorage.setItem('tokenizer', parseData.data.access_token);
-      await AsyncStorage.setItem('username', username);
-      Actions.index();
+  if (parseData.success != false) {
+    await AsyncStorage.setItem('tokenizer', parseData.data.access_token);
+    await AsyncStorage.setItem('username', username);
+    Actions.index();
+  } else {
+    var url = `${BASE_URL}/api/user/InserNewOTP`;
+    const fetchdata = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+      }),
+    });
+    const parseData2 = await fetchdata.json();
+
+    if (parseData2.success === false) {
+      alert(parseData2.message);
     } else {
-      var url = `${BASE_URL}/api/user/InserNewOTP`;
+      var url = `${BASE_URL}/api/user/getUserMobile`;
       const fetchdata = await fetch(url, {
         method: 'POST',
         headers: {
@@ -35,38 +50,16 @@ export const action_Login_user = (username, password) => async (dispatch) => {
         body: JSON.stringify({
           username: username,
         }),
-      });
-      const parseData2 = await fetchdata.json();
-      if (parseData2.status != 400) {
-        if (parseData2.success == false) {
-          alert(parseData2.message);
-        } else {
-          var url = `${BASE_URL}/api/user/getUserMobile`;
-          const fetchdata = await fetch(url, {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: username,
-            }),
-          })
-            .then((response) => response.json())
-            .then(async (res) => {
-              await AsyncStorage.setItem('mobileno', res.data.mobileno);
-            
+      })
+        .then((response) => response.json())
+        .then(async (res) => {
+          await AsyncStorage.setItem('mobileno', res.data.mobileno);
 
-              await Actions.otp();
-            });
-        }
-        //
-      } else {
-        alert('Wrong Username/Password');
-      }
+          await Actions.otp();
+        });
+
+      //
     }
-  } else {
-    alert('Wrong Username/Password');
   }
 };
 export const action_set_username = (username) => async (dispatch) => {

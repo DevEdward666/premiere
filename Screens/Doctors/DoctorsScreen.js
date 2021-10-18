@@ -11,7 +11,7 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {Input} from 'react-native-elements';
 import CardView from 'react-native-rn-cardview';
@@ -108,107 +108,117 @@ const DoctorScreen = () => {
       (state) => state.Doctors_Reducers.byspecialty,
     );
   }
-  AsyncStorage.getItem('tokenizer').then((item) => {
-    if (item == null) {
-      Actions.home();
-    }
-  });
+
   const dispatch = useDispatch();
 
   const handleSpecialtyChange = useCallback(
     (spclcode) => {
-      let mounted =true
-      if (mounted){
+      let mounted = true;
+      if (mounted) {
         setoffset(10);
         setspecialty(spclcode);
         dispatch(action_GET_doctorsbySpecialty(offset, spclcode));
         setreducer(doctors_reducer_by_specialty);
       }
-      return()=>{mounted=false}
+      return () => {
+        mounted = false;
+      };
     },
     [dispatch],
   );
   const handleNamechange = useCallback(
     async (name) => {
-      let mounted =true
-      if (mounted){
-      await setdoctorsname(name);
-      await dispatch(
-        action_GET_doctors_byname(
-          parseInt(offset),
-          specialty.toString(),
-          name.toString(),
-        ),
-      );
-        }
-        return()=>{mounted=false}
+      let mounted = true;
+      if (mounted) {
+        await setdoctorsname(name);
+        await dispatch(
+          action_GET_doctors_byname(
+            parseInt(offset),
+            specialty.toString(),
+            name.toString(),
+          ),
+        );
+      }
+      return () => {
+        mounted = false;
+      };
     },
     [dispatch, offset, specialty, doctorsname],
   );
   useEffect(() => {
     let mounted = true;
     const getdoctorsspecialty = async () => {
-      if (mounted){
-
-           await  setSpinner(true);
-    
-           await setSpinner(false);
-
-      dispatch(action_GET_doctors(offset));
-      dispatch(action_GET_doctorsSpecialty());
+      if (mounted) {
+        dispatch(action_GET_doctors(offset));
+        dispatch(action_GET_doctorsSpecialty());
       }
- 
     };
 
     mounted && getdoctorsspecialty();
-    return () => {mounted = false};
-  }, [dispatch,offset]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, offset]);
   useEffect(() => {
     let mounted = true;
     const getdoctors = () => {
-      if ((prev) => prev != offset) {
-        setSpinner(true);
-        setInterval(() => {
-          setSpinner(false);
-        }, 1000);
+      if (mounted) {
+        if (specialty === undefined) {
+          dispatch(action_GET_doctors(offset));
+          console.log('here');
+        }
+        // if ((prev) => prev != offset) {
+        //   setSpinner(true);
+        //   setInterval(() => {
+        //     setSpinner(false);
+        //   }, 1000);
 
-        dispatch(action_GET_doctors(offset));
-      } else {
-        setSpinner(true);
-        setInterval(() => {
-          setSpinner(false);
-        }, 1000);
+        //   dispatch(action_GET_doctors(offset));
+        // } else {
+        //   setSpinner(true);
+        //   setInterval(() => {
+        //     setSpinner(false);
+        //   }, 1000);
 
-        dispatch(action_GET_doctors(offset));
+        //   dispatch(action_GET_doctors(offset));
+        // }
       }
     };
 
     mounted && getdoctors();
-    return () => {mounted = false};
-  }, [dispatch, offset]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, offset, specialty]);
   const loadmore = () => {
-    let mounted =true
-    if (mounted){
-    setoffset((prev) => prev + 10);
-    dispatch(action_GET_doctorsSpecialty());
+    let mounted = true;
+    if (mounted) {
+      setoffset((prev) => prev + 10);
+      dispatch(action_GET_doctorsSpecialty());
 
-    if (specialty == undefined) {
-      dispatch(action_GET_doctors(offset));
-    } else {
-      dispatch(action_GET_doctorsbySpecialty(offset, specialty));
+      if (specialty === undefined) {
+        dispatch(action_GET_doctors(offset));
+        console.log('here');
+      } else {
+        dispatch(action_GET_doctorsbySpecialty(offset, specialty));
+      }
     }
-  }
-  return ()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
   const getDoctorInfo = async (item) => {
-    let mounted =true
-    if (mounted){
-    await AsyncStorage.setItem('doccodes', item.doccode);
-    await Actions.doctorsinfo();
-    dispatch(action_GET_doctors(offset));
+    let mounted = true;
+    if (mounted) {
+      await AsyncStorage.setItem('doccodes', item.doccode);
+      await Actions.doctorsinfo();
+      dispatch(action_GET_doctors(offset));
     }
-    return()=>{mounted=false}
+    return () => {
+      mounted = false;
+    };
   };
+
   const [images, setimages] = useState([
     {
       img: require('../assets/doctors/jenny.png'),
@@ -232,7 +242,7 @@ const DoctorScreen = () => {
     },
     container: {
       flex: 1,
-      marginTop:30
+      backgroundColor: 'white',
     },
     paragraph: {
       margin: 24,
@@ -255,28 +265,33 @@ const DoctorScreen = () => {
     },
     spinnerTextStyle: {
       color: '#FFF',
+
+      fontFamily: 'SFUIDisplay-Regular',
     },
     PickerContainer: {
-      backgroundColor: '#fff',
-      marginTop: 30,
-      marginStart: 20,
-      width: '90%',
+      backgroundColor: 'white',
+
+      borderRadius: 15,
+      margin: 10,
     },
     textInput: {
       backgroundColor: '#ffffff',
       flex: 1,
-      borderRadius: 20,
+      borderRadius: 15,
       margin: 10,
+      overflow: 'hidden',
       padding: 10,
       width: '80%',
     },
     inputContainer: {
       borderBottomWidth: 0,
+      overflow: 'hidden',
+      elevation: 25,
     },
     inputText: {
       color: 'black',
       fontWeight: 'normal',
-      fontFamily: 'OpenSans',
+      fontFamily: 'SFUIDisplay-Regular',
       marginLeft: 5,
     },
   });
@@ -309,24 +324,12 @@ const DoctorScreen = () => {
     return false;
   };
   return (
-    <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
     <View style={styles.container}>
       <Spinner
         visible={spinner}
         textContent={'Loading...'}
         textStyle={styles.spinnerTextStyle}
       />
-
-      {/* <Appbar.Header style={{backgroundColor: '#00a15b'}}>
-        <Appbar.Content title="Premiere" />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
-        <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-      </Appbar.Header> */}
-
       <Backdrop
         images={require('../assets/doctors/john.jpg')}
         scrollX={scrollX}
@@ -338,7 +341,7 @@ const DoctorScreen = () => {
           handleSpecialtyChange(itemValue)
         }>
         <Picker.Item label="Select Specialty" />
-        {doctors_sepcialty_reducer.map((card) => (
+        {doctors_sepcialty_reducer?.map((card) => (
           <Picker.Item
             key={card.spclcode}
             value={card.spclcode}
@@ -356,8 +359,12 @@ const DoctorScreen = () => {
       />
       <Animated.FlatList
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.firstname}
-        data={doctors_reducer_by_specialty}
+        keyExtractor={(item, index) => index}
+        data={
+          specialty === undefined || specialty === 0
+            ? doctors_reducer
+            : doctors_reducer_by_specialty
+        }
         horizontal
         onEndReached={loadmore}
         onEndReachedThreshold={0.1}
@@ -385,6 +392,7 @@ const DoctorScreen = () => {
           });
           return (
             <TouchableHighlight
+              key={index}
               underlayColor="#1C00ff00"
               onPress={() => getDoctorInfo(item)}>
               <View style={{width: ITEM_SIZE}} key={item.firstname}>
@@ -394,8 +402,9 @@ const DoctorScreen = () => {
                     marginHorizontal: SPACING,
                     padding: SPACING * 2,
                     alignItems: 'center',
-                    backgroundColor: 'rgba(255,255,355,0.4)',
-                    borderRadius: 34,
+                    backgroundColor: 'white',
+                    borderRadius: 15,
+                    elevation: 30,
                     transform: [{translateY}],
                   }}>
                   <Image
@@ -417,7 +426,6 @@ const DoctorScreen = () => {
         }}
       />
     </View>
-    </ImageBackground>
   );
 };
 DoctorScreen.propTypes = {};

@@ -1,12 +1,12 @@
+import {Dimensions} from 'react-native';
 import {StyleSheet} from 'react-native';
+const screenheight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   surface: {
-    marginTop: 20,
-    padding: 8,
-    height: 40,
+    height: 10,
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     elevation: 5,
   },
   spinnerTextStyle: {
@@ -16,18 +16,48 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
-  userplate:{
-    flex:1,
-    backgroundColor:"rgba(255,255,355,0.8)",
-    borderColor:"rgba(255,255,355,0.4)",
-    borderWidth:0.1,
-    borderRadius:30
+  viewheader: {
+    flex: 1,
+  },
+  iconstyle: {
+    height: 50,
+    width: '100%',
+    resizeMode: 'center',
+    alignContent: 'flex-start',
+  },
+  viewstyle: {
+    width: '80%',
+    height: 50,
+    justifyContent: 'center',
+  },
+  headerinfotext: {
+    flex: 1,
+    fontSize: 16,
+    paddingStart: 10,
+    fontFamily: 'SFUIDisplay-Bold',
+    backgroundColor: 'white',
+  },
+  infotext: {
+    flex: 1,
+    paddingStart: 10,
+    fontSize: 12,
+    fontFamily: 'SFUIDisplay-Bold',
+    backgroundColor: 'white',
+  },
+  userplate: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderColor: 'rgba(255,255,355,0.4)',
+    borderWidth: 0.1,
+    borderRadius: 15,
   },
   text: {
     color: 'black',
     fontSize: 12,
     padding: 10,
     textAlign: 'left',
+    fontFamily: 'SFUIDisplay-Regular',
+    backgroundColor: 'white',
   },
   flatlistcontainer: {
     backgroundColor: '#fafafa',

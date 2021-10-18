@@ -9,30 +9,28 @@ const styles = StyleSheet.create({
   },
   plate: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,355,0.4)',
+    backgroundColor: 'white',
     borderColor: 'rgba(255,255,355,0.4)',
     borderWidth: 0.1,
-    borderRadius: 30,
+    borderRadius: 15,
+    elevation: 15,
 
     height: Dimensions.height,
   },
   flatlistcontainer: {
     backgroundColor: '#fafafa',
     flex: 1,
-    paddingTop: 10,
-    marginTop: 50,
   },
   flatlistitem: {
     marginStart: 30,
     fontSize: 14,
-    fontFamily: 'Open-Sans',
+    fontFamily: 'SFUIDisplay-Regular',
     height: 30,
   },
   flatlistitemappointmentno: {
     marginStart: 30,
     fontSize: 14,
-    fontWeight: 'bold',
-    fontFamily: 'Open-Sans',
+    fontFamily: 'SFUIDisplay-Regular',
     height: 30,
   },
 });

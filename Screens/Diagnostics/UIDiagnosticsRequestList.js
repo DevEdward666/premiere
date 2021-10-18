@@ -8,20 +8,20 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 
 import wait from '../Plugins/waitinterval';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Card} from 'react-native-elements';
-import {SceneMap, TabView} from 'react-native-tab-view';
+import {SceneMap, TabView, TabBar} from 'react-native-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   action_GET_diagnostics_request,
   action_GET_diagnostics_request_finished,
 } from '../Services/Actions/Diagnostic_Actions';
 import {RefreshControl} from 'react-native';
-import styles from './diagnosticrequeststyles'
+import styles from './diagnosticrequeststyles';
 const UIDiagnosticsRequestList = () => {
   const dispatch = useDispatch();
   const diagnostics_reducers = useSelector(
@@ -30,78 +30,83 @@ const UIDiagnosticsRequestList = () => {
   const diagnostics_finished_reducers = useSelector(
     (state) => state.Diagnostic_Reducers.data_finished,
   );
+  const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const [premid, setpremid] = useState('');
-  const [offset, setoffset] = useState(0);
+  const [offset, setoffset] = useState(10);
   const [refreshing, setrefreshing] = useState(false);
   const [spinner, setSpinner] = useState(false);
-  const getprem_id = async () => {
-    let mounted =true
-    if(mounted){
-    try {
-      const prem_id = await AsyncStorage.getItem('prem_id');
 
-      if (prem_id !== null) {
-        await setpremid(prem_id);
-        await setoffset(10);
-        await dispatch(action_GET_diagnostics_request(premid, offset));
-
-        await dispatch(action_GET_diagnostics_request_finished(premid, offset));
-      }
-    } catch (e) {
-      alert('Failed to fetch the data from storage');
-    }
-  }
-  return()=>{mounted=false}
-  };
   const onRefresh = useCallback(() => {
-    let mounted =true
-    if(mounted){
-    setrefreshing(true);
-    wait(200).then(() => {
-      setrefreshing(false);
-    });
-    dispatch(action_GET_diagnostics_request(premid, offset));
-  }
-  return()=>{mounted=false}
+    let mounted = true;
+    if (mounted) {
+      setrefreshing(true);
+      wait(200).then(() => {
+        setrefreshing(false);
+      });
+      dispatch(action_GET_diagnostics_request(premid, offset));
+    }
+    return () => {
+      mounted = false;
+    };
   }, [dispatch, premid, offset]);
   useEffect(() => {
     let mounted = true;
     const getpremids = () => {
+      if (mounted) {
+        setpremid(users_reducers?.prem_id);
 
-      if(mounted){
-      getprem_id();
+        dispatch(
+          action_GET_diagnostics_request(users_reducers?.prem_id, offset),
+        );
+
+        dispatch(
+          action_GET_diagnostics_request_finished(
+            users_reducers?.prem_id,
+            offset,
+          ),
+        );
       }
     };
 
     mounted && getpremids();
-    return () => {mounted = false};
-  }, [dispatch, premid, offset]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, users_reducers?.prem_id, offset]);
 
   const loadmore = useCallback(() => {
-    let mounted =true
-    if(mounted){
-    dispatch(action_GET_diagnostics_request(premid, offset));
-    setoffset((prev) => prev + 10);
+    let mounted = true;
+    if (mounted) {
+      dispatch(action_GET_diagnostics_request(users_reducers?.prem_id, offset));
+      setoffset((prev) => prev + 10);
     }
-    return()=>{mounted=false}
-  }, [dispatch, premid, offset]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, users_reducers?.prem_id, offset]);
   const loadmorefinished = useCallback(() => {
-    let mounted =true
-    if(mounted){
-    dispatch(action_GET_diagnostics_request_finished(premid, offset));
-    setoffset((prev) => prev + 10);
+    let mounted = true;
+    if (mounted) {
+      dispatch(
+        action_GET_diagnostics_request_finished(
+          users_reducers?.prem_id,
+          offset,
+        ),
+      );
+      setoffset((prev) => prev + 10);
     }
-    return()=>{mounted=false}
-  }, [dispatch, premid, offset]);
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, users_reducers?.prem_id, offset]);
 
   const {height} = Dimensions.get('window');
   const FirstRoute = () => (
-    <View style={{flex: 1}}>
+    <View>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        style={{flex: 1}}
         data={diagnostics_reducers}
         keyExtractor={(item, index) => index.toString()}
         initialNumToRender={offset}
@@ -112,7 +117,6 @@ const UIDiagnosticsRequestList = () => {
         }}
         onEndReachedThreshold={0.1}
         renderItem={({item, index}) => (
- 
           <View
             style={{
               flex: 1,
@@ -120,7 +124,7 @@ const UIDiagnosticsRequestList = () => {
               padding: 2,
             }}>
             <Card containerStyle={styles.plate}>
-              <View style={{width: 500, height: 80,}}>
+              <View style={{width: 500, height: 80}}>
                 <Text style={styles.flatlistitemappointmentno}>
                   #{item.appointmentno}
                 </Text>
@@ -208,19 +212,17 @@ const UIDiagnosticsRequestList = () => {
         textContent={'Loading...'}
         textStyle={styles.spinnerTextStyle}
       />
-          <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
+
       <TabView
         style={styles.maincontainer}
         navigationState={{index, routes}}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={initialLayout}
+        renderTabBar={(props) => (
+          <TabBar {...props} style={{backgroundColor: '#034c81'}} />
+        )}
       />
-      </ImageBackground>
     </SafeAreaView>
   );
 };

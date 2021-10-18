@@ -4,13 +4,13 @@ import {Card, ListItem, Button, Icon} from 'react-native-elements';
 import styles from '../../Screens/Diagnostics/styles';
 const CustomListFooter = ({customsubtotal}) => {
   return (
-    <Card containerStyle={{marginBottom: 100, borderRadius: 5, elevation: 5}}>
+    <View style={{marginBottom: 50}}>
       <View
         style={[
           styles.container,
           {
             flexDirection: 'row',
-            padding: 20,
+            padding: 10,
           },
         ]}>
         <View style={{flex: 5}}>
@@ -20,19 +20,22 @@ const CustomListFooter = ({customsubtotal}) => {
               {
                 flexDirection: 'row',
                 alignItems: 'center',
-                margin: 10,
               },
             ]}>
             <View style={{flex: 5}}>
-              <Text style={{fontSize: 16}}>Total</Text>
+              <Text style={{fontSize: 16, fontFamily: 'SFUIDisplay-Light'}}>
+                Total
+              </Text>
             </View>
-            <View style={{flex: 3}}>
-              <Text style={{fontSize: 16}}>Php: {customsubtotal}</Text>
+            <View style={{flex: 2}}>
+              <Text style={{fontSize: 16, fontFamily: 'SFUIDisplay-Light'}}>
+                Php: {customsubtotal}
+              </Text>
             </View>
           </View>
         </View>
       </View>
-    </Card>
+    </View>
   );
 };
 export default CustomListFooter;

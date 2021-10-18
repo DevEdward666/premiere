@@ -5,7 +5,7 @@ import {
   SET_DATA_RESULT,
   SET_URL,
   SET_APPOINTMENT_MESSAGE,
-  TOGGLE_ENABLED
+  TOGGLE_ENABLED,
 } from '../Types/Diagnostic_Types';
 import {REMOTE_URL} from '../Types/Default_Types';
 const diagnostic = {

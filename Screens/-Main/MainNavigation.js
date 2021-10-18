@@ -9,10 +9,12 @@ import {
   ACTION_LOADED,
   signalr_notify_connection_from_queue,
 } from '../Services/Actions/Default_Actions';
+import {getDeviceId, getUniqueId} from 'react-native-device-info';
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {action_GET_userdetails} from '../Services/Actions/Users_Actions';
 import CustomBottomNavigation from './CustomBottomNavigation';
+import {action_passbase_get_single_info} from '../../Services/Actions/PassbaseActions';
 import {Actions} from 'react-native-router-flux';
 const MainNavigation = () => {
   const hubconnectnotify = useSelector(
@@ -31,27 +33,24 @@ const MainNavigation = () => {
   );
   const [username, setusername] = useState('');
   AsyncStorage.getItem('tokenizer').then((item) => {
-    let mounted = false;
-    if (item == null) {
-      Actions.home();
-    }
-    if (!mounted) {
-      settoken(item);
-    }
-    return () => {
-      mounted = true;
-    };
+    settoken(item);
   });
-  AsyncStorage.getItem('username')
-    .then((item) => {
-      if (item == null) {
-        Actions.home();
-      }
-      setusername(item);
-    })
-    .catch(() => {
-      return controller.abort();
-    });
+  AsyncStorage.getItem('username').then((item) => {
+    setusername(item);
+  });
+  // useEffect(() => {
+  //   let mounted = true;
+  //   const gettoken = () => {
+  //     if (mounted) {
+
+  //     }
+  //   };
+  //   mounted && gettoken();
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, []);
+
   useEffect(() => {
     let mounted = true;
     const getdetailsofuser = async () => {
@@ -66,11 +65,11 @@ const MainNavigation = () => {
         }
 
         dispatch(ACTION_GET_DEVICE(getDeviceId() + '-' + getUniqueId()));
-        AsyncStorage.setItem('prem_prem_id', user_details?.prem_id);
-        AsyncStorage.setItem(
-          'prem_fullname',
-          `${user_details?.lastname}, ${user_details?.firstname}`,
-        );
+        // AsyncStorage.setItem('prem_id', user_details?.prem_id);
+        // AsyncStorage.setItem(
+        //   'prem_fullname',
+        //   `${user_details?.lastname}, ${user_details?.firstname}`,
+        // );
       }
     };
 
@@ -78,7 +77,7 @@ const MainNavigation = () => {
     return () => {
       mounted = false;
     };
-  }, [dispatch, username]);
+  }, [dispatch,username]);
   useEffect(() => {
     let mounted = true;
     const createHubConnection = () => {
@@ -143,6 +142,7 @@ const MainNavigation = () => {
       if (mounted) {
         if (user_details?.prem_id) {
           dispatch(action_GET_notications(user_details?.prem_id));
+          dispatch(action_passbase_get_single_info(user_details?.passbase_id));
         }
       }
     };
@@ -150,7 +150,7 @@ const MainNavigation = () => {
     return () => {
       mounted = false;
     };
-  }, [dispatch, notification]);
+  }, [dispatch, user_details?.prem_id,user_details?.passbase_id]);
 
   return <CustomBottomNavigation />;
 };

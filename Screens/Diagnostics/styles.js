@@ -6,13 +6,11 @@ const styles = StyleSheet.create({
     height: 30 + '%',
   },
   text: {
-    color: 'black',
     fontSize: 14,
-    fontWeight: 'bold',
-    width: '100%',
-    alignContent: 'center',
-    textAlign: 'center',
-    backgroundColor: '#fafafaa0',
+    fontFamily: 'SFUIDisplay-Regular',
+    marginLeft: 12,
+    marginRight: 12,
+    backgroundColor: 'white',
   },
 
   //   textInput: {
@@ -23,7 +21,7 @@ const styles = StyleSheet.create({
   //   },
   maincontainer: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 10,
   },
   avatar: {
     width: 180,
@@ -36,6 +34,15 @@ const styles = StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF',
   },
+  PickerContainerSearchable: {
+    padding: 10,
+    backgroundColor: 'white',
+    borderColor: '#bbb',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginLeft: 12,
+    marginRight: 12,
+  },
   PickerContainer: {
     flex: 1,
     width: '100%',
@@ -43,8 +50,9 @@ const styles = StyleSheet.create({
     height: 70,
   },
   Inputcontainer: {
-    paddingTop: 30,
-    paddingBottom: 30,
+    marginTop: 10,
+    paddingBottom: 10,
+    padding: 10,
     width: '100%',
   },
   plate: {
@@ -53,7 +61,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,355,0.4)',
     borderWidth: 0.1,
     borderRadius: 10,
-    height: Dimensions.height,
   },
   imagecontainer: {
     flex: 1,
@@ -71,6 +78,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontWeight: 'bold',
     fontSize: 14,
+
     height: 80,
   },
   flatlistitemsecond: {

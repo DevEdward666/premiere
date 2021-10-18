@@ -20,6 +20,7 @@ import {TextInput, HelperText} from 'react-native-paper';
 import CardView from 'react-native-rn-cardview';
 import {Card} from 'react-native-elements';
 import styles from './style';
+import {Dimensions} from 'react-native';
 const LoginScreen = (props) => {
   const registrationcomplete = useSelector(
     (state) => state.Default_Reducers.registrationcomplete,
@@ -60,7 +61,13 @@ const LoginScreen = (props) => {
     };
   }, [username, password]);
   const goToSignup = () => {
-    Actions.signup();
+    Actions.signup_name();
+  };
+  const gotopolicy = () => {
+    Actions.pap();
+  };
+  const gototerms = () => {
+    Actions.tac();
   };
 
   useEffect(() => {
@@ -82,84 +89,103 @@ const LoginScreen = (props) => {
   }, [registrationcomplete?.message]);
 
   return (
-    <ImageBackground
-      style={{flex: 1}}
-      source={require('../../assets/background/background.jpeg')}
-      resizeMode="cover"
-      blurRadius={2}>
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/icons/PremiereIcon2.png')}
-          resizeMode="contain"
-          style={styles.image}
-        />
-        <Text style={styles.textTitle}>Premiere</Text>
+    // <ImageBackground
+    //   style={{
+    //     width: Dimensions.get('screen').width,
+    //     height: Dimensions.get('screen').height,
+    //   }}
+    //   source={require('../../assets/background/background.jpeg')}
+    //   resizeMode="cover"
+    //   blurRadius={2}>
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/icons/PremiereIcon2.png')}
+        resizeMode="contain"
+        style={styles.image}
+      />
 
-        <Card containerStyle={styles.cardContainer}>
-          <View style={styles.InputContainer}>
-            <TextInput
-              theme={{
-                colors: {
-                  primary: '#3eb2fa',
-                  backgroundColor: 'rgba(255,255,355,0.1)',
-                  underlineColor: 'rgba(255,255,355,0.1)',
-                },
-              }}
-              mode="flat"
-              label="Username"
-              onChangeText={(text) => handleUsernameChange(text)}
-              value={username}
-            />
+      <View style={styles.cardContainer}>
+        <View style={styles.InputContainer}>
+          <TextInput
+            style={styles.text}
+            theme={{
+              colors: {
+                placeholder: 'black',
+                text: 'black',
+                primary: '#0084FF',
+                underlineColor: 'transparent',
+                background: 'white',
+                backgroundColor: 'white',
+              },
+            }}
+            mode="flat"
+            label="Username"
+            onChangeText={(text) => handleUsernameChange(text)}
+            value={username}
+          />
+        </View>
+        <View style={styles.InputContainer}>
+          <TextInput
+            style={styles.text}
+            theme={{
+              colors: {
+                placeholder: 'black',
+                text: 'black',
+                primary: '#0084FF',
+                underlineColor: 'transparent',
+                background: 'white',
+                backgroundColor: 'white',
+              },
+            }}
+            mode="flat"
+            label="Password"
+            secureTextEntry={true}
+            onChangeText={(text) => handlePasswordChange(text)}
+            value={password}
+          />
+        </View>
 
-            {/* <Input
-    containerStyle={{ width:"100%",height:50,borderStyle: 'solid', overflow: 'hidden', marginBottom: 10, marginTop: 10, borderWidth: 1, borderColor: 'black', borderRadius: 25}}
-    overflow="hidden"
-    keyboardAppearance="dark"
-    placeholder="Enter Name"
-    autoCorrect={false}
-   
-    /> */}
-          </View>
-          <View style={styles.InputContainer}>
-            <TextInput
-              theme={{
-                colors: {
-                  primary: '#3eb2fa',
-                  backgroundColor: 'rgba(255,255,355,0.1)',
-                  underlineColor: 'rgba(255,255,355,0.4)',
-                  overflow: 'hidden',
-                },
-              }}
-              mode="flat"
-              label="Password"
-              secureTextEntry={true}
-              onChangeText={(text) => handlePasswordChange(text)}
-              value={password}
-            />
-          </View>
-
-          <TouchableHighlight
-            style={styles.login}
-            underlayColor="rgba(62, 178, 250, 0.5)"
-            onPress={() => handleSubmit()}>
-            <Text style={styles.submitText}>Login</Text>
-          </TouchableHighlight>
-          <View style={{marginTop: 60}}>
-            <Text style={{textAlign: 'center'}}>
-              Not Yet Registered?{' '}
-              <Text onPress={() => goToSignup()} style={{color: 'blue'}}>
-                Sign Up
-              </Text>
+        <TouchableHighlight
+          style={styles.login}
+          underlayColor="rgba(62, 178, 250, 0.5)"
+          onPress={() => handleSubmit()}>
+          <Text style={styles.submitText}>Login</Text>
+        </TouchableHighlight>
+        <View style={{marginTop: 60}}>
+          <Text style={{textAlign: 'center'}}>
+            Not Yet Registered?{' '}
+            <Text onPress={() => goToSignup()} style={{color: 'blue'}}>
+              Sign Up
             </Text>
-          </View>
-          <View style={{flexDirection: 'row', height: 50}}>
+          </Text>
+          {/* <View
+            style={{
+              flex: 1,
+              marginStart: 30,
+              marginEnd: 30,
+              textAlign: 'center',
+            }}> */}
+          <Text
+            style={styles.startTextFooter}>
+            By signing up, I have read and agreed to Premiere{' '}
+            <Text onPress={() => gototerms()} style={{color: 'blue'}}>
+              Terms of Use{' '}
+            </Text>
+            and{' '}
+            <Text onPress={() => gotopolicy()} style={{color: 'blue'}}>
+              Privacy Policy
+            </Text>
+          </Text>
+          <View style={{flexDirection: 'row', flex: 1}}>
             <View style={styles.endFooter}>
               <Text style={styles.endTextFooter}>Powered by TUO @ 2021</Text>
             </View>
+            {/* </View> */}
           </View>
-        </Card>
+        </View>
       </View>
-    </ImageBackground>
+    </View>
+    // </ImageBackground>
   );
 };
 

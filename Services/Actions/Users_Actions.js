@@ -12,7 +12,6 @@ import RNFetchBlob from 'react-native-fetch-blob';
 var RNFS = require('react-native-fs');
 const controller = new AbortController();
 export const action_GET_userdetails = (username) => async (dispatch) => {
-  let isUnmount = false;
   var url = `${BASE_URL}/api/user/getUserInfo`;
   await fetch(url, {
     method: 'POST',
@@ -25,26 +24,12 @@ export const action_GET_userdetails = (username) => async (dispatch) => {
     }),
   })
     .then((response) => response.json())
-    .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        if (!isUnmount) {
-          dispatch({
-            type: SET_DATA_USERS,
-            payload: res.data,
-          });
-        }
-      }
-
-      // console.log('users' + res.username);
-    })
-    .catch(() => {
-      return controller.abort();
+    .then((res) => {
+      dispatch({
+        type: SET_DATA_USERS,
+        payload: res.data,
+      });
     });
-  return () => {
-    isUnmount = true;
-  };
 };
 export const action_GET_userpin = (username) => async (dispatch) => {
   var url = `${BASE_URL}/api/user/getuserpin`;

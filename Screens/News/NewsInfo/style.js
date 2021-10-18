@@ -28,9 +28,8 @@ const styles = StyleSheet.create({
     fontFamily: 'SFUIDisplay-Bold',
   },
   topicimage: {
-    width: '100%',
-    height: '100%',
     flex: 1,
+    margin: 30,
     resizeMode: 'cover',
     justifyContent: 'center',
   },
@@ -38,12 +37,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: 15,
     textAlign: 'justify',
-    fontFamily: 'SFUIDisplay-Light',
+    fontFamily: 'SFUIDisplay-Regular',
   },
   flatlistcontainer: {
     flex: 1,
-    paddingTop: 30,
-    marginTop: '7%',
+  },
+  contentNOTIFICATION: {
+    width: '100%',
+    marginStart: 10,
+    flexDirection: 'row',
+  },
+  containerNOTIFICATION: {
+    width: '100%',
+    height: 30,
+    marginBottom: 50,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   flatlistitem: {
     marginStart: 30,

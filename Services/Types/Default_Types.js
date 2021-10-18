@@ -6,10 +6,14 @@ export const SET_NATIONALITY = 'SET_NATIONALITY';
 export const SET_CIVIL_STATUS = 'SET_CIVIL_STATUS';
 export const SET_RELIGION = 'SET_RELIGION';
 export const SET_PROCEDURE = 'SET_PROCEDURE';
+export const SET_DEPARTMENT = 'SET_DEPARTMENT';
 
-export const BASE_URL = 'https://192.168.1.11:45456';
+export const BASE_URL = 'https://192.168.1.7:45455';
+export const PASSBASE_BASE_URL_IDENTITIES =
+  'https://api.passbase.com/verification/v1/identities/';
 export const QUEUE_BASE_URL = 'https://192.168.1.11:45455';
 export const REMOTE_URL = 'https://ddt-server.conveyor.cloud/';
+export const RETRIEVE_SOURCE = 'https://test-sources.paymongo.com/sources?id=';
 // export const BASE_URL = 'https://89.107.58.254:5020';
 // export const REMOTE_URL = 'https://89.107.58.254:60315/';
 
@@ -30,3 +34,10 @@ export const APP_NAME = 'APP_NAME';
 export const REGISTRATION_COMPLETE = 'REGISTRATION_COMPLETE';
 export const SPINNER_ALERT = 'SPINNER_ALERT';
 export const SET_LOADED = 'SET_LOADED';
+export const SET_HEADER_HIDE = 'SET_HEADER_HIDE';
+export const SHOW_ALERT = 'SHOW_ALERT';
+export const SET_LIBRARY = 'SET_LIBRARY';
+export const SET_CAMERA = 'SET_CAMERA';
+
+export const SET_TESTIMONIALS = 'SET_TESTIMONIALS';
+export const GET_NOTIFICATION_LIST_ALL = 'GET_NOTIFICATION_LIST_ALL';

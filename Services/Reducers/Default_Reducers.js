@@ -17,6 +17,7 @@ import {
   GET_NOTIF,
   GET_DEVICE,
   GET_NOTIFICATION_LIST,
+  GET_NOTIFICATION_LIST_ALL,
   SET_OPEN_BOTTOMSHEET,
   APP_NAME,
   SET_NOTIFICATION_OFFSET,
@@ -24,6 +25,12 @@ import {
   SPINNER_ALERT,
   SET_LOADED,
   QUEUE_BASE_URL,
+  SET_HEADER_HIDE,
+  SHOW_ALERT,
+  SET_CAMERA,
+  SET_LIBRARY,
+  SET_TESTIMONIALS,
+  SET_DEPARTMENT
 } from '../Types/Default_Types';
 
 const defult_values = {
@@ -36,6 +43,7 @@ const defult_values = {
   civil_status: [],
   religion: [],
   procedures: [],
+  departments: [],
   base_url: BASE_URL,
   queue_base_url: QUEUE_BASE_URL,
   remote_url: BASE_URL,
@@ -47,15 +55,31 @@ const defult_values = {
   offset: 0,
   notification: {title: '', body: '', to: '', type: ''},
   notificationlist: {data: [], loading: false},
+  notificationlistall: {data: [], loading: false},
   device: '',
   bottomSheet: false,
   notifoffset: 0,
   registrationcomplete: {message: '', success: false},
   spinneralert: false,
   loaded: false,
+  hideheader: true,
+  alerted: false,
+  setlibrary: '',
+  setcamera: '',
+  settestimonials: [],
 };
 const Default_Reducer = (data_state = defult_values, actions) => {
   switch (actions.type) {
+    case SET_TESTIMONIALS:
+      return {...data_state, settestimonials: actions.payload};
+    case SET_CAMERA:
+      return {...data_state, setcamera: actions.payload};
+    case SET_LIBRARY:
+      return {...data_state, setlibrary: actions.payload};
+    case SHOW_ALERT:
+      return {...data_state, alerted: actions.payload};
+    case SET_HEADER_HIDE:
+      return {...data_state, hideheader: actions.payload};
     case SET_LOADED:
       return {...data_state, loaded: actions.payload};
     case SPINNER_ALERT:
@@ -82,6 +106,8 @@ const Default_Reducer = (data_state = defult_values, actions) => {
       return {...data_state, procedures: actions.payload};
     case SET_RELIGION:
       return {...data_state, religion: actions.payload};
+    case SET_DEPARTMENT:
+      return {...data_state, departments: actions.payload};
     case BASE_URL:
       return {...data_state, base_url: actions.payload};
     case REMOTE_URL:
@@ -101,6 +127,8 @@ const Default_Reducer = (data_state = defult_values, actions) => {
     case GET_DEVICE:
       return {...data_state, device: actions.payload};
     case GET_NOTIFICATION_LIST:
+      return {...data_state, notificationlist: actions.payload};
+    case GET_NOTIFICATION_LIST_ALL:
       return {...data_state, notificationlist: actions.payload};
     case SET_OPEN_BOTTOMSHEET:
       return {...data_state, bottomSheet: actions.payload};

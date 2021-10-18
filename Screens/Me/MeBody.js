@@ -32,8 +32,12 @@ const MeBody = (props) => {
     let mounted = true;
     if (mounted) {
       if (users_reducers?.patno === null) {
-        await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
-        Actions.link();
+        if (users_reducers?.active === 'true') {
+          await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
+          Actions.link();
+        } else {
+          Actions.update_info();
+        }
       } else {
         Actions.medicalrecords();
       }
@@ -66,10 +70,7 @@ const MeBody = (props) => {
     //  await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
     Actions.calendar();
   };
-  const gotoqueue = async () => {
-    //  await AsyncStorage.setItem('prem_id', users_reducers?.prem_id);
-    Actions.indexqueue();
-  };
+
   const removeValue = async () => {
     try {
       await AsyncStorage.getAllKeys().then(
@@ -79,6 +80,16 @@ const MeBody = (props) => {
     } catch (e) {
       // remove error
     }
+  };
+  const gotolist = () => {
+    Actions.consultlist();
+  };
+
+  const gotodiagnosticsresults = () => {
+    Actions.diagnosticsresultslist();
+  };
+  const gotodiagnosticsrequest = () => {
+    Actions.diagnosticsrequest();
   };
   return (
     <Card containerStyle={styles.userplate}>
@@ -105,7 +116,7 @@ const MeBody = (props) => {
           </View>
         </View>
       </TouchableHighlight>
-      <TouchableHighlight onPress={() => gotomessage()} underlayColor="#f7f7f7">
+      {/* <TouchableHighlight onPress={() => gotomessage()} underlayColor="#f7f7f7">
         <View
           style={{
             flexDirection: 'row',
@@ -127,8 +138,8 @@ const MeBody = (props) => {
             />
           </View>
         </View>
-      </TouchableHighlight>
-      <TouchableHighlight onPress={() => gotoapps()} underlayColor="#f7f7f7">
+      </TouchableHighlight> */}
+      {/* <TouchableHighlight onPress={() => gotoapps()} underlayColor="#f7f7f7">
         <View
           style={{
             flexDirection: 'row',
@@ -150,8 +161,8 @@ const MeBody = (props) => {
             />
           </View>
         </View>
-      </TouchableHighlight>
-
+      </TouchableHighlight> */}
+      {/* 
       <TouchableHighlight onPress={() => gotoqr()} underlayColor="#f7f7f7">
         <View
           style={{
@@ -174,9 +185,9 @@ const MeBody = (props) => {
             />
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableHighlight> */}
 
-      <TouchableHighlight
+      {/* <TouchableHighlight
         onPress={() => gotosafedavaoqr()}
         underlayColor="#f7f7f7">
         <View
@@ -201,27 +212,101 @@ const MeBody = (props) => {
           </View>
         </View>
       </TouchableHighlight>
+     */}
+      {/* <TouchableHighlight onPress={() => gotoqueue()} underlayColor="#f7f7f7">
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 70,
+            alignItems: 'center',
+          }}>
+          <View style={styles.viewstyle}>
+            <Text style={styles.textstyle}>Queue</Text>
+          </View>
+          <View style={{width: '10%', height: 50, justifyContent: 'center'}}>
+            <Image
+              style={styles.iconstyle}
+              source={require('../assets/icons/ic_healthdeclaration_prem-playstore.png')}
+            />
+          </View>
+        </View>
+      </TouchableHighlight> */}
+      <TouchableHighlight onPress={() => gotolist()} underlayColor="#f7f7f7">
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 70,
+            alignItems: 'center',
+          }}>
+          <View style={styles.viewstyle}>
+            <Text style={styles.textstyle}> OPD TeleMedicene Consultation</Text>
+          </View>
+          <View
+            style={{
+              width: '10%',
+              height: 50,
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={styles.iconstyle}
+              source={require('../assets/icons/clinic_list.png')}
+            />
+          </View>
+        </View>
+      </TouchableHighlight>
+
       <TouchableHighlight
-        onPress={() => gotoqueue()}
+        onPress={() => gotodiagnosticsrequest()}
         underlayColor="#f7f7f7">
-      <View
-        style={{
-          flexDirection: 'row',
-          height: 70,
-          alignItems: 'center',
-        }}>
-        <View style={styles.viewstyle}>
-          <Text style={styles.textstyle}>Queue</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 70,
+            alignItems: 'center',
+          }}>
+          <View style={styles.viewstyle}>
+            <Text style={styles.textstyle}> Diagnostic Requests List</Text>
+          </View>
+          <View
+            style={{
+              width: '10%',
+              height: 50,
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={styles.iconstyle}
+              source={require('../assets/icons/lab.png')}
+            />
+          </View>
         </View>
-        <View style={{width: '10%', height: 50, justifyContent: 'center'}}>
-          <Image
-            style={styles.iconstyle}
-            source={require('../assets/icons/ic_healthdeclaration_prem-playstore.png')}
-          />
-        </View>
-      </View>
       </TouchableHighlight>
       <TouchableHighlight
+        onPress={() => gotodiagnosticsresults()}
+        underlayColor="#f7f7f7">
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 70,
+            alignItems: 'center',
+          }}>
+          <View style={styles.viewstyle}>
+            <Text style={styles.textstyle}> Diagnostic Results</Text>
+          </View>
+          <View
+            style={{
+              width: '10%',
+              height: 50,
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={styles.iconstyle}
+              source={require('../assets/icons/results.png')}
+            />
+          </View>
+        </View>
+      </TouchableHighlight>
+
+      {/* <TouchableHighlight
         onPress={() => gotocalendar()}
         underlayColor="#f7f7f7">
         <View
@@ -245,7 +330,7 @@ const MeBody = (props) => {
             />
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableHighlight> */}
       <TouchableHighlight onPress={() => removeValue()} underlayColor="#f7f7f7">
         <View
           style={{

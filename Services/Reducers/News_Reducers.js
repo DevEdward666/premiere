@@ -6,7 +6,9 @@ import {
   SET_DATA_INFO,
   GET_NEWS_REACTION,
   GET_NEWS_COMMENT,
-  BASE64_IMAGE
+  BASE64_IMAGE,
+  SET_NEWS_IMAGE,
+  GET_NEWS_ID,
 } from '../Types/News_Types';
 import {BASE_URL} from '../Types/Default_Types';
 
@@ -14,14 +16,20 @@ const news = {
   data: [],
   data_week: [],
   data_today: [],
-  data_info: {data:[],loading:false},
+  data_info: {data: [], loading: false},
   data_comment: [],
   data_reaction: [],
   url: BASE_URL,
-  image_base64:""
+  image_base64: '',
+  news_id: '',
+  news_image: {data: [], success: false},
 };
 const News_Reducers = (data_state = news, actions) => {
   switch (actions.type) {
+    case GET_NEWS_ID:
+      return {...data_state, news_id: actions.payload};
+    case SET_NEWS_IMAGE:
+      return {...data_state, news_image: actions.payload};
     case SET_DATA:
       return {...data_state, data: actions.payload};
     case BASE64_IMAGE:

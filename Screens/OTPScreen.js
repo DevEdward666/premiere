@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const OTPScreen = () => {
   const dispatch = useDispatch();
   const [timer, setTimer] = useState(300);
+  const [otp, setotp] = useState(0);
   const [mobileno, setmobileno] = useState(300);
   useEffect(() => {
     let mounted = true;
@@ -30,7 +31,7 @@ const OTPScreen = () => {
     if (mounted) {
       AsyncStorage.getItem('username').then((item) => {
         if (item) {
-          dispatch(action_update_user(item));
+          dispatch(action_update_user(item, otp));
         }
       });
     }
@@ -73,9 +74,7 @@ const OTPScreen = () => {
           autoFocusOnLoad
           codeInputFieldStyle={styles.underlineStyleBase}
           codeInputHighlightStyle={styles.underlineStyleHighLighted}
-          onCodeFilled={(code) => {
-            console.log(`Code is ${code}, you are good to go!`);
-          }}
+          onCodeFilled={(code) => setotp(code)}
         />
         <Text h6 style={{alignContent: 'center', width: '100%'}}>
           Authentication Code until {timer} seconds

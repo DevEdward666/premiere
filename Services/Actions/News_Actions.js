@@ -7,7 +7,9 @@ import {
   SET_DATA_INFO,
   GET_NEWS_COMMENT,
   GET_NEWS_REACTION,
-  BASE64_IMAGE
+  BASE64_IMAGE,
+  SET_NEWS_IMAGE,
+  GET_NEWS_ID,
 } from '../Types/News_Types';
 import RNFetchBlob from 'react-native-fetch-blob';
 // import {fetchwithdispatch} from '../middleware/api';
@@ -29,21 +31,18 @@ import RNFetchBlob from 'react-native-fetch-blob';
 //   };
 // };
 export const convert_to_base64 = (url) => async (dispatch) => {
-  await RNFetchBlob.fetch('GET', url, {})
-  .then(async (res) => {
+  await RNFetchBlob.fetch('GET', url, {}).then(async (res) => {
     let base64Str = res.base64();
     try {
       responseData = await response.json();
-    } catch (e) {
-    
-    }
+    } catch (e) {}
     dispatch({
-      type:BASE64_IMAGE,
-      payload:base64Str
-    })
+      type: BASE64_IMAGE,
+      payload: base64Str,
+    });
     let text = res.text();
     let json = res.json();
-  })
+  });
 };
 export const action_GET_news = (offset) => async (dispatch) => {
   var url = `${BASE_URL}/api/news/getallnews`;
@@ -74,7 +73,31 @@ export const action_GET_news = (offset) => async (dispatch) => {
       }
     });
 };
-
+export const action_GET_news_images = (news_id) => async (dispatch) => {
+  var url = `${BASE_URL}/api/news/getallnewsimages`;
+  const value = await AsyncStorage.getItem('tokenizer');
+  const bearer_token = value;
+  const bearer = 'Bearer ' + bearer_token;
+  await fetch(url, {
+    method: 'POST',
+    withCredentials: true,
+    headers: {
+      Authorization: bearer,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      news_id: news_id,
+    }),
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      dispatch({
+        type: SET_NEWS_IMAGE,
+        payload: {data: res.data, success: res.success},
+      });
+    });
+};
 export const action_GET_news_info = (id) => async (dispatch) => {
   var url = `${BASE_URL}/api/news/getallnewsinfo`;
   const value = await AsyncStorage.getItem('tokenizer');
@@ -94,12 +117,10 @@ export const action_GET_news_info = (id) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-  
-        dispatch({
-          type: SET_DATA_INFO,
-          payload: {data:res.data,loading:true},
-        });
-      
+      dispatch({
+        type: SET_DATA_INFO,
+        payload: {data: res.data, loading: true},
+      });
     });
 };
 
@@ -125,7 +146,7 @@ export const action_set_news_reaction = (id, reaction, reactedby) => async (
     }),
   })
     .then((response) => response.json())
-    .then(async (res) => {
+    .then((res) => {
       console.log(res);
     });
 };
@@ -152,14 +173,10 @@ export const action_set_news_comment = (id, comment, commentedby) => async (
     }),
   })
     .then((response) => response.json())
-    .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {}
-    });
+    .then((res) => {});
 };
 
-export const action_GET_news_comment = (id) => async (dispatch) => {
+export const action_GET_news_comment = (id, offset) => async (dispatch) => {
   var url = `${BASE_URL}/api/news/getallnewscoment`;
   const value = await AsyncStorage.getItem('tokenizer');
   const bearer_token = value;
@@ -174,18 +191,15 @@ export const action_GET_news_comment = (id) => async (dispatch) => {
     },
     body: JSON.stringify({
       news_id: id,
+      offset: offset,
     }),
   })
     .then((response) => response.json())
-    .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: GET_NEWS_COMMENT,
-          payload: res.data,
-        });
-      }
+    .then((res) => {
+      dispatch({
+        type: GET_NEWS_COMMENT,
+        payload: res.data,
+      });
     });
 };
 
@@ -208,14 +222,10 @@ export const action_GET_news_reaction = (id) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: GET_NEWS_REACTION,
-          payload: res.data,
-        });
-      }
+      dispatch({
+        type: GET_NEWS_REACTION,
+        payload: res.data,
+      });
     });
 };
 export const action_GET_news_week = (offset) => async (dispatch) => {
@@ -237,14 +247,10 @@ export const action_GET_news_week = (offset) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: SET_DATA_WEEK,
-          payload: res.data,
-        });
-      }
+      dispatch({
+        type: SET_DATA_WEEK,
+        payload: res.data,
+      });
     });
 };
 
@@ -267,13 +273,16 @@ export const action_GET_news_today = (offset) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: SET_DATA_TODAY,
-          payload: res.data,
-        });
-      }
+      dispatch({
+        type: SET_DATA_TODAY,
+        payload: res.data,
+      });
     });
+};
+
+export const action_SET_news_id = (id) => async (dispatch) => {
+  dispatch({
+    type: GET_NEWS_ID,
+    payload: id,
+  });
 };

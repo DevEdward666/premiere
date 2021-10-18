@@ -3,7 +3,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    marginTop: 30,
   },
   viewstyle: {
     width: '80%',
@@ -25,6 +24,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignContent: 'center',
   },
+  appstextstyleheader: {
+    textAlign: 'center',
+    marginStart: 10,
+    fontSize: 24,
+    fontFamily: 'SFUIDisplay-Bold',
+    alignContent: 'center',
+  },
+  appstextstyle: {
+    textAlign: 'center',
+    marginStart: 10,
+    fontSize: 12,
+    alignContent: 'center',
+  },
   footertext: {
     textAlign: 'center',
     marginStart: 10,
@@ -38,12 +50,30 @@ const styles = StyleSheet.create({
     resizeMode: 'center',
     alignContent: 'flex-start',
   },
+  appiconstyle: {
+    height: 100,
+    width: '100%',
+    resizeMode: 'contain',
+  },
   userplate: {
     flex: 1,
     backgroundColor: 'rgba(255,255,355,0.4)',
     borderColor: 'rgba(255,255,355,0.4)',
     borderWidth: 0.1,
     borderRadius: 10,
+  },
+  cardplate: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,355,0.4)',
+    borderColor: 'rgba(255,255,355,0.4)',
+    borderWidth: 0.1,
+    borderRadius: 10,
+  },
+  appcardplate: {
+    backgroundColor: 'white',
+    borderColor: 'white',
+    borderRadius: 10,
+    elevation: 25,
   },
 });
 

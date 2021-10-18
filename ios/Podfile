@@ -36,6 +36,10 @@ target 'Premiere' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'react-native-video', :path => '../node_modules/react-native-video'
+
+  pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
+
   target 'PremiereTests' do
     inherit! :complete
     # Pods for testing

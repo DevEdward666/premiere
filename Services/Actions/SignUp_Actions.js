@@ -1,4 +1,14 @@
-import {SET_DATA, SET_USERNAME} from '../Types/SignUp_Types';
+import {
+  SET_DATA,
+  SET_FIRST_INFO,
+  SET_LAST_INFO,
+  SET_SECOND_INFO,
+  SET_THIRD_INFO,
+  SET_USERNAME,
+  UPDATE_INFO,
+  UPDATE_INFO_IMAGE,
+  DONE_SIGNUP,
+} from '../Types/SignUp_Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
 import {
@@ -8,8 +18,9 @@ import {
 } from '../Types/Default_Types';
 import {Platform} from 'react-native';
 import {ACTION_SPINNER_ALERT} from '../Actions/Default_Actions';
+
 const finished = false;
-export const action_update_user = (username) => async (dispatch) => {
+export const action_update_user = (username, otp) => async (dispatch) => {
   var url = `${BASE_URL}/api/user/getUserOTP`;
   const fetchdata = await fetch(url, {
     method: 'POST',
@@ -19,6 +30,7 @@ export const action_update_user = (username) => async (dispatch) => {
     },
     body: JSON.stringify({
       username: username,
+      otp: otp,
     }),
   });
   const parseData = await fetchdata.json();
@@ -56,12 +68,144 @@ export const action_GET_usernameExist = (username) => async (dispatch) => {
       }
     });
 };
-export const action_POST_FileImage = (response, username) => async (
+export const action_set_firstinfo = (
+  firstname,
+  middlename,
+  lastname,
+  completed,
+) => async (dispatch) => {
+  dispatch({
+    type: SET_FIRST_INFO,
+    payload: {
+      firstname: firstname,
+      middlename: middlename,
+      lastname: lastname,
+      completed: completed,
+    },
+  });
+};
+export const action_set_secondinfo = (birthdate, gender, completed) => async (
   dispatch,
-) => {};
-export const action_POST_FileImageProfile = (response, username) => async (
+) => {
+  dispatch({
+    type: SET_SECOND_INFO,
+    payload: {birthdate: birthdate, gender: gender, completed: completed},
+  });
+};
+export const action_set_thirdinfo = (email, mobile, completed) => async (
   dispatch,
-) => {};
+) => {
+  dispatch({
+    type: SET_THIRD_INFO,
+    payload: {email: email, mobile: mobile, completed: completed},
+  });
+};
+export const action_set_lastinfo = (username, password, completed) => async (
+  dispatch,
+) => {
+  dispatch({
+    type: SET_LAST_INFO,
+    payload: {username: username, password: password, completed: completed},
+  });
+};
+export const action_set_imageinfo = (
+  profileimage,
+  docsimage,
+  username,
+) => async (dispatch) => {
+  var url = `${BASE_URL}/api/user/UploadFileProfile`;
+  var name = profileimage.uri.split('/').pop();
+  let formdata = new FormData();
+  formdata.append('FormFile', {
+    uri:
+      Platform.OS === 'android'
+        ? profileimage.uri
+        : profileimage.uri.replace('file://', ''),
+    name: name,
+    type: profileimage.type,
+  });
+  formdata.append('FileName', username + '.jpg');
+  formdata.append('FolderName', username);
+  formdata.append('username', username);
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formdata,
+  }).then((response) => {
+    var url = `${BASE_URL}/api/user/UploadFile`;
+    var name = docsimage.uri.split('/').pop();
+    let formdata = new FormData();
+    formdata.append('FormFile', {
+      uri:
+        Platform.OS === 'android'
+          ? docsimage.uri
+          : docsimage.uri.replace('file://', ''),
+      name: name,
+      type: docsimage.type,
+    });
+    formdata.append('FileName', username + '_VerificationDocs.jpg');
+    formdata.append('FolderName', username);
+    formdata.append('username', username);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formdata,
+    }).then((response) => {});
+    // dispatch({
+    //   type: UPDATE_INFO_IMAGE,
+    //   payload: {profileimage: profileimage, docsimage: docsimage},
+    // });
+  });
+};
+export const action_update_info = (
+  username,
+  civil_status,
+  region_code,
+  religion_code,
+  nationality_code,
+  city_code,
+  province_code,
+  barangay_code,
+  address,
+  active,
+  passbase_id,
+  passbase_status,
+) => async (dispatch) => {
+  let formdata = new FormData();
+  formdata.append('username', username);
+  formdata.append('civil_status', civil_status);
+  formdata.append('region_code', region_code);
+  formdata.append('religion_code', religion_code);
+  formdata.append('nationality_code', nationality_code);
+  formdata.append('city_code', city_code);
+  formdata.append('province_code', province_code);
+  formdata.append('barangay_code', barangay_code);
+  formdata.append('fulladdress', address);
+  formdata.append('zipcode', '8000');
+  formdata.append('active', active);
+  formdata.append('passbase_id', passbase_id);
+  formdata.append('passbase_status', passbase_status);
+
+  await fetch(`${BASE_URL}/api/users/updateinfo`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formdata,
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      console.log(res?.message);
+      dispatch({
+        type: UPDATE_INFO,
+        paylaod: {message: res.message, success: res.success},
+      });
+    });
+};
 // RNFetchBlob.fetch(
 //   'POST',
 //   url,
@@ -104,17 +248,7 @@ export const action_SignUp_user = (
   email,
   username,
   password,
-  pin,
-  region_code,
-  city_code,
-  province_code,
-  barangay_code,
-  zipcode,
-  nationality_code,
-  fulladdress,
-  responseVerfication,
-  responseProfile,
-) => async () => {
+) => async (dispatch) => {
   const mobile = mobileno.split('+').join('');
   const value = await AsyncStorage.getItem('tokenizer');
   var url = `${BASE_URL}/api/user/addnewuser`;
@@ -126,8 +260,6 @@ export const action_SignUp_user = (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      url: `Resources\\Images\\${username}\\${username}.jpg`,
-      url_docs: `Resources\\Images\\${username}\\${username}_VerificationDocs.jpg`,
       firstname: firstname,
       middlename: middlename,
       lastname: lastname,
@@ -137,85 +269,80 @@ export const action_SignUp_user = (
       email: email,
       username: username,
       password: password,
-      pin: pin,
-      region_code: region_code,
-      city_code: city_code,
-      province_code: province_code,
-      barangay_code: barangay_code,
-      zipcode: zipcode,
-      nationality_code: nationality_code,
-      fulladdress: fulladdress,
     }),
   })
     .then((response) => response.json())
     .then((res) => {
       AsyncStorage.setItem('username', username);
       if (res.success) {
-        var url = `${BASE_URL}/api/user/UploadFileProfile`;
-        var name = responseProfile.uri.split('/').pop();
-        let formdata = new FormData();
-        formdata.append('FormFile', {
-          uri:
-            Platform.OS === 'android'
-              ? responseProfile.uri
-              : responseProfile.uri.replace('file://', ''),
-          name: name,
-          type: responseProfile.type,
+        dispatch({
+          type: DONE_SIGNUP,
+          payload: {data: res.data, done: res.success},
         });
-        formdata.append('FileName', username + '.jpg');
-        formdata.append('FolderName', username);
+
+        // var url = `${BASE_URL}/api/user/UploadFileProfile`;
+        // var name = responseProfile.uri.split('/').pop();
+        // let formdata = new FormData();
+        // formdata.append('FormFile', {
+        //   uri:
+        //     Platform.OS === 'android'
+        //       ? responseProfile.uri
+        //       : responseProfile.uri.replace('file://', ''),
+        //   name: name,
+        //   type: responseProfile.type,
+        // });
+        // formdata.append('FileName', username + '.jpg');
+        // formdata.append('FolderName', username);
+        // fetch(url, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        //   body: formdata,
+        // })
+        //   .then((response) => {
+        //     var url = `${BASE_URL}/api/user/UploadFile`;
+        //     var name = responseVerfication.uri.split('/').pop();
+        //     let formdata = new FormData();
+        //     formdata.append('FormFile', {
+        //       uri:
+        //         Platform.OS === 'android'
+        //           ? responseVerfication.uri
+        //           : responseVerfication.uri.replace('file://', ''),
+        //       name: name,
+        //       type: responseVerfication.type,
+        //     });
+        //     formdata.append('FileName', username + '_VerificationDocs.jpg');
+        //     formdata.append('FolderName', username);
+        //     fetch(url, {
+        //       method: 'POST',
+        //       headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //       },
+        //       body: formdata,
+        //     })
+        //       .then((response) => {
+        AsyncStorage.setItem('mobileno', mobileno);
+        var url = `${BASE_URL}/api/email/sendOTP?toname=${username}&&to=${email}&&otp=${res.other_info}`;
         fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
-          body: formdata,
-        })
-          .then((response) => {
-            var url = `${BASE_URL}/api/user/UploadFile`;
-            var name = responseVerfication.uri.split('/').pop();
-            let formdata = new FormData();
-            formdata.append('FormFile', {
-              uri:
-                Platform.OS === 'android'
-                  ? responseVerfication.uri
-                  : responseVerfication.uri.replace('file://', ''),
-              name: name,
-              type: responseVerfication.type,
-            });
-            formdata.append('FileName', username + '_VerificationDocs.jpg');
-            formdata.append('FolderName', username);
-            fetch(url, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
-              body: formdata,
-            })
-              .then((response) => {
-                AsyncStorage.setItem('mobileno', mobileno);
-                var url = `${BASE_URL}/api/email/sendOTP?toname=${username}&&to=${email}&&otp=${res.other_info}`;
-                 fetch(url, {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                  },
-                })
-                Actions.tac();
-               
-              })
-              .catch((err) => {
-                alert(err);
-              });
-          })
-          .catch((err) => {
-            alert(err);
-          });
+        });
+
+        // })
+        // .catch((err) => {
+        //   alert(err);
+        // });
+        // })
+        // .catch((err) => {
+        //   alert(err);
+        // });
       } else {
         alert('Something Went Wrong');
-        console.log(res)
-
+        console.log(res);
       }
     });
 };

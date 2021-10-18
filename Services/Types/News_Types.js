@@ -6,3 +6,5 @@ export const SET_DATA_INFO = 'SET_DATA_INFO';
 export const GET_NEWS_COMMENT = 'GET_NEWS_COMMENT';
 export const GET_NEWS_REACTION = 'GET_NEWS_REACTION';
 export const BASE64_IMAGE = 'BASE64_IMAGE';
+export const SET_NEWS_IMAGE = 'SET_NEWS_IMAGE';
+export const GET_NEWS_ID = 'GET_NEWS_ID';

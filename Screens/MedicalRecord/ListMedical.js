@@ -6,17 +6,18 @@ import {
   SafeAreaView,
   View,
   Text,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import CardView from 'react-native-rn-cardview';
-import {ButtonGroup,Card} from 'react-native-elements';
+import {ButtonGroup, Card} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome';
 import {action_get_info} from '../../Services/Actions/MedicalRecords_Actions';
 import wait from '../../Plugins/waitinterval';
 import styles from './style';
 import {Actions} from 'react-native-router-flux';
-import { _ScrollView } from 'react-native';
+import {_ScrollView} from 'react-native';
+import {Dimensions} from 'react-native';
 const ListMedical = () => {
   const list_medical_records = useSelector(
     (state) => state.MedicalRecords_Reducers.list_medical_records,
@@ -55,64 +56,52 @@ const ListMedical = () => {
       if (index !== 0) {
         Actions.files();
       } else {
-        await dispatch(
-          action_get_info(
-            {
-              admissiondate: item?.admissiondate,
-              admdiagnosis: item?.admdiagnosis,
-              patientname: item?.patientname,
-              patno: item?.patno,
-              complaint: item?.complaint,
-            },
-            true,
-          ),
-        );
+        await dispatch(action_get_info(item, true));
+        await Actions.patientmedicalinfo();
       }
     },
     [dispatch],
   );
   return (
- 
     <ScrollView
+      style={{
+        backgroundColor: '#f5f5f5',
+        height: Dimensions.get('screen').height,
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-
-      <View style={{marginTop:50}}>
-  
-      {list_medical_records?.data?.map((item, index) => (
-        <SafeAreaView key={index}>
-          <Card containerStyle={styles.userplate}>
-            <View
-              style={{
-                flexDirection: 'row',
-                height: 100,
-                alignItems: 'center',
-              }}>
+      <View style={styles.viewheader}>
+        {list_medical_records?.data?.map((item, index) => (
+          <SafeAreaView key={index}>
+            <Card containerStyle={styles.userplate}>
               <View
                 style={{
-                  flex: 1,
-                  justifyContent: 'flex-end',
+                  flexDirection: 'row',
+                  height: 100,
+                  alignItems: 'center',
                 }}>
-                <Text numberOfLines={6} style={styles.text}>
-                  {item?.patno}
-                  {'\n'}
-                  {item?.patientname}
-                </Text>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Text numberOfLines={6} style={styles.text}>
+                    {item?.patno}
+                    {'\n'}
+                    {item?.patientname}
+                  </Text>
+                </View>
               </View>
-            </View>
-            <ButtonGroup
-            onPress={(index) => updateIndex(item, index)}
-            buttons={buttons}
-            containerStyle={{height: 35, marginBottom: 15}}
-          />
-          </Card>
-        
-        </SafeAreaView>
-      ))}
-      
+              <ButtonGroup
+                onPress={(index) => updateIndex(item, index)}
+                buttons={buttons}
+                containerStyle={{height: 35, marginBottom: 15}}
+              />
+            </Card>
+          </SafeAreaView>
+        ))}
       </View>
-      
     </ScrollView>
   );
 };

@@ -7,14 +7,14 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import {Card} from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Actions} from 'react-native-router-flux';
 import {useDispatch, useSelector} from 'react-redux';
 import wait from '../../Plugins/waitinterval';
-import styles from './style'
+import styles from './style';
 const UIPatientFiles = () => {
   const users_reducers = useSelector((state) => state.User_Reducers.userinfo);
   const ftp_reducers = useSelector((state) => state.FTP_Reducers.filename);
@@ -61,26 +61,23 @@ const UIPatientFiles = () => {
   );
 
   return (
-    <ImageBackground
-    style={{flex: 1}}
-    source={require('../../assets/background/white.jpg')}
-    resizeMode="cover"
-    blurRadius={20}>
-    <SafeAreaView style={{marginTop:50}}>
-
+    <SafeAreaView>
       <Spinner
         visible={spinner}
         textContent={'Syncing Files...'}
-        textStyle={{  color: '#FFF',}}
+        textStyle={{color: '#FFF'}}
       />
- 
-      <ScrollView>
-    
+
+      <ScrollView
+        style={{
+          backgroundColor: '#f5f5f5',
+          height: Dimensions.get('screen').height,
+        }}>
         <TouchableHighlight
           onPress={() => getpdffile('SOA')}
           underlayColor="white">
           <Card containerStyle={styles.userplate}>
-            <Text>Statement of Account Files</Text>
+            <Text>Statement of Account</Text>
           </Card>
         </TouchableHighlight>
         <TouchableHighlight
@@ -97,19 +94,8 @@ const UIPatientFiles = () => {
             <Text>Clinical Abstract</Text>
           </Card>
         </TouchableHighlight>
-        <TouchableHighlight
-          onPress={() => getpdffile('CF')}
-          underlayColor="white">
-          <Card containerStyle={styles.userplate}>
-            <Text>Claim Forms</Text>
-          </Card>
-        </TouchableHighlight>
-        
-     
       </ScrollView>
-   
     </SafeAreaView>
-    </ImageBackground>
   );
 };
 

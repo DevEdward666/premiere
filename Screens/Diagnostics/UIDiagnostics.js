@@ -15,6 +15,8 @@ import {
   View,
   ImageBackground,
 } from 'react-native';
+import DoneOverlay from '../../Plugins/CustomOverlay/DoneOverlay';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {TextInput} from 'react-native-paper';
@@ -22,6 +24,8 @@ import {Input, Button} from 'react-native-elements';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {ProgressStep, ProgressSteps} from 'react-native-progress-steps';
 import {Actions} from 'react-native-router-flux';
+import DocumentPicker from 'react-native-document-picker';
+import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   action_GET_barangay,
@@ -168,7 +172,9 @@ const Diagnostics = () => {
   const [errorUsernameMessage, setErrorMessageUsername] = useState('');
   const [emailErrorMessage, setemailErrorMessage] = useState(false);
   const [mobileErrorMessage, setmobileErrorMessage] = useState('');
+  const [procedure, setprocedure] = useState('');
   const [InfoError, setInfoError] = useState(false);
+  const [overlayvisible, setoverlayvisible] = useState(false);
   const [AddressError, setAddressError] = useState(false);
   const [resourcePath, setresourcePath] = useState(null);
   const [resourcePathProfile, setresourcePathProfile] = useState(null);
@@ -184,7 +190,84 @@ const Diagnostics = () => {
   const [itemState, setitemState] = useState([]);
   // const [found, setFound] = useState(false);
   const [spinner, setSpinner] = useState(false);
+  const [getpickerregions, setpickerregions] = useState([]);
+  const [getpickerbarangay, setpickerbarangay] = useState([]);
+  const [getpickerprovince, setpickerprovince] = useState([]);
+  const [getpickercity, setpickercity] = useState([]);
+  const [getpickernationality, setpickernationality] = useState([]);
+  const [getpickercivilstatus, setpickercivilstatus] = useState([]);
+  const [getpickerreligion, setpickerreligion] = useState([]);
+  const [selecteddocs, setselecteddocs] = useState([]);
 
+  useEffect(() => {
+    let mounted = true;
+    const dropdownitems = () => {
+      if (mounted) {
+        const regions = region_reducers.map((item) => ({
+          code: item.regioncode,
+          desc: item.regiondesc,
+          id: item.regioncode,
+          name: item.regiondesc,
+        }));
+        const barangay = barangay_reducers.map((item) => ({
+          code: item.barangaycode,
+          desc: item.barangaydesc,
+          id: item.barangaycode,
+          name: item.barangaydesc,
+        }));
+        const province = province_reducers.map((item) => ({
+          code: item.provincecode,
+          desc: item.provincedesc,
+          id: item.provincecode,
+          name: item.provincedesc,
+        }));
+        const city = city_reducers.map((item) => ({
+          code: item.citymuncode,
+          desc: item.citymundesc,
+          id: item.citymuncode,
+          name: item.citymundesc,
+        }));
+        const nationalitypick = nationality_reducers.map((item) => ({
+          code: item.nationality,
+          desc: item.nationality,
+          id: item.nationality,
+          name: item.nationality + '(' + item.country + ')',
+        }));
+        const civilstatus = civil_status_reducers.map((item) => ({
+          code: item.cskey,
+          desc: item.csdesc,
+          id: item.cskey,
+          name: item.csdesc,
+        }));
+        const religion = religion_reducers.map((item) => ({
+          code: item.religion,
+          desc: item.description,
+          id: item.religion,
+          name: item.description + '(' + item.religion + ')',
+        }));
+        setpickerregions(regions);
+        setpickerbarangay(barangay);
+        setpickerprovince(province);
+        setpickercity(city);
+        setpickernationality(nationalitypick);
+        setpickercivilstatus(civilstatus);
+        setpickerreligion(religion);
+      }
+    };
+
+    mounted && dropdownitems();
+    return () => {
+      mounted = false;
+    };
+  }, [
+    religion_reducers,
+    civil_status_reducers,
+    nationality_reducers,
+    city_reducers,
+    province_reducers,
+    barangay_reducers,
+    region_reducers,
+  ]);
   const toggleSwitch = () => {
     let mounted = true;
     if (mounted) {
@@ -197,11 +280,12 @@ const Diagnostics = () => {
   const handleRegionChange = (pickregion) => {
     let mounted = true;
     if (mounted) {
-      setregion(pickregion);
+      console.log(pickregion);
+      setregion(pickregion?.code);
       setprovince('');
       setcity('');
       setbarangay('');
-      dispatch(action_GET_province(pickregion));
+      dispatch(action_GET_province(pickregion?.code));
     }
     return () => {
       mounted = false;
@@ -228,7 +312,7 @@ const Diagnostics = () => {
       let found = false;
       {
         selectedprocedurecode.map((item) => {
-          if (item.proccode === pickprocedure?.code.toString()) {
+          if (item.proccode === pickprocedure?.proccode.toString()) {
             found = true;
           }
         });
@@ -236,29 +320,29 @@ const Diagnostics = () => {
       if (!found) {
         setselectedprocedure((prev) => [
           ...prev,
-          {desc: pickprocedure.desc, price: pickprocedure.price},
+          {desc: pickprocedure.procdesc, price: pickprocedure.regprice},
         ]);
-        settotalrequest((prev) => prev + parseInt(pickprocedure.price));
+        settotalrequest((prev) => prev + parseInt(pickprocedure.regprice));
         setitemState((prev) => [
           ...prev,
-          {desc: pickprocedure.desc, price: pickprocedure.price},
+          {desc: pickprocedure.procdesc, price: pickprocedure.regprice},
         ]);
         setselectedprocedurecode((prev) => [
           ...prev,
           {
-            premid: premid.toString(),
-            reason: reasons.toString(),
-            proccode: pickprocedure?.code.toString(),
-            procdesc: pickprocedure?.desc.toString(),
-            proccost: pickprocedure?.price.toString(),
+            proccode: pickprocedure?.proccode,
+            procdesc: pickprocedure?.procdesc,
+            proccost: pickprocedure?.regprice,
           },
         ]);
-        setselectedprocedurecost([{price: pickprocedure.price}]);
+        setselectedprocedurecost([{price: pickprocedure.regprice}]);
+        dispatch(action_GET_procedure(''));
+        setprocedure('');
       } else {
         alert('Item Already in List');
       }
     },
-    [selectedprocedurecode],
+    [selectedprocedurecode, dispatch],
   );
   const handleSubmitAppointment = useCallback(async () => {
     let mounted = true;
@@ -270,28 +354,27 @@ const Diagnostics = () => {
           reasons,
           totalrequest.toFixed(2),
           selectedprocedurecode,
+          selecteddocs,
         ),
       );
 
       setSpinner(false);
       {
-        await alert('The Diagnostic Appointment Added sucessfully.');
+        setoverlayvisible(true);
       }
-      await Actions.diagnostics();
     }
     return () => {
       mounted = false;
     };
-  }, [dispatch, premid, selectedprocedurecode]);
+  }, [dispatch, premid, selectedprocedurecode, selecteddocs]);
 
   const handleProvinceChange = (pickprovince) => {
     let mounted = true;
-    let value = pickprovince.split('|');
     if (mounted) {
-      setprovince(pickprovince);
-      setprovincelabel(value[0]);
-      setprovincevalue(value[1]);
-      dispatch(action_GET_city(region, value[1]));
+      setprovince(pickprovince?.code);
+      setprovincelabel(pickprovince?.desc);
+      setprovincevalue(pickprovince?.code);
+      dispatch(action_GET_city(region, pickprovince?.code));
     }
     return () => {
       mounted = false;
@@ -299,12 +382,11 @@ const Diagnostics = () => {
   };
   const handleCityChange = (pickcity) => {
     let mounted = true;
-    let value = pickcity.split('|');
     if (mounted) {
-      setcity(pickcity);
-      setcitylabel(value[0]);
-      setcityvalue(value[1]);
-      dispatch(action_GET_barangay(region, provincevalue, value[1]));
+      setcity(pickcity?.code);
+      setcitylabel(pickcity?.desc);
+      setcityvalue(pickcity?.code);
+      dispatch(action_GET_barangay(region, provincevalue, pickcity?.code));
     }
     return () => {
       mounted = false;
@@ -312,11 +394,10 @@ const Diagnostics = () => {
   };
   const handleCivilStatus = (pickstatus) => {
     let mounted = true;
-    let value = pickstatus.split('|');
     if (mounted) {
-      setCivilStatus(pickstatus);
-      setCivilStatuslabel(value[0]);
-      setCivilStatusvalue(value[1]);
+      setCivilStatus(pickstatus?.code);
+      setCivilStatuslabel(pickstatus?.desc);
+      setCivilStatusvalue(pickstatus?.code);
     }
     return () => {
       mounted = false;
@@ -325,7 +406,7 @@ const Diagnostics = () => {
   const handleReligion = (pickreligion) => {
     let mounted = true;
     if (mounted) {
-      setreligion(pickreligion);
+      setreligion(pickreligion?.code);
     }
     return () => {
       mounted = false;
@@ -333,12 +414,11 @@ const Diagnostics = () => {
   };
   const handleBarangayChange = (pickBarangay) => {
     let mounted = true;
-    let value = pickBarangay.split('|');
     if (mounted) {
-      setbarangay(pickBarangay);
-      setbarangaylabel(value[0]);
-      setbarangayvalue(value[1]);
-      setpsgc(value[0] + ',' + citylabel + ',' + provincelabel);
+      setbarangay(pickBarangay?.code);
+      setbarangaylabel(pickBarangay?.desc);
+      setbarangayvalue(pickBarangay?.code);
+      setpsgc(pickBarangay?.desc + ',' + citylabel + ',' + provincelabel);
     }
     return () => {
       mounted = false;
@@ -347,13 +427,12 @@ const Diagnostics = () => {
   const handleNationality = (pickNationality) => {
     let mounted = true;
     if (mounted) {
-      setnationality(pickNationality);
+      setnationality(pickNationality?.code);
     }
     return () => {
       mounted = false;
     };
   };
-
   useEffect(() => {
     let mounted = true;
     const dropdownitems = () => {
@@ -453,7 +532,10 @@ const Diagnostics = () => {
       mounted = false;
     };
   };
-
+  const handleDone = async () => {
+    await setoverlayvisible(false);
+    await Actions.diagnostics();
+  };
   const handleSubmitCredentials = useCallback(async () => {
     if (stepError == false) {
       dispatch(
@@ -482,10 +564,11 @@ const Diagnostics = () => {
           zipcode,
           reasons,
           selectedprocedurecode,
+          selecteddocs,
         ),
       );
-      await alert('The Diagnostic Appointment Added sucessfully.');
-      await Actions.diagnostics();
+      setoverlayvisible(true);
+
       // setTimeout(() => {
       //   Actions.diagnostics();
       // }, 1000);
@@ -518,6 +601,7 @@ const Diagnostics = () => {
     zipcode,
     reasons,
     selectedprocedurecode,
+    selecteddocs,
   ]);
   useEffect(() => {
     let mounted = true;
@@ -526,7 +610,6 @@ const Diagnostics = () => {
       dispatch(action_GET_nationality());
       dispatch(action_GET_civilstatus());
       dispatch(action_GET_religion());
-      dispatch(action_GET_procedure());
     };
 
     mounted && getdefaults();
@@ -537,7 +620,25 @@ const Diagnostics = () => {
       <Text style={styles.title}></Text>
     </View>
   );
+  const docPicker = useCallback(async () => {
+    // Pick a multiple file
+    try {
+      const results = await DocumentPicker.pickMultiple({
+        type: [DocumentPicker.types.allFiles],
+      });
 
+      await setselecteddocs(results);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('error -----', err);
+      } else {
+        console.log('error -----', err);
+        throw err;
+      }
+      console.log('error -----', err);
+    }
+  }, []);
+  console.log(selecteddocs);
   const renderItem = ({item}) => <Item title={item.desc} />;
   useEffect(() => {
     let mounted = true;
@@ -552,6 +653,14 @@ const Diagnostics = () => {
       mounted = false;
     };
   }, [itemState]);
+  const handleSearchProcedure = useCallback(
+    async (text) => {
+      dispatch(action_GET_procedure(text));
+      await setprocedure(text);
+    },
+    [dispatch],
+  );
+
   const CustomFlatlists = () => {
     return (
       <SafeAreaView>
@@ -560,12 +669,27 @@ const Diagnostics = () => {
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />
+        <TextInput
+          style={styles.text}
+          theme={{
+            colors: {
+              primary: '#3eb2fa',
+              background: 'white',
+              underlineColor: 'transparent',
+            },
+          }}
+          mode="flat"
+          label="Search Procedure"
+          onChangeText={(text) => handleSearchProcedure(text)}
+          value={procedure}
+        />
         <FlatList
           style={{height: 200, maxHeight: 400}}
           data={itemState}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => (
             <TouchableOpacity
+              key={index}
               onLongPress={() => {
                 handleDeletedItems(index);
                 // Note that here you can use any function to remove the element at index from the itemState list
@@ -573,13 +697,142 @@ const Diagnostics = () => {
               <CustomList price={item?.price} desc={item?.desc} />
             </TouchableOpacity>
           )}
+          ListHeaderComponent={
+            <View keyboardShouldPersistTaps="Always">
+              <FlatList
+                style={{height: 200, maxHeight: 200}}
+                data={procedure_reducers}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleProcedureChange(item)}>
+                    <Card>
+                      <Text style={{fontSize: 10}}>{item?.procdesc}</Text>
+                    </Card>
+                  </TouchableOpacity>
+                )}
+              />
+              {/* <SearchableDropdown
+                onItemSelect={(itemValue) => handleProcedureChange(itemValue)}
+                label="Search Procedure"
+                placeholder="Search Procedure"
+                itemTextStyle={{color: 'black'}}
+                style={styles.PickerContainer}
+                itemsContainerStyle={{maxHeight: 140}}
+                items={items}
+                defaultIndex={0}
+                resetValue={false}
+                itemStyle={{
+                  padding: 10,
+                  marginTop: 2,
+                  backgroundColor: 'white',
+                  borderColor: '#bbb',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                }}
+                textInputProps={{
+                  placeholder: 'Search Procedure',
+                  underlineColorAndroid: 'transparent',
+                  style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                  },
+                  // onTextChange: (text) => alert(text),
+                }}
+                listProps={{
+                  nestedScrollEnabled: true,
+                }}
+              /> */}
+            </View>
+          }
         />
         <CustomListFooter customsubtotal={subtotal} />
       </SafeAreaView>
     );
   };
+  // const flatlistHeader = () => (
+
+  // );
+  const flatlistFooter = () => (
+    <View style={{width: '100%', marginBottom: 100}}>
+      <View
+        scrollViewProps={{keyboardShouldPersistTaps: 'handled'}}
+        style={{
+          width: '50%',
+          top: moderateScale(8),
+          alignSelf: 'center',
+          borderRadius: moderateScale(10),
+        }}>
+        <TouchableOpacity
+          style={{borderRadius: 10, alignSelf: 'center'}}
+          onPress={() => docPicker()}>
+          <Text style={{fontSize: 18}}>Upload Files</Text>
+          <Icon
+            style={{alignSelf: 'center'}}
+            name="cloud-upload"
+            size={50}
+            color="#0084FF"
+          />
+        </TouchableOpacity>
+      </View>
+      {isEnabled ? (
+        <View style={styles.Inputcontainer}>
+          <TextInput
+            style={styles.text}
+            multiline
+            numberOfLines={5}
+            maxLength={100}
+            theme={{
+              colors: {
+                primary: '#3eb2fa',
+                background: 'white',
+                underlineColor: 'transparent',
+              },
+            }}
+            containerStyle={{borderRadius: 15}}
+            style={{padding: 10, marginBottom: 30, marginTop: 10}}
+            mode="flat"
+            label="Reason for Requisition"
+            onChangeText={(text) => setreasons(text)}
+            value={reasons}
+          />
+          <Button
+            buttonStyle={{
+              backgroundColor: '#0084FF',
+              borderRadius: 25,
+              width: '70%',
+              alignSelf: 'center',
+            }}
+            onPress={() => handleSubmitAppointment()}
+            title="Submit Appointment"
+          />
+        </View>
+      ) : null}
+    </View>
+  );
   return (
     <SafeAreaView style={styles.maincontainer}>
+      <DoneOverlay
+        visible={overlayvisible}
+        message={`The diagnostic appointment requested sucessfully.`}
+        UI={
+          <Button
+            onPress={() => handleDone()}
+            buttonStyle={{
+              backgroundColor: '#0084FF',
+              borderRadius: 10,
+              width: '70%',
+              marginBottom: 80,
+              alignSelf: 'center',
+              height: 50,
+            }}
+            title="Done"
+          />
+        }
+      />
       <View style={styles.Inputcontainer}>
         <View
           style={{
@@ -594,8 +847,8 @@ const Diagnostics = () => {
           </View>
           <View style={{width: 5 + '%', height: 20}}>
             <Switch
-              trackColor={{false: '#767577', true: '#add8e6'}}
-              thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
+              trackColor={{false: '#767577', true: '#0084FF'}}
+              thumbColor={isEnabled ? '#0084FF' : '#f4f3f4'}
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
               value={isEnabled}
@@ -606,47 +859,374 @@ const Diagnostics = () => {
       </View>
 
       {isEnabled ? (
-        <Card containerStyle={styles.plate}>
-          <SearchableDropdown
-            onItemSelect={(itemValue) => {
-              handleProcedureChange(itemValue);
-            }}
-            label="Search Procedure"
-            placeholder="Search Procedure"
-            itemTextStyle={{color: 'black'}}
-            style={styles.PickerContainer}
-            itemsContainerStyle={{maxHeight: 140}}
-            items={items}
-            defaultIndex={2}
-            resetValue={false}
-            itemStyle={{
-              padding: 10,
-              marginTop: 2,
-              backgroundColor: 'white',
-              borderColor: '#bbb',
-              borderWidth: 1,
-              borderRadius: 5,
-            }}
-            textInputProps={{
-              placeholder: 'Search Procedure',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-              },
-              // onTextChange: (text) => alert(text),
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
+        <View style={styles.Inputcontainer}>
+          <FlatList
+            style={styles.Inputcontainer}
+            data={selecteddocs}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => (
+              <Card key={index}>
+                <Text key={index}>{item?.name}</Text>
+              </Card>
+            )}
+            ListHeaderComponent={
+              <View keyboardShouldPersistTaps="handled">
+                <SafeAreaView>
+                  <Spinner
+                    visible={spinner}
+                    textContent={'Loading...'}
+                    textStyle={styles.spinnerTextStyle}
+                  />
+                  <TextInput
+                    style={styles.text}
+                    theme={{
+                      colors: {
+                        primary: '#3eb2fa',
+                        background: 'white',
+                        underlineColor: 'transparent',
+                      },
+                    }}
+                    mode="flat"
+                    label="Search Procedure"
+                    onChangeText={(text) => handleSearchProcedure(text)}
+                    value={procedure}
+                  />
+                  <View keyboardShouldPersistTaps="Always">
+                    <FlatList
+                      style={{flex: 1}}
+                      data={procedure_reducers}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({item, index}) => (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() => handleProcedureChange(item)}>
+                          <Card key={index}>
+                            <Text style={{fontSize: 10}}>{item?.procdesc}</Text>
+                          </Card>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                  <FlatList
+                    style={{flex: 1}}
+                    data={itemState}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item, index}) => (
+                      <TouchableOpacity
+                        key={index}
+                        onLongPress={() => {
+                          handleDeletedItems(index);
+                          // Note that here you can use any function to remove the element at index from the itemState list
+                        }}>
+                        <CustomList price={item?.price} desc={item?.desc} />
+                      </TouchableOpacity>
+                    )}
+                  />
+                  <CustomListFooter customsubtotal={subtotal} />
+                </SafeAreaView>
+              </View>
+            }
+            ListFooterComponent={
+              <View style={{width: '100%', marginBottom: 100}}>
+                <View
+                  style={{
+                    width: '50%',
+                    top: moderateScale(8),
+                    alignSelf: 'center',
+                    borderRadius: moderateScale(10),
+                  }}>
+                  <TouchableOpacity
+                    style={{borderRadius: 10, alignSelf: 'center'}}
+                    onPress={() => docPicker()}>
+                    <Text style={{fontSize: 18}}>Upload Files</Text>
+                    <Icon
+                      style={{alignSelf: 'center'}}
+                      name="cloud-upload"
+                      size={50}
+                      color="#0084FF"
+                    />
+                  </TouchableOpacity>
+                </View>
+                {isEnabled ? (
+                  <View style={styles.Inputcontainer}>
+                    <TextInput
+                      style={styles.text}
+                      multiline
+                      numberOfLines={5}
+                      maxLength={100}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      containerStyle={{borderRadius: 15}}
+                      style={{padding: 10, marginBottom: 30, marginTop: 10}}
+                      mode="flat"
+                      label="Reason for Requisition"
+                      onChangeText={(text) => setreasons(text)}
+                      value={reasons}
+                    />
+                    <Button
+                      buttonStyle={{
+                        backgroundColor: '#0084FF',
+                        borderRadius: 25,
+                        width: '70%',
+                        alignSelf: 'center',
+                      }}
+                      onPress={() => handleSubmitAppointment()}
+                      title="Submit Appointment"
+                    />
+                  </View>
+                ) : null}
+              </View>
+            }
           />
-          <CustomFlatlists />
-
-          {isEnabled ? (
-            <View style={{width: '100%'}}>
+        </View>
+      ) : (
+        <ProgressSteps
+          activeStepIconBorderColor="#0084FF"
+          activeLabelColor="#0084FF"
+          activeStepNumColor="black"
+          labelColor="black"
+          completedProgressBarColor="#0084FF"
+          completedStepIconColor="#0084FF"
+          completedLabelColor="#0084FF"
+          labelFontSize={10}
+          disabledStepNumColor="black"
+          style={styles.plate}>
+          <ProgressStep
+            scrollViewProps={{keyboardShouldPersistTaps: 'handled'}}
+            label="Information"
+            nextBtnTextStyle={{
+              color: '#0084FF',
+              fontSize: 14,
+            }}
+            onNext={handleNextInfo}
+            errors={InfoError}>
+            <View style={styles.Inputcontainer}>
               <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                label="First name"
+                onChangeText={(text) => setfirstname(text)}
+                value={firstname}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                label="Middle name"
+                onChangeText={(text) => setmiddlename(text)}
+                value={middlename}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                label="Last name"
+                onChangeText={(text) => setlastname(text)}
+                value={lastname}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                label="Suffix"
+                onChangeText={(text) => setSuffix(text)}
+                value={suffix}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                label="Prefix"
+                onChangeText={(text) => setPrefix(text)}
+                value={prefix}
+              />
+
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <View
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}>
+                  <TouchableHighlight
+                    underlayColor="white"
+                    onPress={showDatepicker}>
+                    <TextInput
+                      style={styles.text}
+                      disabled={true}
+                      theme={{
+                        colors: {
+                          primary: '#3eb2fa',
+                          background: 'white',
+                          underlineColor: 'transparent',
+                        },
+                      }}
+                      mode="flat"
+                      label="Birthdate"
+                      value={birthdate}
+                    />
+                  </TouchableHighlight>
+                </View>
+              </View>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleCivilStatus(itemValue);
+                  }}
+                  label="Civil Status"
+                  placeholder="Civil Status"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickercivilstatus}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Civil Status',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleNationality(itemValue);
+                  }}
+                  label="Select Nationality"
+                  placeholder="Select Nationality"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickernationality}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select Nationality',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleReligion(itemValue);
+                  }}
+                  label="Select Religion"
+                  placeholder="Select Religion"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickerreligion}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select Religion',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <View>
+                <Picker
+                  selectedValue={gender}
+                  style={styles.PickerContainerSearchable}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setgender(itemValue)
+                  }>
+                  <Picker.Item label="Gender" />
+                  <Picker.Item label="Male" value="M" />
+                  <Picker.Item label="Female" value="F" />
+                </Picker>
+              </View>
+              <TextInput
+                style={styles.text}
                 multiline
                 numberOfLines={5}
                 maxLength={100}
@@ -657,362 +1237,241 @@ const Diagnostics = () => {
                     underlineColor: 'transparent',
                   },
                 }}
-                containerStyle={{borderRadius: 15}}
-                style={{padding: 10, marginBottom: 30, marginTop: 10}}
                 mode="flat"
                 label="Reason for Requisition"
                 onChangeText={(text) => setreasons(text)}
                 value={reasons}
               />
-              <Button
-                containerStyle={{borderRadius: 10}}
-                onPress={() => handleSubmitAppointment()}
-                title="Submit Appointment"
-              />
             </View>
-          ) : null}
-        </Card>
-      ) : (
-        <ProgressSteps style={styles.plate}>
-          <ProgressStep
-            label="Information"
-            onNext={handleNextInfo}
-            errors={InfoError}>
-            <Card containerStyle={styles.plate}>
-              <View style={styles.Inputcontainer}>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="First name"
-                  onChangeText={(text) => setfirstname(text)}
-                  value={firstname}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Middle name"
-                  onChangeText={(text) => setmiddlename(text)}
-                  value={middlename}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Last name"
-                  onChangeText={(text) => setlastname(text)}
-                  value={lastname}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Suffix"
-                  onChangeText={(text) => setSuffix(text)}
-                  value={suffix}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Prefix"
-                  onChangeText={(text) => setPrefix(text)}
-                  value={prefix}
-                />
-
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                    }}>
-                    <TouchableHighlight
-                      underlayColor="white"
-                      onPress={showDatepicker}>
-                      <TextInput
-                        disabled={true}
-                        theme={{
-                          colors: {
-                            primary: '#3eb2fa',
-                            background: 'white',
-                            underlineColor: 'transparent',
-                          },
-                        }}
-                        mode="flat"
-                        label="Birthdate"
-                        value={birthdate}
-                      />
-                    </TouchableHighlight>
-                  </View>
-                </View>
-                {show && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                  />
-                )}
-                <View>
-                  <Picker
-                    selectedValue={civilstatus}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleCivilStatus(itemValue)
-                    }>
-                    <Picker.Item label="Civil Status" value="Civil Status" />
-                    {civil_status_reducers.map((cs) => (
-                      <Picker.Item
-                        key={cs?.cskey}
-                        label={cs?.csdesc}
-                        value={cs?.csdesc + '|' + cs?.cskey}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-                <View>
-                  <Picker
-                    selectedValue={nationality}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleNationality(itemValue)
-                    }>
-                    <Picker.Item label="Select Nationality" />
-                    {nationality_reducers.map((card) => (
-                      <Picker.Item
-                        key={card.nationality}
-                        label={card.nationality}
-                        value={card.nationality}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-                <View>
-                  <Picker
-                    selectedValue={religion}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      handleReligion(itemValue)
-                    }>
-                    <Picker.Item label="Religion" value="Religion" />
-                    {religion_reducers.map((cs) => (
-                      <Picker.Item
-                        key={cs?.religion}
-                        label={cs?.description}
-                        value={cs?.religion}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-                <View>
-                  <Picker
-                    selectedValue={gender}
-                    style={styles.PickerContainer}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setgender(itemValue)
-                    }>
-                    <Picker.Item label="Gender" />
-                    <Picker.Item label="Male" value="M" />
-                    <Picker.Item label="Female" value="F" />
-                  </Picker>
-                </View>
-                <TextInput
-                  multiline
-                  numberOfLines={5}
-                  maxLength={100}
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  label="Reason for Requisition"
-                  onChangeText={(text) => setreasons(text)}
-                  value={reasons}
-                />
-              </View>
-            </Card>
           </ProgressStep>
 
           <ProgressStep
+            scrollViewProps={{keyboardShouldPersistTaps: 'handled'}}
             label="Contact Details"
+            previousBtnTextStyle={{color: '#0084FF', fontSize: 14}}
+            nextBtnTextStyle={{
+              color: '#0084FF',
+              fontSize: 14,
+            }}
             onNext={handleNextAddress}
             errors={AddressError}>
-            <Card containerStyle={styles.plate}>
-              <View style={styles.Inputcontainer}>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  error={emailErrorMessage}
-                  onChangeText={(text) => validate(text)}
-                  label="Email"
-                  value={email}
-                />
+            <View style={styles.Inputcontainer}>
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                error={emailErrorMessage}
+                onChangeText={(text) => validate(text)}
+                label="Email"
+                value={email}
+              />
 
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
-                  }}
-                  mode="flat"
-                  onChangeText={(text) => setmobile(text)}
-                  label="Mobile No."
-                  value={mobile}
-                />
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                onChangeText={(text) => setmobile(text)}
+                label="Mobile No."
+                value={mobile}
+              />
 
-                <Picker
-                  selectedValue={region}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleRegionChange(itemValue)
-                  }>
-                  <Picker.Item label="Select Region" value="region" />
-                  {region_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.regioncode}
-                      label={card.regiondesc}
-                      value={card.regioncode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={province}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleProvinceChange(itemValue)
-                  }>
-                  <Picker.Item label="Select Province" value="province" />
-                  {province_reducers?.map((card) => (
-                    <Picker.Item
-                      key={card.provincecode}
-                      label={card.provincedesc}
-                      value={card.provincedesc + '|' + card.provincecode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={city}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleCityChange(itemValue)
-                  }>
-                  <Picker.Item label="Select City" value="city" />
-                  {city_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.citymuncode}
-                      label={card.citymundesc}
-                      value={card.citymundesc + '|' + card.citymuncode}
-                    />
-                  ))}
-                </Picker>
-                <Picker
-                  selectedValue={barangay}
-                  style={styles.PickerContainer}
-                  onValueChange={(itemValue, itemIndex) =>
-                    handleBarangayChange(itemValue, itemIndex)
-                  }>
-                  <Picker.Item label="Select Barangay" value="barangay" />
-                  {barangay_reducers.map((card) => (
-                    <Picker.Item
-                      key={card.barangaycode}
-                      label={card.barangaydesc}
-                      value={card.barangaydesc + '|' + card.barangaycode}
-                    />
-                  ))}
-                </Picker>
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleRegionChange(itemValue);
                   }}
-                  mode="flat"
-                  onChangeText={(text) => setfulladdress(text)}
-                  label="Address 1"
-                  value={fulladdress}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
+                  label="Select Region"
+                  placeholder="Select Region"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickerregions}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select Region',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
                     },
+                    // onTextChange: (text) => alert(text),
                   }}
-                  mode="flat"
-                  onChangeText={(text) => setfulladdress2(text)}
-                  label="Address 2"
-                  value={fulladdress2}
-                />
-
-                <TextInput
-                  theme={{
-                    colors: {
-                      primary: '#3eb2fa',
-                      background: 'white',
-                      underlineColor: 'transparent',
-                    },
+                  listProps={{
+                    nestedScrollEnabled: true,
                   }}
-                  mode="flat"
-                  onChangeText={(text) => setzipcode(text)}
-                  label="Zipcode"
-                  value={zipcode}
                 />
               </View>
-            </Card>
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleProvinceChange(itemValue);
+                  }}
+                  label="Select Province"
+                  placeholder="Select Province"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickerprovince}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select Province',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleCityChange(itemValue);
+                  }}
+                  label="Select City"
+                  placeholder="Select City"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickercity}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select City',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <View>
+                <SearchableDropdown
+                  onItemSelect={(itemValue) => {
+                    handleBarangayChange(itemValue);
+                  }}
+                  label="Select Barangay"
+                  placeholder="Select Barangay"
+                  itemTextStyle={{color: 'black'}}
+                  style={styles.PickerContainer}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={getpickerbarangay}
+                  defaultIndex={2}
+                  resetValue={false}
+                  itemStyle={styles.PickerContainerSearchable}
+                  textInputProps={{
+                    placeholder: 'Select Barangay',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 10,
+                      marginLeft: 12,
+                      marginRight: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    // onTextChange: (text) => alert(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              </View>
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                onChangeText={(text) => setfulladdress(text)}
+                label="Address 1"
+                value={fulladdress}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                onChangeText={(text) => setfulladdress2(text)}
+                label="Address 2"
+                value={fulladdress2}
+              />
+
+              <TextInput
+                style={styles.text}
+                theme={{
+                  colors: {
+                    primary: '#3eb2fa',
+                    background: 'white',
+                    underlineColor: 'transparent',
+                  },
+                }}
+                mode="flat"
+                onChangeText={(text) => setzipcode(text)}
+                label="Zipcode"
+                value={zipcode}
+              />
+            </View>
           </ProgressStep>
           <ProgressStep
             scrollViewProps={{keyboardShouldPersistTaps: 'handled'}}
             label="Laboratory Request"
+            previousBtnTextStyle={{color: '#0084FF', fontSize: 14}}
+            nextBtnTextStyle={{
+              color: '#0084FF',
+              fontSize: 14,
+            }}
             onSubmit={() => handleSubmitCredentials()}>
-            <Card containerStyle={styles.plate}>
-              <SearchableDropdown
+            <View style={styles.Inputcontainer}>
+              {/* <SearchableDropdown
                 onItemSelect={(itemValue) => {
                   handleProcedureChange(itemValue);
                 }}
@@ -1046,9 +1505,73 @@ const Diagnostics = () => {
                 listProps={{
                   nestedScrollEnabled: true,
                 }}
+              /> */}
+              <SafeAreaView>
+                <Spinner
+                  visible={spinner}
+                  textContent={'Loading...'}
+                  textStyle={styles.spinnerTextStyle}
+                />
+                <TextInput
+                  style={styles.text}
+                  theme={{
+                    colors: {
+                      primary: '#3eb2fa',
+                      background: 'white',
+                      underlineColor: 'transparent',
+                    },
+                  }}
+                  mode="flat"
+                  label="Search Procedure"
+                  onChangeText={(text) => handleSearchProcedure(text)}
+                  value={procedure}
+                />
+                <View keyboardShouldPersistTaps="Always">
+                  <FlatList
+                    style={{flex: 1}}
+                    data={procedure_reducers}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item, index}) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => handleProcedureChange(item)}>
+                        <Card key={index}>
+                          <Text style={{fontSize: 10}}>{item?.procdesc}</Text>
+                        </Card>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+                <FlatList
+                  style={{flex: 1}}
+                  data={itemState}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity
+                      key={index}
+                      onLongPress={() => {
+                        handleDeletedItems(index);
+                        // Note that here you can use any function to remove the element at index from the itemState list
+                      }}>
+                      <CustomList price={item?.price} desc={item?.desc} />
+                    </TouchableOpacity>
+                  )}
+                />
+                <CustomListFooter customsubtotal={subtotal} />
+              </SafeAreaView>
+
+              <FlatList
+                style={styles.Inputcontainer}
+                data={selecteddocs}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => (
+                  <Card key={index}>
+                    <Text key={index}>{item?.name}</Text>
+                  </Card>
+                )}
+                ListHeaderComponent={flatlistFooter}
               />
-              <CustomFlatlists />
-            </Card>
+            </View>
           </ProgressStep>
         </ProgressSteps>
       )}

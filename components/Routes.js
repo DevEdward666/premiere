@@ -13,25 +13,51 @@ import MainDiagnosticsUI from '../Screens/Diagnostics/UIMainDiagnostics';
 import DoctorInfo from '../Screens/Doctors/DoctorsInfoScreen';
 import Login from '../Screens/Login/LoginScreen';
 import MyProfile from '../Screens/Me/MeInfoScreen';
+import MeScreen from '../Screens/Me/MeScreen';
 import LinkMedicalRecords from '../Screens/MedicalRecord/LinkMedicalRecords';
 import UIListOfFile from '../Screens/MedicalRecord/UIListOfFile';
 import UIMedicalRecords from '../Screens/MedicalRecord/UIMedicalRecords';
+import MedicalInfo from '../Screens/MedicalRecord/Information';
 import UIPatientFiles from '../Screens/MedicalRecord/UIPatientFiles';
 import Message from '../Screens/Message/Message';
 import VideoCall from '../Screens/Message/VideoCall/VideoCall';
 import VideoCallJisti from '../Screens/Message/VideoCall/VideoCallJisti';
 import QRScreen from '../Screens/MyQRCodeScreen';
-import NewsInfo from '../Screens/News/NewsInfo/UINewsInfo';
+import NewsInfo from '../Screens/News/NewsInfo/MainInfo';
+import NewsList from '../Screens/News/NewsList/NewsList';
 import Otp from '../Screens/OTPScreen';
 import UIPin from '../Screens/PIN/UIPin';
 import SafeDavaoQR from '../Screens/SafeDavaoQR';
-import SignUp from '../Screens/SignUpScreen';
+import SignUp from '../Screens/SignUp/MainSignUp';
 import tac from '../Screens/TermsAndConditions';
 import UIApps from '../Screens/UIApps/UIApps';
 import IndexQueue from '../Screens/Queing/Queueing';
 import GenerateQueue from '../Screens/Queing/IndexQueue';
 import ViewNumbersonQueue from '../Screens/Queing/QueueNumbers';
+import MainClinic from '../Screens/Clinic/MainClinic';
 import UIFilePDFView from '../Screens/UIFilePDFView';
+import GcashPaymentUI from '../Screens/Payments/Gcash/GcashPaymentUI';
+import MainPayment from '../Screens/Payments/MainPayment';
+import CardPaymentUI from '../Screens/Payments/Card/MainCardUI';
+import ConsultList from '../Screens/Clinic/ConsultationDetails/Main_consult';
+import IndexClinic from '../Screens/Clinic/Index';
+import UpdateInfoUI from '../Screens/Me/UpdateInfo/UpdateInfoUI';
+import FirstInfo from '../Screens/SignUp/FirstInfo';
+import SecondInfo from '../Screens/SignUp/SecondInfo';
+import ThirdInfo from '../Screens/SignUp/ThirdInfo';
+import LastInfo from '../Screens/SignUp/LastInfo';
+import UpdateImageUI from '../Screens/Me/UpdateInfo/UpdateImageUI';
+import UpdateAddressUI from '../Screens/Me/UpdateInfo/MainAddress';
+import SearchConsultationUI from '../Screens/Clinic/SearchConsultation/SearchConsultationUI';
+import OTPConsult from '../Screens/Clinic/SearchConsultation/OTP';
+import MainInfoConsult from '../Screens/Clinic/Consult_Info/Main';
+import Notifications from '../Screens/Notifications/UINotification';
+import Events from '../Screens/Calendar/Events/Events';
+import ServicesDesc from '../Screens/HospitalServices/ServicesMain';
+import PrivacyPolicy from '../Screens/PrivacyPolicy';
+import ServiceInfoMain from '../Screens/HospitalServices/ServiceInfo/ServiceInfoMain';
+import WaitForStatusUpdate from '../Screens/Me/UpdateInfo/WaitForStatusUpdate';
+import DeclinedStatus from '../Screens/Me/UpdateInfo/DeclinedStatus';
 import styles from './style';
 import {TOGGLE_SWITCH} from '../Services/Actions/Diagnostic_Actions';
 const Routes = () => {
@@ -53,11 +79,43 @@ const Routes = () => {
     <Router navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}>
       <Stack key="root">
         <Scene key="home" component={Login} title="Login" hideNavBar={true} />
+        <Scene key="signup" component={SignUp} title="Signup" />
+        <Scene key="signup_name" component={FirstInfo} title="Name" />
+        <Scene key="update_info" component={UpdateInfoUI} title="Update Info" />
         <Scene
-          key="signup"
-          component={SignUp}
-          title="Signup"
-          hideNavBar={true}
+          key="declined_info"
+          component={DeclinedStatus}
+          title="Declined"
+        />
+        <Scene
+          key="waiting"
+          component={WaitForStatusUpdate}
+          title="Still on Review"
+        />
+        <Scene
+          key="update_image"
+          component={UpdateImageUI}
+          title="Update Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="update_address"
+          component={UpdateAddressUI}
+          title="Update Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="signup_birthdate"
+          component={SecondInfo}
+          title="Birthdate"
+          headerTintColor="#0084FF"
+        />
+        <Scene key="signup_email" component={ThirdInfo} title="Email" />
+        <Scene
+          key="signup_credentials"
+          component={LastInfo}
+          title="Credentials"
+          headerTintColor="#0084FF"
         />
         <Scene
           key="otp"
@@ -72,97 +130,199 @@ const Routes = () => {
           hideNavBar={true}
         />
         <Scene
+          key="pap"
+          component={PrivacyPolicy}
+          title="Privacy and Policy"
+          hideNavBar={true}
+        />
+        <Scene
           key="qrscreen"
           component={QRScreen}
           title="My QR"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="doctorsinfo"
           component={DoctorInfo}
           title="Doctors Info"
-          navTransparent={true}
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="service_desc"
+          component={ServicesDesc}
+          title="Service Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="service_info"
+          component={ServiceInfoMain}
+          title="Service Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="me"
+          component={MeScreen}
+          title="Me"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="seemoreevents"
+          component={Events}
+          title="Events"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="notif"
+          component={Notifications}
+          title="Notifications"
+          headerTintColor="#0084FF"
         />
         <Scene
           key="profile"
           component={MyProfile}
           title="My Profile"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="safedavaoqr"
           component={SafeDavaoQR}
+          headerTintColor="#0084FF"
           title="Safe Davao QR"
-          navTransparent={true}
         />
-        <Scene key="indexqueue" component={IndexQueue} title="Queue" />
+        <Scene
+          key="indexqueue"
+          component={IndexQueue}
+          title="Queue"
+          headerTintColor="#0084FF"
+        />
         <Scene
           key="numbersonqueue"
           component={ViewNumbersonQueue}
+          headerTintColor="#0084FF"
           title="Numbers On Queue"
         />
         <Scene
           key="generatenumber"
           component={GenerateQueue}
           title="Generate Number"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="uiapps"
           component={UIApps}
           title="Apps"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="diagnostics"
           component={Diagnostic}
-          //   renderRightButton={()=> (
-          //     <View>
-          //        <Switch
-          //       trackColor={{false: '#767577', true: '#add8e6'}}
-          //       thumbColor={isEnabled ? '#add8e6' : '#f4f3f4'}
-          //       ios_backgroundColor="#3e3e3e"
-          //       onValueChange={toggleSwitch}
-          //       value={isEnabled}
-          //       accessibilityLabel={'Use My Information'}
-          //     />
-          //     </View>
-          // )}
           title="Diagnostics"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
-        <Scene key="prompt" component={Prompt} title="Alert" />
+        <Scene
+          key="mainclicnic"
+          component={MainClinic}
+          title="Consultation Request"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="indexclinic"
+          component={IndexClinic}
+          title="Consultation Request"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="consultlist"
+          component={ConsultList}
+          title="Consultation List"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="consultinfo"
+          component={MainInfoConsult}
+          title="Consultation Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="otpconsult"
+          component={OTPConsult}
+          title="OTP"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="searchconsult"
+          component={SearchConsultationUI}
+          title="Link My Consultation"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="gcashpayment"
+          component={GcashPaymentUI}
+          title="Payment"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="grabpayment"
+          component={GcashPaymentUI}
+          title="Payment"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="mainpayment"
+          component={MainPayment}
+          title="Payment Method"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="cardpayment"
+          component={CardPaymentUI}
+          title="Card Payment"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="prompt"
+          component={Prompt}
+          title="Alert"
+          headerTintColor="#0084FF"
+        />
         <Scene
           key="files"
           component={UIPatientFiles}
           title="Files"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="pdfviewer"
           component={UIFilePDFView}
           title="File"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="listoffile"
           component={UIListOfFile}
           title="List of File"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="videocall"
           component={VideoCall}
           title="VideoCall"
-          navTransparent={true}
+          hideNavBar={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="videocall2"
           component={VideoCallJisti}
           title="VideoCall"
-          navTransparent={true}
+          hideNavBar={true}
+          headerTintColor="#0084FF"
         />
-        <Scene key="message" component={Message} title="Message" />
+        <Scene
+          key="message"
+          component={Message}
+          title="Message"
+          headerTintColor="#0084FF"
+        />
         <Scene
           key="pin"
           component={UIPin}
@@ -173,53 +333,65 @@ const Routes = () => {
         <Scene
           key="link"
           component={LinkMedicalRecords}
+          headerTintColor="#0084FF"
           title="Link Medical Records"
-          navTransparent={true}
         />
         <Scene
           key="medicalrecords"
           component={UIMedicalRecords}
+          headerTintColor="#0084FF"
           title="Medical Records"
-          navTransparent={true}
+        />
+        <Scene
+          key="patientmedicalinfo"
+          component={MedicalInfo}
+          headerTintColor="#0084FF"
+          title="Patient Information"
         />
         <Scene
           key="diagnosticsresults"
           component={DiagnosticsResults}
+          headerTintColor="#0084FF"
           title="Results"
-          navTransparent={true}
         />
         <Scene
           key="diagnosticsresultslist"
           component={DiagnosticsResultsList}
+          headerTintColor="#0084FF"
           title="Results List"
-          navTransparent={true}
         />
         <Scene
           key="diagnosticsrequest"
           component={DiagnosticRequest}
           title="Diagnostics Request"
-          navTransparent={true}
+          headerTintColor="#0084FF"
         />
         <Scene
           key="maindiagnosticsui"
           component={MainDiagnosticsUI}
+          headerTintColor="#0084FF"
           title="Diagnostics"
-          navTransparent={true}
         />
 
         <Scene
           key="newsinfo"
           component={NewsInfo}
-          navTransparent={true}
           title="News Info"
+          headerTintColor="#0084FF"
+        />
+        <Scene
+          key="newslist"
+          component={NewsList}
+          title="News"
+          headerTintColor="#0084FF"
         />
 
-        <Scene
+        {/* <Scene
           key="calendar"
           component={CalendarEvents}
           title="Events"
-          navTransparent={true}
-        />
+          headerTintColor="#0084FF"
+        /> */}
         <Scene
           key="index"
           component={Index}

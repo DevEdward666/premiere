@@ -22,7 +22,15 @@ import {
   REGISTRATION_COMPLETE,
   SPINNER_ALERT,
   SET_LOADED,
+  SET_HEADER_HIDE,
+  SET_CAMERA,
+  SET_LIBRARY,
+  SHOW_ALERT,
+  SET_TESTIMONIALS,
+  SET_DEPARTMENT,
+  GET_NOTIFICATION_LIST_ALL
 } from '../Types/Default_Types';
+import {PermissionsAndroid} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
 import * as signalR from '@microsoft/signalr';
@@ -130,6 +138,26 @@ export const action_GET_barangay = (
     });
 };
 
+export const action_GET_department = () => async (dispatch) => {
+  var url = `${BASE_URL}/api/default/getDepartments`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((res) => {
+    
+        dispatch({
+          type: SET_DEPARTMENT,
+          payload: res.data,
+        });
+      
+    });
+};
+
 export const action_GET_nationality = () => async (dispatch) => {
   var url = `${BASE_URL}/api/default/getnationality`;
   await fetch(url, {
@@ -195,7 +223,11 @@ export const action_GET_religion = () => async (dispatch) => {
       }
     });
 };
-export const action_GET_procedure = () => async (dispatch) => {
+export const action_GET_procedure = (search) => async (dispatch) => {
+  const bodysearch = null;
+  if (search === '') {
+    search = bodysearch;
+  }
   var url = `${BASE_URL}/api/default/getProcedures`;
   await fetch(url, {
     method: 'POST',
@@ -203,6 +235,9 @@ export const action_GET_procedure = () => async (dispatch) => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      procedure: search,
+    }),
   })
     .then((response) => response.json())
     .then(async (res) => {
@@ -214,6 +249,23 @@ export const action_GET_procedure = () => async (dispatch) => {
           payload: res.data,
         });
       }
+    });
+};
+export const action_GET_testimonials = () => async (dispatch) => {
+  var url = `${BASE_URL}/api/default/gettestimonials`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      dispatch({
+        type: SET_TESTIMONIALS,
+        payload: res.data,
+      });
     });
 };
 export const action_GET_notications = (name, offset) => async (dispatch) => {
@@ -232,20 +284,41 @@ export const action_GET_notications = (name, offset) => async (dispatch) => {
   })
     .then((response) => response.json())
     .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        if (!isUnmount) {
+  
           dispatch({
             type: GET_NOTIFICATION_LIST,
             payload: {data: res.data, loading: res.success},
           });
-        }
-      }
+        
+      
     });
-  return () => {
-    isUnmount = true;
-  };
+
+};
+export const action_GET_notications_all = (name, offset) => async (dispatch) => {
+  let isUnmount = false;
+  var url = `${BASE_URL}/api/default/getnotications`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name,
+      offset: offset,
+    }),
+  })
+    .then((response) => response.json())
+    .then( (res) => {
+  
+          dispatch({
+            type: GET_NOTIFICATION_LIST_ALL,
+            payload: {data: res.data, loading: res.success},
+          });
+        
+      
+    });
+
 };
 export const action_SET_notications = (
   title,
@@ -325,6 +398,12 @@ export const ACTION_LOADED = (loaded) => async (dispatch) => {
     payload: loaded,
   });
 };
+export const action_sethide_header = (hide) => async (dispatch) => {
+  dispatch({
+    type: SET_HEADER_HIDE,
+    payload: hide,
+  });
+};
 export const ACTION_GET_DEVICE = (device) => async (dispatch) => {
   let isUnmount = false;
   if (!isUnmount) {
@@ -342,4 +421,31 @@ export const action_open_bottomsheet = (open) => async (dispatch) => {
   return () => {
     isUnmount = true;
   };
+};
+export const action_alerted = (alerted) => async (dispatch) => {
+  dispatch({type: SHOW_ALERT, payload: alerted});
+};
+export const action_imagepickeroptions = (camera) => async (dispatch) => {
+  dispatch({type: SET_CAMERA, payload: camera});
+};
+export const action_library = (library) => async (dispatch) => {
+  dispatch({type: SET_LIBRARY, payload: library});
+};
+export const requestLocationPermission = () => async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      {
+        title: 'Premiere',
+        message: 'Premiere App access to your Storage ',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the location');
+    } else {
+      console.log('location permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
 };

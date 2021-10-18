@@ -25,15 +25,11 @@ export const action_GET_doctors = (offset) => async (dispatch) => {
     }),
   })
     .then((response) => response.json())
-    .then(async (res) => {
-      try {
-        responseData = await response.json();
-      } catch (e) {
-        dispatch({
-          type: SET_DOCTOR,
-          payload: res.data,
-        });
-      }
+    .then((res) => {
+      dispatch({
+        type: SET_DOCTOR,
+        payload: res.data,
+      });
     });
 };
 export const action_GET_doctorsbySpecialty = (offset, specialty) => async (
@@ -67,7 +63,6 @@ export const action_GET_doctorsbySpecialty = (offset, specialty) => async (
   }
 };
 export const action_GET_doctorsSpecialty = () => async (dispatch) => {
-
   const value = await AsyncStorage.getItem('tokenizer');
 
   const bearer_token = value;
@@ -88,7 +83,6 @@ export const action_GET_doctorsSpecialty = () => async (dispatch) => {
         type: SET_SPECIALTY,
         payload: res.data,
       });
- 
     });
 };
 export const action_GET_doctors_info = (doccode) => async (dispatch) => {
